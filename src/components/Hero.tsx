@@ -12,12 +12,10 @@ export const Hero = () => {
     <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
-        <img 
-          src={heroImage} 
-          alt="PopUp Lane marketplace" 
-          className="w-full h-full object-cover"
-        />
-        <div className={`absolute inset-0 bg-gradient-to-b from-background/95 via-background/90 to-background ${!isOpen && 'opacity-70'}`}></div>
+        <img src={heroImage} alt="PopUp Lane marketplace" className="w-full h-full object-cover" />
+        <div
+          className={`absolute inset-0 bg-gradient-to-b from-background/95 via-background/90 to-background ${!isOpen && "opacity-70"}`}
+        ></div>
       </div>
 
       {/* Animated Glow Effect - Only visible when open */}
@@ -47,11 +45,12 @@ export const Hero = () => {
             {isOpen ? (
               <>⚡ The Lane Is Open — Discover 50 Indie Deals Before It Closes.</>
             ) : (
-              <>🚧 PopUp Lane Is Closed for Now — The Next Opening Is Coming Holiday '25.</>
+              <>🚧 PopUp Lane Is Closed for Now — The Next Opening Is Coming Black Friday '25.</>
             )}
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto">
-            A digital lane that <span className="text-gradient font-semibold">opens for moments</span> — and remembers the brands that made them.
+            A digital lane that <span className="text-gradient font-semibold">opens for moments</span> — and remembers
+            the brands that made them.
           </p>
 
           {isOpen && <CountdownTimer targetDate="2024-12-05" />}
