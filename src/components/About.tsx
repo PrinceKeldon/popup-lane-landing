@@ -3,15 +3,15 @@ export const About = () => {
   const promises = [{
     icon: Heart,
     title: "For Shoppers",
-    description: "Curated deals from real people, not algorithms. Discover unique finds before they go viral."
+    description: "Discover real deals from real people — and find them again anytime in our year-round directory."
   }, {
     icon: Shield,
     title: "For Merchants",
-    description: "Get discovered without breaking the bank. No bidding wars, just authentic visibility."
+    description: "Visibility that lasts beyond the sale. Get discovered during events, stay remembered all year."
   }, {
     icon: Zap,
     title: "For Everyone",
-    description: "A seasonal street that levels the playing field for indie creators and small businesses."
+    description: "A lane that opens for moments, closes for curation, and remembers the brands that matter."
   }];
   return <section className="py-20 bg-muted/30">
       <div className="container px-4">
@@ -19,7 +19,7 @@ export const About = () => {
           {/* Story */}
           <div className="text-center space-y-6 animate-fade-in">
             <h2 className="text-4xl md:text-5xl font-bold">
-              Not Every Great Brand Has a <span className="text-gradient">Big Ad Budget</span>
+              Every sale season, small brands get buried under <span className="text-gradient">big ad budgets</span>. We built PopUp Lane to dig them out — and keep them remembered.
             </h2>
             <div className="prose prose-lg mx-auto text-muted-foreground space-y-4">
               <p className="text-lg">
@@ -28,9 +28,9 @@ export const About = () => {
                 get drowned out by mega-retailers spending millions on ads.
               </p>
               <p className="text-lg">
-                PopUp Lane changes that. It's a seasonal online directory where small brands, makers, and creators 
-                can showcase their best deals without competing in costly ad auctions. And for shoppers? 
-                It's a curated street of authentic finds you won't see everywhere else.
+                PopUp Lane changes that. It's a seasonal online directory that <strong>opens for limited-time events</strong> (like Black Friday), 
+                then transitions into a <strong>directory state</strong> that stays active year-round. Small brands, makers, and creators 
+                can showcase their best deals without competing in costly ad auctions. When the lane "closes," their stories live on in our Backroom Directory.
               </p>
             </div>
           </div>

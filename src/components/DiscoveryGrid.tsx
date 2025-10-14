@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ExternalLink } from "lucide-react";
+import { useLaneState } from "@/hooks/use-lane-state";
 import {
   Select,
   SelectContent,
@@ -21,6 +22,8 @@ interface Deal {
 }
 
 export const DiscoveryGrid = () => {
+  const { state } = useLaneState();
+  const isOpen = state === "open";
   const [category, setCategory] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("featured");
 
@@ -93,10 +96,12 @@ export const DiscoveryGrid = () => {
       <div className="container px-4">
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            Discover <span className="text-gradient">Unique Deals</span>
+            Step Into the Lane — Discover <span className="text-gradient">What's Really Popping</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Browse curated offers from small brands and indie creators
+            {isOpen 
+              ? "Every brand here earned its place in the lane. Browse live deals from indie creators."
+              : "Every brand here earned its place in the lane. When we close, they move into the Backroom — where discovery never ends."}
           </p>
         </div>
 
@@ -143,6 +148,11 @@ export const DiscoveryGrid = () => {
                 <Badge className="absolute top-4 right-4 bg-accent text-accent-foreground font-bold">
                   {deal.discount}
                 </Badge>
+                {!isOpen && (
+                  <Badge className="absolute top-4 left-4 bg-muted text-muted-foreground text-xs">
+                    Past Season
+                  </Badge>
+                )}
               </div>
               <div className="p-6">
                 <div className="mb-2">

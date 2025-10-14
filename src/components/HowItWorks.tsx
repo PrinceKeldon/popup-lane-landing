@@ -1,25 +1,43 @@
-import { Search, MousePointer, Bell, FileText, Star, TrendingUp } from "lucide-react";
+import { Search, MousePointer, Bell, FileText, Star, TrendingUp, FolderOpen, UserPlus, Send } from "lucide-react";
 
 export const HowItWorks = () => {
-  const shopperSteps = [
+  const shopperStepsOpen = [
     {
       icon: Search,
-      title: "Browse",
-      description: "Explore curated deals from indie brands and creators",
+      title: "Discover",
+      description: "Browse live deals during our active season",
     },
     {
       icon: MousePointer,
-      title: "Click",
-      description: "Visit the shops that catch your eye",
+      title: "Shop",
+      description: "Visit the brands that resonate with you",
     },
     {
       icon: Bell,
       title: "Subscribe",
-      description: "Get early access to future PopUp Lane seasons",
+      description: "Stay connected for future lane openings",
     },
   ];
 
-  const merchantSteps = [
+  const shopperStepsClosed = [
+    {
+      icon: FolderOpen,
+      title: "Explore",
+      description: "Browse the Backroom Directory of past brands",
+    },
+    {
+      icon: UserPlus,
+      title: "Join",
+      description: "Sign up for the Lane Club to get notified",
+    },
+    {
+      icon: Send,
+      title: "Apply",
+      description: "Submit your brand for the next opening",
+    },
+  ];
+
+  const merchantStepsOpen = [
     {
       icon: FileText,
       title: "Submit",
@@ -28,12 +46,30 @@ export const HowItWorks = () => {
     {
       icon: Star,
       title: "Get Featured",
-      description: "Appear in our curated directory of deals",
+      description: "Appear in our live lane during the event",
     },
     {
       icon: TrendingUp,
       title: "Drive Traffic",
-      description: "Connect with shoppers looking for authentic brands",
+      description: "Connect with engaged shoppers seeking authentic brands",
+    },
+  ];
+
+  const merchantStepsClosed = [
+    {
+      icon: Send,
+      title: "Apply",
+      description: "Submit your brand for the next opening",
+    },
+    {
+      icon: FolderOpen,
+      title: "Get Listed",
+      description: "Your brand stays in the Backroom Directory",
+    },
+    {
+      icon: Bell,
+      title: "Stay Ready",
+      description: "Be notified when the next lane event opens",
     },
   ];
 
@@ -43,7 +79,7 @@ export const HowItWorks = () => {
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">How It Works</h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Simple for shoppers. Easy for merchants. Win-win for everyone.
+            The lane has two states — open for discovery, closed for memory.
           </p>
         </div>
 
@@ -52,21 +88,55 @@ export const HowItWorks = () => {
           <div className="space-y-6">
             <div className="bg-primary/5 rounded-xl p-6 border-2 border-primary/20">
               <h3 className="text-2xl font-bold text-primary mb-6 text-center">For Shoppers</h3>
-              <div className="space-y-6">
-                {shopperSteps.map((step, index) => {
-                  const Icon = step.icon;
-                  return (
-                    <div key={index} className="flex gap-4 items-start">
-                      <div className="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                        <Icon className="w-6 h-6 text-primary" />
+              
+              {/* When Open */}
+              <div className="mb-8">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="h-px flex-1 bg-primary/20"></div>
+                  <span className="text-xs font-semibold text-primary uppercase">When the Lane Is Open</span>
+                  <div className="h-px flex-1 bg-primary/20"></div>
+                </div>
+                <div className="space-y-4">
+                  {shopperStepsOpen.map((step, index) => {
+                    const Icon = step.icon;
+                    return (
+                      <div key={index} className="flex gap-4 items-start">
+                        <div className="flex-shrink-0 w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                          <Icon className="w-5 h-5 text-primary" />
+                        </div>
+                        <div>
+                          <h4 className="font-bold mb-1">{step.title}</h4>
+                          <p className="text-sm text-muted-foreground">{step.description}</p>
+                        </div>
                       </div>
-                      <div>
-                        <h4 className="font-bold text-lg mb-1">{step.title}</h4>
-                        <p className="text-muted-foreground">{step.description}</p>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* When Closed */}
+              <div>
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="h-px flex-1 bg-muted"></div>
+                  <span className="text-xs font-semibold text-muted-foreground uppercase">When the Lane Is Closed</span>
+                  <div className="h-px flex-1 bg-muted"></div>
+                </div>
+                <div className="space-y-4">
+                  {shopperStepsClosed.map((step, index) => {
+                    const Icon = step.icon;
+                    return (
+                      <div key={index} className="flex gap-4 items-start">
+                        <div className="flex-shrink-0 w-10 h-10 bg-muted rounded-lg flex items-center justify-center">
+                          <Icon className="w-5 h-5 text-muted-foreground" />
+                        </div>
+                        <div>
+                          <h4 className="font-bold mb-1">{step.title}</h4>
+                          <p className="text-sm text-muted-foreground">{step.description}</p>
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </div>
@@ -75,21 +145,55 @@ export const HowItWorks = () => {
           <div className="space-y-6">
             <div className="bg-accent/5 rounded-xl p-6 border-2 border-accent/20">
               <h3 className="text-2xl font-bold text-accent mb-6 text-center">For Merchants</h3>
-              <div className="space-y-6">
-                {merchantSteps.map((step, index) => {
-                  const Icon = step.icon;
-                  return (
-                    <div key={index} className="flex gap-4 items-start">
-                      <div className="flex-shrink-0 w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center">
-                        <Icon className="w-6 h-6 text-accent" />
+              
+              {/* When Open */}
+              <div className="mb-8">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="h-px flex-1 bg-accent/20"></div>
+                  <span className="text-xs font-semibold text-accent uppercase">When the Lane Is Open</span>
+                  <div className="h-px flex-1 bg-accent/20"></div>
+                </div>
+                <div className="space-y-4">
+                  {merchantStepsOpen.map((step, index) => {
+                    const Icon = step.icon;
+                    return (
+                      <div key={index} className="flex gap-4 items-start">
+                        <div className="flex-shrink-0 w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center">
+                          <Icon className="w-5 h-5 text-accent" />
+                        </div>
+                        <div>
+                          <h4 className="font-bold mb-1">{step.title}</h4>
+                          <p className="text-sm text-muted-foreground">{step.description}</p>
+                        </div>
                       </div>
-                      <div>
-                        <h4 className="font-bold text-lg mb-1">{step.title}</h4>
-                        <p className="text-muted-foreground">{step.description}</p>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* When Closed */}
+              <div>
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="h-px flex-1 bg-muted"></div>
+                  <span className="text-xs font-semibold text-muted-foreground uppercase">When the Lane Is Closed</span>
+                  <div className="h-px flex-1 bg-muted"></div>
+                </div>
+                <div className="space-y-4">
+                  {merchantStepsClosed.map((step, index) => {
+                    const Icon = step.icon;
+                    return (
+                      <div key={index} className="flex gap-4 items-start">
+                        <div className="flex-shrink-0 w-10 h-10 bg-muted rounded-lg flex items-center justify-center">
+                          <Icon className="w-5 h-5 text-muted-foreground" />
+                        </div>
+                        <div>
+                          <h4 className="font-bold mb-1">{step.title}</h4>
+                          <p className="text-sm text-muted-foreground">{step.description}</p>
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </div>

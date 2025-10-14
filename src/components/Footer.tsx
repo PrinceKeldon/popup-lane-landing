@@ -29,6 +29,9 @@ export const Footer = () => {
             <p className="text-sm text-muted-foreground">
               A seasonal street for small brands, creators, and indie merchants.
             </p>
+            <p className="text-xs text-muted-foreground italic">
+              Built for moments. Remembered forever.
+            </p>
           </div>
 
           {/* Shoppers */}
