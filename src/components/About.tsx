@@ -1,26 +1,19 @@
 import { Heart, Shield, Zap } from "lucide-react";
-
 export const About = () => {
-  const promises = [
-    {
-      icon: Heart,
-      title: "For Shoppers",
-      description: "Curated deals from real people, not algorithms. Discover unique finds before they go viral.",
-    },
-    {
-      icon: Shield,
-      title: "For Merchants",
-      description: "Get discovered without breaking the bank. No bidding wars, just authentic visibility.",
-    },
-    {
-      icon: Zap,
-      title: "For Everyone",
-      description: "A seasonal street that levels the playing field for indie creators and small businesses.",
-    },
-  ];
-
-  return (
-    <section className="py-20 bg-muted/30">
+  const promises = [{
+    icon: Heart,
+    title: "For Shoppers",
+    description: "Curated deals from real people, not algorithms. Discover unique finds before they go viral."
+  }, {
+    icon: Shield,
+    title: "For Merchants",
+    description: "Get discovered without breaking the bank. No bidding wars, just authentic visibility."
+  }, {
+    icon: Zap,
+    title: "For Everyone",
+    description: "A seasonal street that levels the playing field for indie creators and small businesses."
+  }];
+  return <section className="py-20 bg-muted/30">
       <div className="container px-4">
         <div className="max-w-4xl mx-auto space-y-12">
           {/* Story */}
@@ -45,23 +38,15 @@ export const About = () => {
           {/* Promise Blocks */}
           <div className="grid md:grid-cols-3 gap-6 pt-8">
             {promises.map((promise, index) => {
-              const Icon = promise.icon;
-              return (
-                <div
-                  key={index}
-                  className="bg-card rounded-xl p-6 shadow-lg hover-lift border border-border"
-                >
-                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                    <Icon className="w-6 h-6 text-primary" />
-                  </div>
+            const Icon = promise.icon;
+            return <div key={index} className="bg-card rounded-xl p-6 shadow-lg hover-lift border border-border">
+                  
                   <h3 className="text-xl font-bold mb-2">{promise.title}</h3>
                   <p className="text-muted-foreground">{promise.description}</p>
-                </div>
-              );
-            })}
+                </div>;
+          })}
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
