@@ -1,84 +1,60 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowRight } from "lucide-react";
 
 export const Newsletter = () => {
   const [email, setEmail] = useState("");
-  const [isMerchant, setIsMerchant] = useState(false);
   const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
-      toast({
-        title: "Welcome to the Lane!",
-        description: "You'll be first to know about our next season.",
-      });
-      setEmail("");
-    }
+    toast({
+      title: "Thanks for joining!",
+      description: "We'll notify you when the lane opens.",
+    });
+    setEmail("");
   };
 
   return (
-    <section className="py-20 bg-gradient-to-br from-primary/5 to-accent/5">
-      <div className="container px-4">
-        <div className="max-w-3xl mx-auto text-center space-y-8">
-          <div className="space-y-4">
-            <h2 className="text-4xl md:text-5xl font-bold">
-              Don't Miss the Next Drop
-            </h2>
-            <p className="text-xl text-muted-foreground">
-              Whether shopper or merchant, joining the Lane Club means you'll always be first in line when doors open again.
+    <section className="py-16" aria-labelledby="notify-title">
+      <div className="container px-4 mx-auto max-w-7xl">
+        <div 
+          className="p-8.5 rounded-xl bg-gradient-to-b from-card to-background border border-border flex flex-col md:flex-row items-center gap-6 justify-between"
+        >
+          <div className="md:max-w-[68%]">
+            <h3 id="notify-title" className="text-serif text-xl mb-1.5">
+              Get Notified When We Open
+            </h3>
+            <p className="text-muted-foreground text-sm m-0">
+              Join the early-access list for Black Friday '25 — shoppers and merchants both welcome. Be first to the lane.
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4 max-w-md mx-auto">
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Input
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="flex-1 h-12 text-base"
-                required
-              />
-              <Button type="submit" size="lg" className="h-12 px-8 group">
-                Join the Lane
-                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-              </Button>
-            </div>
-            
-            <div className="flex items-center justify-center gap-2">
-              <Checkbox 
-                id="merchant" 
-                checked={isMerchant}
-                onCheckedChange={(checked) => setIsMerchant(checked as boolean)}
-              />
-              <label 
-                htmlFor="merchant" 
-                className="text-sm text-muted-foreground cursor-pointer"
-              >
-                I'm a merchant interested in listing
-              </label>
-            </div>
+          <form 
+            onSubmit={handleSubmit} 
+            className="flex gap-2.5 items-center"
+            aria-label="Notify form"
+          >
+            <Input
+              type="email"
+              id="notify-email"
+              name="email"
+              placeholder="you@domain.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="min-w-[240px] px-3.5 py-3 rounded-lg border border-input"
+              aria-label="Email address"
+            />
+            <Button 
+              type="submit" 
+              className="px-4 py-3 rounded-lg bg-primary text-primary-foreground font-semibold"
+              aria-label="Notify me"
+            >
+              Notify Me
+            </Button>
           </form>
-
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center text-sm text-muted-foreground pt-4">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-primary rounded-full"></div>
-              <span>Free to join</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-accent rounded-full"></div>
-              <span>For shoppers & merchants</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-secondary rounded-full"></div>
-              <span>Unsubscribe anytime</span>
-            </div>
-          </div>
         </div>
       </div>
     </section>

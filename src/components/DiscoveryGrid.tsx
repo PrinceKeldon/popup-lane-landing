@@ -92,13 +92,13 @@ export const DiscoveryGrid = () => {
     : deals.filter(deal => deal.category === category);
 
   return (
-    <section className="py-20 bg-muted/20">
-      <div className="container px-4">
+    <section className="py-16 bg-background">
+      <div className="container px-4 mx-auto max-w-7xl">
         <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            Step Into the Lane — Discover <span className="text-gradient">What's Really Popping</span>
+          <h2 className="text-serif text-[28px] md:text-[32px] mb-4">
+            Step Into the Lane — Discover What's Really Popping
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-[15px] max-w-2xl mx-auto leading-relaxed">
             {isOpen 
               ? "Every brand here earned its place in the lane. Browse live deals from indie creators."
               : "Every brand here earned its place in the lane. When we close, they move into the Backroom — where discovery never ends."}
@@ -133,11 +133,11 @@ export const DiscoveryGrid = () => {
         </div>
 
         {/* Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredDeals.map((deal) => (
             <div
               key={deal.id}
-              className="bg-card rounded-xl overflow-hidden shadow-lg hover-lift border border-border group"
+              className="bg-card rounded-xl overflow-hidden shadow-[var(--shadow-card)] hover-lift border border-border group"
             >
               <div className="relative h-48 overflow-hidden">
                 <img

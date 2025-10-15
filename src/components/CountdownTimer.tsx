@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 interface CountdownTimerProps {
   targetDate: string;
+  isOpen?: boolean;
 }
 
 interface TimeLeft {
@@ -11,7 +12,7 @@ interface TimeLeft {
   seconds: number;
 }
 
-export const CountdownTimer = ({ targetDate }: CountdownTimerProps) => {
+export const CountdownTimer = ({ targetDate, isOpen = false }: CountdownTimerProps) => {
   const calculateTimeLeft = (): TimeLeft => {
     const difference = +new Date(targetDate) - +new Date();
     
@@ -38,25 +39,30 @@ export const CountdownTimer = ({ targetDate }: CountdownTimerProps) => {
   }, [targetDate]);
 
   const TimeBlock = ({ value, label }: { value: number; label: string }) => (
-    <div className="flex flex-col items-center gap-1">
-      <div className="bg-card border-2 border-primary/20 rounded-lg px-4 py-3 min-w-[80px] shadow-lg">
-        <span className="text-3xl md:text-4xl font-bold text-primary">
-          {value.toString().padStart(2, '0')}
-        </span>
+    <div className="flex flex-col items-center min-w-[72px]">
+      <div 
+        className={`font-bold text-[30px] font-mono text-foreground bg-card px-4.5 py-2 rounded-lg border border-input shadow-[var(--shadow-subtle)] transition-opacity duration-350 ${
+          isOpen ? 'opacity-75' : ''
+        }`}
+      >
+        {value.toString().padStart(2, '0')}
       </div>
-      <span className="text-sm text-muted-foreground uppercase tracking-wide">{label}</span>
+      <span className="text-[12px] text-muted-foreground uppercase tracking-wide mt-2">{label}</span>
     </div>
   );
 
   return (
-    <div className="flex gap-3 justify-center items-center py-6">
+    <div 
+      className="flex gap-4.5 justify-center items-end my-7 font-mono"
+      role="timer"
+      aria-live="polite"
+      aria-atomic="true"
+      aria-label={isOpen ? "Time until lane closes" : "Time until lane opens"}
+    >
       <TimeBlock value={timeLeft.days} label="Days" />
-      <span className="text-2xl text-muted-foreground">:</span>
-      <TimeBlock value={timeLeft.hours} label="Hours" />
-      <span className="text-2xl text-muted-foreground">:</span>
-      <TimeBlock value={timeLeft.minutes} label="Minutes" />
-      <span className="text-2xl text-muted-foreground">:</span>
-      <TimeBlock value={timeLeft.seconds} label="Seconds" />
+      <TimeBlock value={timeLeft.hours} label="Hrs" />
+      <TimeBlock value={timeLeft.minutes} label="Min" />
+      <TimeBlock value={timeLeft.seconds} label="Sec" />
     </div>
   );
 };
