@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>PopUp Lane — Black Friday ’25 (Minimal & Premium)</title>
+<meta name="description" content="PopUp Lane — a seasonal digital pop-up for curated small-brand Black Friday deals. Discover limited-time indie drops and support creators.">
+<meta property="og:title" content="PopUp Lane — Black Friday ’25">
+<meta property="og:description" content="PopUp Lane — a seasonal digital pop-up for curated small-brand Black Friday deals. Discover limited-time indie drops and support creators.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🖤</text></svg>">
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#fbfbfb;
+    --card:#ffffff;
+    --charcoal:#111217;
+    --muted:#6b6f76;
+    --accent:#111217;
+    --glass:rgba(17,18,23,0.06);
+    --open-overlay: rgba(255, 246, 230, 0.18);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+    background:var(--bg);
+    color:var(--charcoal);
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    line-height:1.45;
+    opacity:0; transform:translateY(6px);
+    animation:pageFade .45s ease forwards;
+  }
+  @keyframes pageFade { to { opacity:1; transform:none } }
+
+  .wrap{max-width:1100px;margin:0 auto;padding:48px 20px 96px;}
+  .hero{
+    padding:48px 0 28px;text-align:center; position:relative; transition:transform .45s cubic-bezier(.2,.9,.3,1), background-color .45s ease; will-change:transform, background-color;
+    border-radius:8px;
+  }
+  .eyebrow{font-size:13px;color:var(--muted);letter-spacing:1.6px;text-transform:uppercase;margin-bottom:14px}
+  .title{
+    font-family:"Playfair Display",serif;
+    font-weight:700;
+    font-size:clamp(34px,6.2vw,64px);
+    line-height:1.02;
+    margin:0 auto 12px;
+  }
+  .title .season{display:block;font-size:0.36em;color:var(--muted);letter-spacing:4px;margin-bottom:10px}
+  .subtitle{max-width:760px;margin:0 auto;color:var(--muted);font-size:18px;transition:opacity .45s ease}
+
+  /* live pill (above CTAs) */
+  .live-pill {
+    display:inline-block;
+    margin-top:14px;
+    padding:8px 14px;
+    border-radius:999px;
+    background:linear-gradient(90deg, rgba(255,215,160,0.18), rgba(255,240,220,0.12));
+    color:var(--charcoal);
+    font-weight:600;
+    font-size:13px;
+    opacity:0;
+    transform:translateY(-6px);
+    transition:opacity .45s ease, transform .45s ease;
+    box-shadow:0 8px 30px rgba(17,18,23,0.04);
+  }
+  .hero.open .live-pill{ opacity:1; transform:translateY(0); }
+
+  .countdown{display:flex;gap:18px;justify-content:center;align-items:end;margin:28px 0 20px;font-family:Inter,monospace}
+  .countseg{display:flex;flex-direction:column;align-items:center;min-width:72px}
+  .countnum{font-weight:700;font-size:30px;color:var(--charcoal);background:#fff;padding:8px 18px;border-radius:8px;border:1px solid rgba(17,18,23,0.06);box-shadow:0 6px 20px rgba(17,18,23,0.04);transition:opacity .35s ease}
+  .countlabel{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:8px}
+  .hero.open .countnum{ opacity:0.75; }
+
+  .ctas{display:flex;gap:12px;justify-content:center;margin-top:18px;flex-wrap:wrap}
+  .btn{display:inline-block;padding:12px 20px;border-radius:10px;text-decoration:none;font-weight:600}
+  .btn.primary{background:var(--charcoal);color:#fff;box-shadow:0 8px 28px rgba(17,18,23,0.08);transition:background .25s ease}
+  .btn.ghost{background:transparent;color:var(--charcoal);border:1px solid rgba(17,18,23,0.08);transition:background .25s ease,color .25s ease}
+  .btn.primary:focus, .btn.ghost:focus { outline:3px solid rgba(17,18,23,0.06); outline-offset:3px; }
+
+  .how{margin:64px 0}
+  .how h2{font-family:"Playfair Display",serif;font-size:28px;margin:0 0 20px;text-align:center}
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .step{background:var(--card);border-radius:12px;padding:20px;border:1px solid rgba(17,18,23,0.04);box-shadow:0 6px 18px rgba(17,18,23,0.03);transition:transform .3s ease,box-shadow .3s ease}
+  .step:hover{transform:translateY(-5px);box-shadow:0 10px 30px rgba(17,18,23,0.05)}
+  .step .num{font-weight:700;color:var(--charcoal);font-size:20px;margin-bottom:8px}
+  .step h3{margin:0 0 8px;font-size:16px}
+  .step p{margin:0;color:var(--muted);font-size:14px}
+
+  /* ABOUT */
+  .about{margin:48px 0 24px;text-align:center;max-width:880px;margin-left:auto;margin-right:auto}
+  .about h3{font-family:"Playfair Display",serif;margin:0 0 8px;font-size:20px}
+  .about p{color:var(--muted);font-size:15px;margin:0 auto;max-width:760px;line-height:1.6}
+
+  .notify{margin:64px 0;padding:34px;border-radius:12px;background:linear-gradient(180deg,#ffffff,#fbfbfb);border:1px solid rgba(17,18,23,0.03);display:flex;align-items:center;gap:24px;justify-content:space-between}
+  .notify .left{max-width:68%}
+  .notify h3{margin:0 0 6px;font-family:"Playfair Display",serif;font-size:20px}
+  .notify p{margin:0;color:var(--muted);font-size:14px}
+  .notify form{display:flex;gap:10px;align-items:center}
+  .notify input[type="email"]{padding:12px 14px;border-radius:10px;border:1px solid rgba(17,18,23,0.06);min-width:240px}
+  .notify button{padding:12px 16px;border-radius:10px;border:none;background:var(--charcoal);color:#fff;font-weight:600}
+
+  .memory{margin:64px 0}
+  .memory h4{text-transform:uppercase;color:var(--muted);letter-spacing:1.6px;font-size:12px;margin:0 0 18px;text-align:left}
+  .memory .memory-wrap{position:relative;overflow:hidden;border-radius:12px;padding:18px;background:linear-gradient(180deg, rgba(17,18,23,0.01), rgba(17,18,23,0.01));border:1px solid rgba(17,18,23,0.03)}
+  .track{display:flex;gap:16px;align-items:center;will-change:transform}
+  .brand{
+    flex:0 0 180px;
+    height:80px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:12px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.5));
+    box-shadow:0 6px 18px rgba(17,18,23,0.04);
+    border:1px solid rgba(17,18,23,0.06);
+    backdrop-filter: blur(6px);
+    padding:12px;
+  }
+  .brand img{max-width:140px;max-height:56px;object-fit:contain;opacity:0.95;filter:grayscale(0.15)}
+  .memory-mask{
+    mask-image:linear-gradient(90deg,transparent 0%, black 8%, black 92%, transparent 100%);
+    -webkit-mask-image:linear-gradient(90deg,transparent 0%, black 8%, black 92%, transparent 100%);
+  }
+
+  footer{margin-top:60px;padding:28px 0;text-align:center;color:var(--muted);font-size:13px;border-top:1px solid rgba(17,18,23,0.03)}
+  .footer-links{margin-top:8px;font-size:13px;color:var(--muted)}
+  .footer-links a{color:var(--muted);text-decoration:none;margin:0 8px}
+
+  @media (max-width:900px){
+    .steps{grid-template-columns:1fr;}.notify{flex-direction:column;align-items:stretch}.notify .left{max-width:100%}
+  }
+
+  /* hero open transform */
+  .hero.open{ transform: translateY(-10px); background-color:var(--open-overlay); }
+  .hero.closed-subtle .subtitle{ opacity:0.9; }
+
+  /* small helper for visually-hidden text */
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+</style>
+</head>
+<body>
+  <div class="wrap">
+
+    <!-- ARIA live announcer (for screen readers) -->
+    <div id="aria-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- HERO -->
+    <header id="hero" class="hero" role="banner" aria-labelledby="page-title">
+      <div class="eyebrow">Black Friday Pop-Up</div>
+      <h1 id="page-title" class="title"><span class="season">BLACK FRIDAY ’25</span>PopUp Lane</h1>
+      <p id="subtitle" class="subtitle">A digital lane that opens for moments — and remembers the brands that made them. Great products, limited time: discover curated small-brand deals before they disappear.</p>
+
+      <!-- live pill (appears above CTAs) -->
+      <div id="live-pill" class="live-pill" aria-hidden="true">We’re Live!</div>
+
+      <!-- Countdown -->
+      <div class="countdown" role="timer" aria-live="polite" aria-atomic="true" aria-label="Time until next pop up">
+        <div class="countseg" aria-hidden="false">
+          <div class="countnum countnum-days" id="days">00</div>
+          <div class="countlabel">Days</div>
+        </div>
+        <div class="countseg">
+          <div class="countnum countnum-hours" id="hours">00</div>
+          <div class="countlabel">Hrs</div>
+        </div>
+        <div class="countseg">
+          <div class="countnum countnum-mins" id="mins">00</div>
+          <div class="countlabel">Min</div>
+        </div>
+        <div class="countseg">
+          <div class="countnum countnum-secs" id="secs">00</div>
+          <div class="countlabel">Sec</div>
+        </div>
+      </div>
+
+      <div class="ctas" role="navigation" aria-label="Primary actions">
+        <a id="primary-cta" class="btn primary" href="#explore">Explore the Lane</a>
+        <a class="btn ghost" href="#list">List Your Brand</a>
+      </div>
+    </header>
+
+    <!-- HOW IT WORKS -->
+    <section class="how" id="how-it-works" aria-labelledby="how-title">
+      <h2 id="how-title">How It Works</h2>
+      <div class="steps" role="list">
+        <div class="step" role="listitem">
+          <div class="num">01</div>
+          <h3>We Open the Lane</h3>
+          <p>PopUp Lane appears only during the season — a short, curated showcase of indie drops and limited offers.</p>
+        </div>
+        <div class="step" role="listitem">
+          <div class="num">02</div>
+          <h3>Small Brands Take the Spotlight</h3>
+          <p>We highlight makers and merchants so great products don’t get buried by algorithms or ad spend.</p>
+        </div>
+        <div class="step" role="listitem">
+          <div class="num">03</div>
+          <h3>You Find What Matters</h3>
+          <p>Shop intentionally: limited-time items, real stories, and deals that reward discovery — not noise.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT (new) -->
+    <section class="about" aria-labelledby="about-title">
+      <h3 id="about-title">What is PopUp Lane?</h3>
+      <p>
+        PopUp Lane is a seasonal digital pop-up — a curated directory and timed event that opens during major shopping moments (like Black Friday and the holidays).
+        While the lane is open, shoppers browse our curated directory, filter by categories, and visit each merchant’s storefront to purchase directly. The directory remains an archive of past lanes so shoppers can revisit favorites and brands remain discoverable between drops.
+      </p>
+      <p style="margin-top:10px">
+        Importantly, merchants <strong>keep 100% of every sale</strong>. Transactions occur on the merchant’s own site or platform (Shopify, Etsy, native checkout, etc.), and PopUp Lane does not take a cut of those sales. Instead, PopUp Lane supports creators through paid placement (featured tiles, hero spots), sponsorships, and optional affiliate tracking when merchants opt in — keeping the marketplace creator-first and fair by design.
+      </p>
+    </section>
+
+    <!-- NOTIFY (Lovable-ready form) -->
+    <section class="notify" aria-labelledby="notify-title">
+      <div class="left">
+        <h3 id="notify-title">Get Notified When We Open</h3>
+        <p>Join the early-access list for Black Friday ’25 — shoppers and merchants both welcome. Be first to the lane.</p>
+      </div>
+
+      <!-- Lovable-ready form: data-lovable-form attribute is ready for later connection -->
+      <form id="notify-form" data-lovable-form="notify-list" data-lovable-redirect="/thank-you" aria-label="Notify form">
+        <input type="email" id="notify-email" name="email" placeholder="you@domain.com" aria-label="Email address" required>
+        <button type="submit" aria-label="Notify me">Notify Me</button>
+      </form>
+    </section>
+
+    <!-- MEMORY / BRAND CAROUSEL -->
+    <section class="memory" aria-labelledby="memory-title">
+      <h4 id="memory-title">Brands That Made Last Season</h4>
+      <div class="memory-wrap memory-mask" aria-hidden="false">
+        <div class="track" id="track" aria-hidden="false">
+          <!-- sample brands (duplicate set after first set to create seamless loop) -->
+          <div class="brand"><img src="https://placehold.co/140x56/ffffff/111?text=Loom+%26+Found" alt="Loom & Found logo"></div>
+          <div class="brand"><img src="https://placehold.co/140x56/ffffff/111?text=Bright+Studio" alt="Bright Studio logo"></div>
+          <div class="brand"><img src="https://placehold.co/140x56/ffffff/111?text=Thread+Theory" alt="Thread Theory logo"></div>
+          <div class="brand"><img src="https://placehold.co/140x56/ffffff/111?text=Indie+Flame" alt="Indie Flame logo"></div>
+          <div class="brand"><img src="https://placehold.co/140x56/ffffff/111?text=Velvet+Arc" alt="Velvet Arc logo"></div>
+          <div class="brand"><img src="https://placehold.co/140x56/ffffff/111?text=Echo+Haus" alt="Echo Haus logo"></div>
+
+          <!-- duplicate set to allow smooth infinite scroll -->
+          <div class="brand"><img src="https://placehold.co/140x56/ffffff/111?text=Loom+%26+Found" alt="Loom & Found logo"></div>
+          <div class="brand"><img src="https://placehold.co/140x56/ffffff/111?text=Bright+Studio" alt="Bright Studio logo"></div>
+          <div class="brand"><img src="https://placehold.co/140x56/ffffff/111?text=Thread+Theory" alt="Thread Theory logo"></div>
+          <div class="brand"><img src="https://placehold.co/140x56/ffffff/111?text=Indie+Flame" alt="Indie Flame logo"></div>
+          <div class="brand"><img src="https://placehold.co/140x56/ffffff/111?text=Velvet+Arc" alt="Velvet Arc logo"></div>
+          <div class="brand"><img src="https://placehold.co/140x56/ffffff/111?text=Echo+Haus" alt="Echo Haus logo"></div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      © 2025 PopUp Lane — A digital lane that opens for moments, and remembers the brands that made them.
+      <div class="footer-links" aria-hidden="false">
+        <a href="#terms">Terms</a> · <a href="#privacy">Privacy</a>
+      </div>
+    </footer>
+  </div>
+
+<script>
+/* -------------------------
+   Countdown logic + hero state transitions + ARIA announcements
+   ------------------------- */
+(function(){
+  // Replace with server-driven dates when ready
+  const NEXT_OPEN_ISO = "2025-11-21T10:00:00";
+  const CLOSE_ISO = "2025-11-28T23:59:59";
+
+  const openDate = new Date(NEXT_OPEN_ISO);
+  const closeDate = new Date(CLOSE_ISO);
+
+  const daysEl = document.getElementById('days');
+  const hoursEl = document.getElementById('hours');
+  const minsEl = document.getElementById('mins');
+  const secsEl = document.getElementById('secs');
+  const hero = document.getElementById('hero');
+  const livePill = document.getElementById('live-pill');
+  const subtitle = document.getElementById('subtitle');
+  const primaryCta = document.getElementById('primary-cta');
+  const ariaAnnouncer = document.getElementById('aria-announcer');
+
+  function pad(n){ return String(n).padStart(2,'0'); }
+
+  function announce(message){
+    // announce via aria live for screen reader users
+    if(ariaAnnouncer){
+      ariaAnnouncer.textContent = message;
+    }
+  }
+
+  function setHeroState(state){
+    hero.classList.remove('open','closed-subtle','animated');
+    livePill.setAttribute('aria-hidden','true');
+
+    if(state === 'before'){
+      subtitle.textContent = "A digital lane that opens for moments — and remembers the brands that made them. Great products, limited time: discover curated small-brand deals before they disappear.";
+      primaryCta.textContent = "Explore the Lane";
+      primaryCta.href = "#explore";
+      announce("PopUp Lane opens soon. Join the waitlist to be first.");
+      hero.classList.add('animated');
+    } else if(state === 'live'){
+      hero.classList.add('open','animated');
+      livePill.setAttribute('aria-hidden','false');
+      subtitle.textContent = "We’re live — the Lane is open. Discover limited-time drops from indie makers while the pop-up is active.";
+      primaryCta.textContent = "Shop Now";
+      primaryCta.href = "#shop";
+      announce("PopUp Lane is live. Shop now for limited-time deals from indie brands.");
+    } else if(state === 'after'){
+      hero.classList.add('closed-subtle','animated');
+      livePill.setAttribute('aria-hidden','true');
+      subtitle.textContent = "Thanks for visiting — the Lane will reopen soon. Join the waitlist to be first for the next pop-up.";
+      primaryCta.textContent = "Explore the Lane";
+      primaryCta.href = "#explore";
+      announce("The PopUp Lane has closed. We'll reopen soon — join the waitlist for updates.");
+    }
+  }
+
+  function updateClock(){
+    const now = new Date();
+    let target, state;
+    if(now < openDate){
+      target = openDate; state = 'before';
+    } else if(now >= openDate && now <= closeDate){
+      target = closeDate; state = 'live';
+    } else {
+      target = openDate; state = 'after';
+    }
+
+    const diff = Math.max(0, target - now);
+    const days = Math.floor(diff / (1000*60*60*24));
+    const hours = Math.floor((diff / (1000*60*60)) % 24);
+    const mins = Math.floor((diff / (1000*60)) % 60);
+    const secs = Math.floor((diff / 1000) % 60);
+
+    daysEl.textContent = pad(days);
+    hoursEl.textContent = pad(hours);
+    minsEl.textContent = pad(mins);
+    secsEl.textContent = pad(secs);
+
+    if(hero.dataset.state !== state){
+      hero.dataset.state = state;
+      setHeroState(state);
+    }
+  }
+
+  updateClock();
+  setInterval(updateClock, 1000);
+})();
+
+/* -----------------------------------
+   Memory carousel: smooth left scroll
+   ----------------------------------- */
+(function(){
+  const track = document.getElementById('track');
+  let pxPerSecond = 30; // speed (pixels per second)
+  let pos = 0;
+
+  function calcHalfWidth(){
+    const children = Array.from(track.children);
+    const half = children.slice(0, children.length/2);
+    const gap = 16;
+    return half.reduce((w,el)=> w + el.getBoundingClientRect().width + gap, 0);
+  }
+
+  let halfWidth = calcHalfWidth();
+  let last = performance.now();
+
+  function step(now){
+    const dt = (now - last) / 1000;
+    last = now;
+    pos += pxPerSecond * dt;
+    if(pos >= halfWidth) pos = pos - halfWidth;
+    track.style.transform = `translateX(${-pos}px)`;
+    requestAnimationFrame(step);
+  }
+
+  window.addEventListener('resize', ()=>{
+    halfWidth = calcHalfWidth();
+  });
+
+  if (document.readyState === 'complete') requestAnimationFrame(step);
+  else window.addEventListener('load', ()=> requestAnimationFrame(step));
+})();
+
+/* -------------------------
+   Lovable-ready notify form stub
+   ------------------------- */
+document.getElementById('notify-form').addEventListener('submit', function(e){
+  e.preventDefault();
+  const email = (document.getElementById('notify-email') || {}).value || '';
+  // Lovable will intercept data-lovable-form when connected; this stub provides immediate feedback.
+  alert(`Thanks — we'll notify ${email} when PopUp Lane opens.`);
+  this.reset();
+});
+</script>
+</body>
+</html>
