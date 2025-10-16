@@ -24,10 +24,13 @@ export const Newsletter = () => {
         >
           <div className="md:max-w-[68%]">
             <h3 id="notify-title" className="text-serif text-xl mb-1.5">
-              Get Notified When We Open
+              Be First in the Lane — Shoppers & Small Brands Welcome
             </h3>
             <p className="text-muted-foreground text-sm m-0">
-              Join the early-access list for Black Friday '25 — shoppers and merchants both welcome. Be first to the lane.
+              Sign up for early access! Shoppers get first pick of limited-time indie deals, and merchants secure exclusive visibility for the next PopUp Lane.
+            </p>
+            <p className="text-muted-foreground m-0 mt-1.5" style={{ fontSize: '13px' }}>
+              Merchants: List your brand and be featured during the season — no upfront sales required, just exposure.
             </p>
           </div>
 
@@ -50,9 +53,9 @@ export const Newsletter = () => {
             <Button 
               type="submit" 
               className="px-4 py-3 rounded-lg bg-primary text-primary-foreground font-semibold"
-              aria-label="Notify me"
+              aria-label="Join the lane"
             >
-              Notify Me
+              Join the Lane
             </Button>
           </form>
         </div>

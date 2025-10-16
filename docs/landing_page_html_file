@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>PopUp Lane — Black Friday ’25</title>
+<title>PopUp Lane — Black Friday '25</title>
 <meta name="description" content="PopUp Lane — the digital lane that opens for moments and puts small brands in the spotlight. Discover limited-time indie drops and support creators.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🖤</text></svg>">
 
@@ -164,7 +164,7 @@ footer{margin-top:60px;padding:28px 0;text-align:center;color:var(--muted);font-
       <div class="eyebrow" id="eyebrow">Black Friday Pop-Up</div>
 
       <!-- Title (season name from config) -->
-      <h1 id="page-title" class="title"><span class="season" id="season-small">BLACK FRIDAY ’25</span>PopUp Lane</h1>
+      <h1 id="page-title" class="title"><span class="season" id="season-small">BLACK FRIDAY '25</span>PopUp Lane</h1>
 
       <!-- Voice-aligned subtitle -->
       <p id="subtitle" class="subtitle">
@@ -172,7 +172,7 @@ footer{margin-top:60px;padding:28px 0;text-align:center;color:var(--muted);font-
       </p>
 
       <!-- "We're Live" pill above CTAs (appears when open) -->
-      <div id="live-pill" class="live-pill" aria-hidden="true">We’re Live!</div>
+      <div id="live-pill" class="live-pill" aria-hidden="true">We're Live!</div>
 
       <!-- Countdown -->
       <div class="countdown" role="timer" aria-live="polite" aria-atomic="true" aria-label="Time until next pop up">
@@ -202,7 +202,7 @@ footer{margin-top:60px;padding:28px 0;text-align:center;color:var(--muted);font-
         <div class="step" role="listitem">
           <div class="num">02</div>
           <h3>Small Brands Take the Spotlight</h3>
-          <p>We highlight makers and merchants so great products don’t get buried by algorithms or ad spend.</p>
+          <p>We highlight makers and merchants so great products don't get buried by algorithms or ad spend.</p>
         </div>
 
         <div class="step" role="listitem">
@@ -218,24 +218,27 @@ footer{margin-top:60px;padding:28px 0;text-align:center;color:var(--muted);font-
       <h3 id="about-title">What is PopUp Lane?</h3>
       <p>
         PopUp Lane is a seasonal digital pop-up — a curated directory that opens during major shopping moments (Black Friday, the holidays, and more).
-        We spotlight independent brands and make them impossible to scroll past. While the Lane is open, shoppers can browse filtered collections and visit each merchant’s storefront to purchase directly.
+        We spotlight independent brands and make them impossible to scroll past. While the Lane is open, shoppers can browse filtered collections and visit each merchant's storefront to purchase directly.
       </p>
       <p style="margin-top:10px">
-        Importantly, merchants <strong>keep 100% of every sale</strong>. Transactions happen on the merchant’s own site or platform (Shopify, Etsy, native checkout, etc.). PopUp Lane generates revenue through placement fees, sponsorships, and optional affiliate partnerships when brands opt in — never by taking a cut of a creator’s sales.
+        Importantly, merchants <strong>keep 100% of every sale</strong>. Transactions happen on the merchant's own site or platform (Shopify, Etsy, native checkout, etc.). PopUp Lane generates revenue through placement fees, sponsorships, and optional affiliate partnerships when brands opt in — never by taking a cut of a creator's sales.
       </p>
     </section>
 
     <!-- NOTIFY (Lovable-ready) -->
     <section class="notify" aria-labelledby="notify-title">
       <div class="left">
-        <h3 id="notify-title">Get Notified When the Lane Opens</h3>
-        <p>Join the early-access list — whether you’re a shopper or a small brand, be first to the Lane.</p>
+        <h3 id="notify-title">Be First in the Lane — Shoppers & Small Brands Welcome</h3>
+        <p>Sign up for early access! Shoppers get first pick of limited-time indie deals, and merchants secure exclusive visibility for the next PopUp Lane.</p>
+        <p style="font-size:13px; color:var(--muted); margin-top:6px;">
+          Merchants: List your brand and be featured during the season — no upfront sales required, just exposure.
+        </p>
       </div>
 
       <!-- Lovable-ready form: data-lovable-form attribute for future connection -->
       <form id="notify-form" data-lovable-form="notify-list" data-lovable-redirect="/thank-you" aria-label="Notify form">
         <input type="email" id="notify-email" name="email" placeholder="you@domain.com" aria-label="Email address" required>
-        <button type="submit" aria-label="Notify me">Notify Me</button>
+        <button type="submit" aria-label="Notify me">Join the Lane</button>
       </form>
     </section>
 
@@ -263,7 +266,7 @@ footer{margin-top:60px;padding:28px 0;text-align:center;color:var(--muted);font-
    ===================================================== */
 const POPUP_CONFIG = {
   season: {
-    name: "BLACK FRIDAY ’25",
+    name: "BLACK FRIDAY '25",
     eyebrow: "Black Friday Pop-Up",
     // ISO datetimes (local time). Replace with new dates for future seasons.
     openDate: "2025-11-21T10:00:00",
@@ -368,96 +371,91 @@ function pad(n){ return String(n).padStart(2,'0'); }
     } else if(state === 'live'){
       hero.classList.add('open','animated');
       livePill.setAttribute('aria-hidden','false');
-      subtitle.textContent = "We’re live — the Lane is open. Discover limited-time drops from indie makers while the pop-up is active.";
+      subtitle.textContent = "We're live — the Lane is open. Discover limited-time drops from indie makers while the pop-up is active.";
       primaryCta.textContent = "Shop Now";
       primaryCta.href = "#shop";
       announce("PopUp Lane is live. Shop now for limited-time deals from indie brands.");
     } else {
       hero.classList.add('closed-subtle','animated');
       livePill.setAttribute('aria-hidden','true');
-      subtitle.textContent = "Thanks for visiting — the Lane will reopen soon. Join the waitlist to be first for the next pop-up.";
-      primaryCta.textContent = "Walk the Lane";
-      primaryCta.href = "#explore";
-      announce("The PopUp Lane has closed. We'll reopen soon — join the waitlist for updates.");
+      subtitle.textContent = "The Lane has closed — but we'll be back. Join the list to be first next season.";
+      primaryCta.textContent = "Notify Me";
+      primaryCta.href = "#notify";
+      announce("PopUp Lane has closed for this season. Join the waitlist for the next pop-up.");
     }
   }
 
-  function updateClock(){
+  function tick(){
     const now = new Date();
-    let target, state;
-    if(now < openDate){ target = openDate; state = 'before'; }
-    else if(now >= openDate && now <= closeDate){ target = closeDate; state = 'live'; }
-    else { target = openDate; state = 'after'; }
+    let state = 'before', target = openDate;
 
-    const diff = Math.max(0, target - now);
-    const days = Math.floor(diff / (1000*60*60*24));
-    const hours = Math.floor((diff / (1000*60*60)) % 24);
-    const mins = Math.floor((diff / (1000*60)) % 60);
-    const secs = Math.floor((diff / 1000) % 60);
-
-    daysEl.textContent = pad(days);
-    hoursEl.textContent = pad(hours);
-    minsEl.textContent = pad(mins);
-    secsEl.textContent = pad(secs);
-
-    if(hero.dataset.state !== state){
-      hero.dataset.state = state;
-      setHeroState(state);
+    if(now >= closeDate){
+      state = 'after';
+      target = closeDate;
+    } else if(now >= openDate){
+      state = 'live';
+      target = closeDate;
     }
+
+    setHeroState(state);
+
+    // calculate time diff
+    const diff = Math.max(0, target - now);
+    const d = Math.floor(diff/86400000);
+    const h = Math.floor((diff%86400000)/3600000);
+    const m = Math.floor((diff%3600000)/60000);
+    const s = Math.floor((diff%60000)/1000);
+
+    daysEl.textContent = pad(d);
+    hoursEl.textContent = pad(h);
+    minsEl.textContent = pad(m);
+    secsEl.textContent = pad(s);
   }
 
-  updateClock();
-  setInterval(updateClock, 1000);
+  tick();
+  setInterval(tick, 1000);
 })();
 
 /* =====================================================
-   Memory carousel auto-scroll
-   - speed controlled by POPUP_CONFIG.motion.carouselSpeed
+   Memory carousel (auto-scroll)
    ===================================================== */
 (function memoryCarousel(){
   const track = el('track');
-  const pxPerSecond = (POPUP_CONFIG.motion && POPUP_CONFIG.motion.carouselSpeed) || 30;
-  let pos = 0;
+  if(!track || !track.children.length) return;
 
-  function calcHalfWidth(){
-    const children = Array.from(track.children);
-    const half = children.slice(0, children.length/2);
-    const gap = 16;
-    return half.reduce((w,el)=> w + el.getBoundingClientRect().width + gap, 0);
+  let offset = 0;
+  const speed = POPUP_CONFIG.motion.carouselSpeed || 30; // px/sec
+  let lastTime = performance.now();
+
+  function animate(time){
+    const delta = (time - lastTime) / 1000;
+    lastTime = time;
+
+    offset += speed * delta;
+
+    // single set width
+    const singleWidth = Array.from(track.children).slice(0, POPUP_CONFIG.brands.length).reduce((sum,el) => sum + el.offsetWidth + 16, 0);
+    if(offset >= singleWidth) offset -= singleWidth;
+
+    track.style.transform = `translateX(-${offset}px)`;
+    requestAnimationFrame(animate);
   }
 
-  let halfWidth = calcHalfWidth();
-  let last = performance.now();
+  requestAnimationFrame(animate);
 
-  function step(now){
-    const dt = (now - last) / 1000;
-    last = now;
-    pos += pxPerSecond * dt;
-    if(pos >= halfWidth) pos = pos - halfWidth;
-    track.style.transform = `translateX(${-pos}px)`;
-    requestAnimationFrame(step);
-  }
-
-  window.addEventListener('resize', ()=> { halfWidth = calcHalfWidth(); });
-
-  if(document.readyState === 'complete') requestAnimationFrame(step);
-  else window.addEventListener('load', ()=> requestAnimationFrame(step));
+  // recalc on resize
+  window.addEventListener('resize', () => { offset = 0; });
 })();
 
 /* =====================================================
-   Notify form preview stub
-   - Lovable will intercept when connected to data-lovable-form
-   - keep or replace this stub on production
+   Notify form stub (before Lovable integration)
    ===================================================== */
 (function notifyStub(){
-  const f = el('notify-form');
-  if(!f) return;
-  f.addEventListener('submit', function(e){
+  const form = el('notify-form');
+  if(!form) return;
+  form.addEventListener('submit', e => {
     e.preventDefault();
-    const email = (el('notify-email') || {}).value || '';
-    // dev note: replace with Lovable action integration when ready
-    alert(`Thanks — we'll notify ${email} when PopUp Lane opens.`);
-    this.reset();
+    alert('Thanks for joining! (Lovable will handle this submission once integrated)');
   });
 })();
 </script>
