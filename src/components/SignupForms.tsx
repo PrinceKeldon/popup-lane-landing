@@ -16,7 +16,7 @@ export const SignupForms = () => {
 
   useEffect(() => {
     const endDate = new Date("2025-11-21T10:00:00");
-    
+
     const updateCountdown = () => {
       const now = new Date();
       const diffMs = endDate.getTime() - now.getTime();
@@ -40,11 +40,11 @@ export const SignupForms = () => {
 
   const handleMerchantSubmit = (e: FormEvent) => {
     e.preventDefault();
-    
+
     const now = new Date();
     const openDate = new Date("2025-11-21T10:00:00");
     const closeDate = new Date("2025-11-28T23:59:59");
-    
+
     if (now >= openDate && now <= closeDate) {
       toast({
         title: "Applications Closed",
@@ -55,14 +55,14 @@ export const SignupForms = () => {
     }
 
     if (merchantSpots > 0) {
-      setMerchantSpots(prev => prev - 1);
+      setMerchantSpots((prev) => prev - 1);
     }
 
     toast({
       title: "Application Received!",
       description: "We'll review your merchant application soon.",
     });
-    
+
     setMerchantEmail("");
     setBrandName("");
     setWebsite("");
@@ -125,8 +125,8 @@ export const SignupForms = () => {
           </span>
         </h3>
         <p className="text-background/90 text-sm mb-4">
-          Small brands can apply to feature their products in the upcoming PopUp Lane. Fill in your details
-          and leverage AI suggestions for optimal exposure.
+          Small brands can apply to feature their products in the upcoming PopUp Lane. Fill in your details and leverage
+          AI suggestions for optimal exposure.
         </p>
 
         {/* Info Counters */}
@@ -153,7 +153,7 @@ export const SignupForms = () => {
                 required
                 className="rounded-xl mb-2 bg-white text-foreground"
               />
-              
+
               <label className="sr-only" htmlFor="brand_name">
                 Brand Name
               </label>
@@ -165,7 +165,7 @@ export const SignupForms = () => {
                 onChange={(e) => setBrandName(e.target.value)}
                 className="rounded-xl mb-2 bg-white text-foreground"
               />
-              
+
               <label className="sr-only" htmlFor="website">
                 Website
               </label>
@@ -177,7 +177,7 @@ export const SignupForms = () => {
                 onChange={(e) => setWebsite(e.target.value)}
                 className="rounded-xl mb-2 bg-white text-foreground"
               />
-              
+
               <label className="sr-only" htmlFor="social">
                 Social Media
               </label>
@@ -189,7 +189,7 @@ export const SignupForms = () => {
                 onChange={(e) => setSocial(e.target.value)}
                 className="rounded-xl mb-2 bg-white text-foreground"
               />
-              
+
               <label className="sr-only" htmlFor="category">
                 Category
               </label>
@@ -211,7 +211,7 @@ export const SignupForms = () => {
                 type="submit"
                 className="font-bold rounded-xl bg-[hsl(345_60%_47%)] hover:bg-[hsl(345_60%_42%)] text-white shadow-[0_8px_20px_rgba(0,0,0,0.12)] hover:shadow-[0_10px_24px_rgba(0,0,0,0.15)] hover:-translate-y-0.5 transition-all duration-300 active:scale-98"
               >
-                Apply as Merchant
+                Apply
               </Button>
             </div>
           </div>
