@@ -23,11 +23,6 @@ export const Hero = () => {
       </div>
 
       <div className="container px-4 mx-auto max-w-5xl">
-        {/* Eyebrow */}
-        <div className="text-[13px] text-muted-foreground uppercase tracking-[1.6px] mb-3.5">
-          Black Friday Pop-Up
-        </div>
-
         {/* Title */}
         <h1 id="page-title" className="text-serif font-bold text-[clamp(34px,6.2vw,64px)] leading-[1.02] mx-auto mb-3">
           <span className="block text-[0.36em] text-muted-foreground tracking-[4px] mb-2.5">
@@ -53,6 +48,11 @@ export const Hero = () => {
             We're Live!
           </div>
         )}
+
+        {/* Countdown Label */}
+        <div className="text-[13px] text-muted-foreground uppercase tracking-[1.6px] mb-2 mt-4">
+          {isOpen ? "Black Friday Pop-Up Ends in :" : "Black Friday Pop-Up Starts in :"}
+        </div>
 
         {/* Countdown Timer */}
         <CountdownTimer 
