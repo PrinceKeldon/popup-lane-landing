@@ -42,6 +42,8 @@ All colors MUST be HSL.
     --charcoal: 220 15% 8%;
     --glass: 220 15% 8% / 0.06;
     --open-overlay: 40 100% 92% / 0.18;
+    --wine: 345 69% 33%;
+    --orange: 28 100% 50%;
     
     /* Gradients */
     --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(35 2% 98%) 100%);
