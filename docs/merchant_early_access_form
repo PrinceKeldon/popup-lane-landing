@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>PopUp Lane — Notify & Merchant Early Access</title>
+<meta name="description" content="Be first in the Lane — shoppers & small brands welcome. Sign up for early access to PopUp Lane Black Friday '25.">
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+/* =========================
+   Theme: Charcoal + White
+   ========================= */
+:root{
+  --bg:#f8f8f8;
+  --card:#ffffff;
+  --charcoal:#111111;
+  --muted:#6b6f76;
+  --accent:#ff7a00; /* subtle highlight used sparingly */
+  --success:#28c76f;
+  --danger:#ff4d4d;
+  --open-overlay: rgba(255,122,0,0.06);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;font-family:"Inter",system-ui; background:var(--bg); color:var(--charcoal);
+  -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+  line-height:1.45; padding:36px 18px;
+}
+
+/* Container */
+.wrap{max-width:980px;margin:0 auto;padding:18px;}
+
+/* Hero */
+.hero{text-align:center;padding:28px 10px 18px;transition:background-color .4s ease, transform .45s ease;}
+.eyebrow{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:1.6px;margin-bottom:10px}
+.title{font-family:"Playfair Display",serif;font-size:32px;margin:0}
+.subtitle{color:var(--muted);max-width:820px;margin:10px auto 18px}
+
+/* Live indicator pill */
+.live-pill{display:inline-block;margin-top:8px;padding:8px 14px;border-radius:999px;background:#fff;color:var(--charcoal);box-shadow:0 8px 30px rgba(17,18,23,0.04);opacity:0;transform:translateY(-6px);transition:opacity .35s ease,transform .35s ease}
+.hero.open .live-pill{opacity:1;transform:none}
+
+/* Countdown */
+.countdown{display:flex;gap:12px;justify-content:center;margin-top:12px;font-family:Inter,monospace}
+.countseg{display:flex;flex-direction:column;align-items:center}
+.countnum{background:#fff;padding:8px 12px;border-radius:8px;border:1px solid rgba(17,18,23,0.06);font-weight:700}
+.countlabel{font-size:12px;color:var(--muted);margin-top:6px}
+
+/* Notify / Merchant card */
+.card{
+  margin:28px auto 36px;
+  background:var(--card); border-radius:12px; padding:20px; max-width:860px;
+  box-shadow:0 10px 30px rgba(17,18,23,0.03); border:1px solid rgba(17,18,23,0.04);
+}
+.card h3{margin:0 0 8px;font-family:"Playfair Display",serif}
+.card p{margin:0 0 10px;color:var(--muted)}
+
+/* Toggle */
+.toggle{display:inline-flex;border-radius:999px;background:transparent;border:1px solid rgba(17,18,23,0.06);overflow:hidden}
+.toggle button{background:transparent;border:none;padding:8px 14px;cursor:pointer;color:var(--muted);font-weight:600}
+.toggle button.active{background:linear-gradient(90deg,#fff,var(--open-overlay));color:var(--charcoal)}
+
+/* Form layout */
+.form-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+.form-col{flex:1;min-width:160px}
+input,select{width:100%;padding:10px 12px;border-radius:8px;border:1px solid rgba(17,18,23,0.06);font-size:14px}
+button.submit{background:var(--charcoal);color:#fff;border:none;padding:11px 16px;border-radius:10px;font-weight:700;cursor:pointer}
+
+/* Disabled merchant fields */
+.merchant-fields{transition:opacity .25s ease}
+.merchant-disabled{opacity:0.5;pointer-events:none}
+
+/* Small helper note */
+.small{font-size:13px;color:var(--muted);margin-top:8px}
+
+/* Footer */
+footer{text-align:center;color:var(--muted);font-size:13px;margin-top:28px}
+
+/* Responsive */
+@media (max-width:720px){
+  .form-row{flex-direction:column}
+}
+</style>
+</head>
+<body>
+  <div class="wrap">
+
+    <!-- ARIA live announcer for state changes -->
+    <div id="aria-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- HERO -->
+    <header id="hero" class="hero" role="banner" aria-labelledby="hero-title">
+      <div class="eyebrow" id="eyebrow">Black Friday Pop-Up</div>
+      <h1 id="hero-title" class="title">Be First in the Lane — PopUp Lane</h1>
+      <p id="hero-sub" class="subtitle">The Lane opens soon — where small brands take the spotlight. Great products. Limited time. No algorithms, no chaos — just creators getting the attention they deserve.</p>
+
+      <!-- Live pill (appears when lane is live) -->
+      <div id="live-pill" class="live-pill" aria-hidden="true">We’re Live!</div>
+
+      <!-- Countdown -->
+      <div class="countdown" role="timer" aria-live="polite" aria-atomic="true">
+        <div class="countseg"><div class="countnum" id="days">00</div><div class="countlabel">Days</div></div>
+        <div class="countseg"><div class="countnum" id="hours">00</div><div class="countlabel">Hrs</div></div>
+        <div class="countseg"><div class="countnum" id="mins">00</div><div class="countlabel">Min</div></div>
+        <div class="countseg"><div class="countnum" id="secs">00</div><div class="countlabel">Sec</div></div>
+      </div>
+    </header>
+
+    <!-- Notify / Merchant Early Access Card -->
+    <section class="card" aria-labelledby="notify-title">
+      <!-- heading & merchant-inclusive copy -->
+      <h3 id="notify-title">Be First in the Lane — Shoppers & Small Brands Welcome</h3>
+      <p>Sign up for early access! Shoppers get first pick of limited-time indie deals, and small brands secure exclusive visibility for the next PopUp Lane.</p>
+      <p style="font-size:13px; color:var(--muted); margin-top:6px;">
+        Merchants: Feature your brand this season — no upfront sales, just exposure.
+      </p>
+
+      <!-- Toggle to choose Shopper vs Brand (single unified form beneath) -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;gap:12px">
+        <div class="toggle" role="tablist" aria-label="Choose role">
+          <button id="toggle-shopper" class="active" role="tab" aria-selected="true" aria-controls="notify-form">I'm a Shopper</button>
+          <button id="toggle-merchant" role="tab" aria-selected="false" aria-controls="notify-form">I'm a Brand</button>
+        </div>
+
+        <!-- Application status badge (hook for manual updates or API later) -->
+        <div id="merchant-status" aria-hidden="false" style="font-weight:700;color:var(--muted)">Applications Open</div>
+      </div>
+
+      <!-- Unified form: sends to a single Lovable backend. Hidden "role" field tags submissions -->
+      <!-- NOTE: change data-lovable-form to your Lovable form slug; redirect can be set in POPUP_CONFIG -->
+      <form id="notify-form" data-lovable-form="notify-list" data-lovable-redirect="/thank-you" aria-label="Notify and Merchant Early Access Form" style="margin-top:14px">
+        <!-- visible fields for shopper (email) and merchant (brand_name, website, category) -->
+        <input type="hidden" name="role" id="role-field" value="shopper"> <!-- updated by JS when toggled -->
+
+        <div class="form-row">
+          <!-- Shopper email (always visible for both flows) -->
+          <div class="form-col" style="flex:1 1 320px">
+            <label class="sr-only" for="email">Email</label>
+            <input id="email" name="email" type="email" placeholder="you@domain.com" aria-label="Email address" required>
+          </div>
+
+          <!-- Merchant-specific inputs: initially hidden/disabled unless user selects "I'm a Brand" -->
+          <div id="merchant-fields" class="form-col merchant-fields merchant-disabled" style="flex:1 1 320px;min-width:220px">
+            <label class="sr-only" for="brand_name">Brand Name</label>
+            <input id="brand_name" name="brand_name" type="text" placeholder="Brand Name (optional)" aria-label="Brand name">
+
+            <div style="height:8px"></div>
+
+            <label class="sr-only" for="website">Website</label>
+            <input id="website" name="website" type="url" placeholder="Website or Instagram URL" aria-label="Website URL">
+
+            <div style="height:8px"></div>
+
+            <label class="sr-only" for="category">Category</label>
+            <select id="category" name="category" aria-label="Category">
+              <option value="">Category (optional)</option>
+              <option>Fashion</option>
+              <option>Home</option>
+              <option>Beauty & Wellness</option>
+              <option>Art & Lifestyle</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <!-- Submit CTA -->
+          <div style="display:flex;align-items:center;gap:8px">
+            <button type="submit" class="submit" id="submit-btn">Join the Lane</button>
+          </div>
+        </div>
+
+        <!-- micro copy -->
+        <div class="small" style="margin-top:12px">
+          We’ll only reach out when the Lane opens — no spam, just the drop.
+        </div>
+      </form>
+    </section>
+
+    <footer>
+      © <span id="year">2025</span> PopUp Lane — The digital lane that opens for moments, and remembers the brands that made them.
+    </footer>
+  </div>
+
+<script>
+/* =========================================================
+   POPUP_CONFIG - single source of truth
+   Edit these values per season (openDate / closeDate / lovable form + redirect)
+   ========================================================= */
+const POPUP_CONFIG = {
+  season: {
+    name: "BLACK FRIDAY ’25",
+    eyebrow: "Black Friday Pop-Up",
+    // IMPORTANT: update these dates for the event (local time). Format: YYYY-MM-DDTHH:MM:SS
+    openDate: "2025-11-21T10:00:00",
+    closeDate: "2025-11-28T23:59:59"
+  },
+  notify: {
+    lovableForm: "notify-list",     // set your Lovable form slug here
+    redirect: "/thank-you"          // post-submission redirect (optional)
+  },
+  merchantSettings: {
+    // If you want to cap submissions client-side for UX, set a static cap here for display.
+    // Production cap management should be server-side (Airtable / Lovable DB).
+    applicationCap: 50
+  }
+};
+
+/* =========================================================
+   Helper functions
+   ========================================================= */
+const $ = (id) => document.getElementById(id);
+const pad = (n)=> String(n).padStart(2,'0');
+
+/* =========================================================
+   Init: wire up UI elements that are static from config
+   ========================================================= */
+(function initUi(){
+  // populate eyebrow and year
+  const eyebrow = document.getElementById('eyebrow');
+  if(eyebrow) eyebrow.textContent = POPUP_CONFIG.season.eyebrow || eyebrow.textContent;
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // set Lovable attributes (keeps config centralized)
+  const form = $('notify-form');
+  if(form && POPUP_CONFIG.notify && POPUP_CONFIG.notify.lovableForm){
+    form.setAttribute('data-lovable-form', POPUP_CONFIG.notify.lovableForm);
+    if(POPUP_CONFIG.notify.redirect) form.setAttribute('data-lovable-redirect', POPUP_CONFIG.notify.redirect);
+  }
+})();
+
+/* =========================================================
+   Toggle logic: Shopper <-> Merchant
+   - progressive disclosure: merchant fields are non-blocking / optional until merchant role selected
+   - hidden "role" field updated before submit
+   ========================================================= */
+(function toggleRole(){
+  const shopBtn = $('toggle-shopper'), merchBtn = $('toggle-merchant');
+  const merchantFields = $('merchant-fields');
+  const roleField = $('role-field');
+
+  function setRole(role){
+    const isMerchant = role === 'merchant';
+    // update active UI on toggle
+    shopBtn.classList.toggle('active', !isMerchant);
+    merchBtn.classList.toggle('active', isMerchant);
+    shopBtn.setAttribute('aria-selected', String(!isMerchant));
+    merchBtn.setAttribute('aria-selected', String(isMerchant));
+
+    // show / hide merchant block visually & set accessibility
+    if(isMerchant){
+      merchantFields.classList.remove('merchant-disabled');
+      // set role value for backend segmentation
+      roleField.value = 'merchant';
+      // focus first merchant input for convenience
+      const bn = $('brand_name'); if(bn) bn.focus();
+    } else {
+      merchantFields.classList.add('merchant-disabled');
+      roleField.value = 'shopper';
+      // focus email for shopper
+      const em = $('email'); if(em) em.focus();
+    }
+  }
+
+  shopBtn.addEventListener('click', ()=> setRole('shopper'));
+  merchBtn.addEventListener('click', ()=> setRole('merchant'));
+
+  // initialize
+  setRole('shopper');
+})();
+
+/* =========================================================
+   Countdown + Hero + Form Sync Logic
+   - Ensures merchant submissions are only allowed BEFORE the lane opens
+   - When lane is live: merchant fields are visually disabled and form submit prevents merchant submissions
+   - Uses POPUP_CONFIG.season.openDate & closeDate
+   ========================================================= */
+(function countdownSync(){
+  const openDate = new Date(POPUP_CONFIG.season.openDate);
+  const closeDate = new Date(POPUP_CONFIG.season.closeDate);
+
+  const daysEl = $('days'), hoursEl = $('hours'), minsEl = $('mins'), secsEl = $('secs');
+  const hero = $('hero'), livePill = $('live-pill'), aria = $('aria-announcer');
+  const form = $('notify-form');
+  const roleField = $('role-field');
+  const merchantFields = $('merchant-fields');
+  const submitBtn = $('submit-btn');
+  const merchantStatus = $('merchant-status');
+
+  function announce(msg){ if(aria) aria.textContent = msg; }
+
+  function update(){
+    const now = new Date();
+    let state, target;
+
+    if(now < openDate){ state='before'; target = openDate; }
+    else if(now >= openDate && now <= closeDate){ state='live'; target = closeDate; }
+    else { state='after'; target = openDate; }
+
+    // update clock to nearest target (open -> close; after -> next open)
+    const diff = Math.max(0, target - now);
+    const days = Math.floor(diff / (1000*60*60*24));
+    const hours = Math.floor((diff / (1000*60*60)) % 24);
+    const mins = Math.floor((diff / (1000*60)) % 60);
+    const secs = Math.floor((diff / 1000) % 60);
+
+    daysEl.textContent = pad(days);
+    hoursEl.textContent = pad(hours);
+    minsEl.textContent = pad(mins);
+    secsEl.textContent = pad(secs);
+
+    // only change UI when state changes
+    if(hero.dataset.state !== state){
+      hero.dataset.state = state;
+      if(state === 'before'){
+        hero.classList.remove('open');
+        livePill.setAttribute('aria-hidden','true');
+        // allow merchant submissions
+        merchantFields.classList.remove('merchant-disabled');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Join the Lane';
+        merchantStatus.textContent = 'Applications Open';
+        announce('PopUp Lane opens soon — merchant applications are open.');
+      } else if(state === 'live'){
+        hero.classList.add('open');
+        livePill.setAttribute('aria-hidden','false');
+        // disable merchant submissions while lane is live
+        merchantFields.classList.add('merchant-disabled');
+        // if the user currently has role=merchant, prevent merchant submissions
+        if(roleField.value === 'merchant'){
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'Applications Closed — Lane Live';
+        } else {
+          // shoppers may still sign up for other events or access
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Walk the Lane';
+        }
+        merchantStatus.textContent = 'Lane is Live';
+        announce('PopUp Lane is live — the lane is open for shoppers.');
+      } else { // after close
+        hero.classList.remove('open');
+        livePill.setAttribute('aria-hidden','true');
+        // keep merchant submissions disabled until next season
+        merchantFields.classList.add('merchant-disabled');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Join the Waitlist';
+        merchantStatus.textContent = 'Applications Closed';
+        announce('The PopUp Lane has closed. Merchant applications are closed until the next season.');
+      }
+    }
+  }
+
+  update();
+  setInterval(update, 1000);
+
+  // Prevent merchant submissions when closed/live: extra safety on submit event
+  form.addEventListener('submit', function(e){
+    const role = roleField.value;
+    const now = new Date();
+    if((now >= openDate && now <= closeDate) && role === 'merchant'){
+      // stop merchant submissions during live window
+      e.preventDefault();
+      alert('Merchant applications are closed while the Lane is live. Please join the waitlist and we will notify you for the next season.');
+      return false;
+    }
+    // otherwise: allow submit (Lovable will handle actual storage)
+    // developer note: back-end should also validate server-side
+  });
+})();
+
+/* =========================================================
+   Accessibility helper: visually hidden class
+   ========================================================= */
+(function addSrOnly(){
+  const css = '.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}';
+  const s = document.createElement('style'); s.innerHTML = css; document.head.appendChild(s);
+})();
+</script>
+</body>
+</html>
