@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 export const SignupForms = () => {
   const [shopperEmail, setShopperEmail] = useState("");
@@ -29,16 +30,35 @@ export const SignupForms = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const handleShopperSubmit = (e: FormEvent) => {
+  const handleShopperSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Welcome to the Lane!",
-      description: "We'll notify you when we open.",
-    });
-    setShopperEmail("");
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('airtable-submit', {
+        body: {
+          type: 'shopper',
+          email: shopperEmail,
+        },
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Welcome to the Lane!",
+        description: "We'll notify you when we open.",
+      });
+      setShopperEmail("");
+    } catch (error) {
+      console.error('Error submitting shopper form:', error);
+      toast({
+        title: "Error",
+        description: "Oops! Something went wrong. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
-  const handleMerchantSubmit = (e: FormEvent) => {
+  const handleMerchantSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     const now = new Date();
@@ -54,20 +74,42 @@ export const SignupForms = () => {
       return;
     }
 
-    if (merchantSpots > 0) {
-      setMerchantSpots((prev) => prev - 1);
+    try {
+      const { data, error } = await supabase.functions.invoke('airtable-submit', {
+        body: {
+          type: 'merchant',
+          email: merchantEmail,
+          brandName,
+          website,
+          socialMedia: social,
+          category,
+        },
+      });
+
+      if (error) throw error;
+
+      if (merchantSpots > 0) {
+        setMerchantSpots((prev) => prev - 1);
+      }
+
+      toast({
+        title: "Application Received!",
+        description: "We'll review your merchant application soon.",
+      });
+
+      setMerchantEmail("");
+      setBrandName("");
+      setWebsite("");
+      setSocial("");
+      setCategory("");
+    } catch (error) {
+      console.error('Error submitting merchant form:', error);
+      toast({
+        title: "Error",
+        description: "Oops! Something went wrong. Please try again.",
+        variant: "destructive",
+      });
     }
-
-    toast({
-      title: "Application Received!",
-      description: "We'll review your merchant application soon.",
-    });
-
-    setMerchantEmail("");
-    setBrandName("");
-    setWebsite("");
-    setSocial("");
-    setCategory("");
   };
 
   return (
