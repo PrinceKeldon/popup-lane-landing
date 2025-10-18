@@ -3,8 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>PopUp Lane — Notify & Merchant Early Access</title>
-<meta name="description" content="Be first in the Lane — shoppers & small brands welcome. Sign up for early access.">
+<title>PopUp Lane — Shopper & Merchant Sign Up</title>
 
 <!-- Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
@@ -17,72 +16,60 @@
   --muted:#6b6f76;
   --wine:#8B1E3F;
   --orange:#FF7A00;
-  --button-shopper:#FF7A00;
-  --button-merchant:#8B1E3F;
 }
 
-/* Base */
+/* Base styles */
 *{box-sizing:border-box}
 body{margin:0;font-family:"Inter",system-ui;line-height:1.45;color:var(--charcoal);background:var(--bg);padding:18px;}
+
+/* Container */
 .wrap{max-width:980px;margin:0 auto;padding:18px}
 
-/* Card */
-.card, .merchant-card{
-  border-radius:16px;
-  padding:28px;
+/* Card styling */
+.card{
+  margin:28px auto 36px;
+  background:var(--card);
+  border-radius:12px;
+  padding:20px;
   max-width:860px;
-  margin:28px auto;
-  box-shadow:0 8px 20px rgba(0,0,0,0.05);
-  border:1px solid rgba(0,0,0,0.04);
+  box-shadow:0 8px 25px rgba(0,0,0,0.05);
+  border:1px solid rgba(17,18,23,0.06);
 }
-.card h3, .merchant-card h4{font-family:"Playfair Display",serif;margin:0 0 8px;}
-.card p{margin:0 0 12px;color:var(--muted);}
+.card h3{margin:0 0 8px;font-family:"Playfair Display",serif}
+.card p{margin:0 0 10px;color:var(--muted)}
+
+/* Merchant Card */
 .merchant-card{
   background:var(--wine);
-  color:#FAFAFA;
-}
-
-/* AI Badge */
-.ai-badge{display:inline-block;font-size:12px;font-weight:600;color:#FAFAFA;background:rgba(255,255,255,0.2);padding:2px 8px;border-radius:6px;margin-left:8px}
-
-/* Form */
-.form-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
-.form-col{flex:1;min-width:160px}
-input,select{
-  width:100%;
-  padding:12px 14px;
+  color:#fff;
   border-radius:12px;
-  border:1px solid rgba(0,0,0,0.1);
-  font-size:14px;
+  padding:24px;
+  margin-top:24px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.08);
 }
-input:focus, select:focus{outline:none;box-shadow:0 6px 15px rgba(0,0,0,0.1);}
+.merchant-card h4{margin-top:0;font-family:"Playfair Display",serif;font-size:20px}
+.ai-badge{display:inline-block;font-size:12px;font-weight:600;color:#fff;background:var(--orange);padding:2px 8px;border-radius:6px;margin-left:8px}
 
+/* Form layout */
+.form-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+.form-col{flex:1;min-width:160px}
+input,select{width:100%;padding:10px 12px;border-radius:8px;border:1px solid rgba(17,18,23,0.06);font-size:14px}
+
+/* Buttons */
 button.submit{
-  border:none;
-  padding:14px 22px;
-  border-radius:14px;
-  font-weight:700;
-  cursor:pointer;
-  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
-  font-size:15px;
-  color:#FAFAFA;
+  border:none;padding:12px 18px;border-radius:10px;font-weight:700;cursor:pointer;
+  transition:all 0.3s ease;
+  background:var(--orange); color:#fff;
+  box-shadow:0 4px 12px rgba(0,0,0,0.08);
 }
 button.submit:hover{
-  transform:translateY(-3px);
-  box-shadow:0 8px 20px rgba(0,0,0,0.12);
+  transform:translateY(-2px);
+  box-shadow:0 6px 20px rgba(0,0,0,0.12);
 }
-button.shop{background:var(--button-shopper);}
-button.merchant{background:#C43D5E;} /* slightly brighter than wine for contrast */
+button.submit.merchant{background:#8B1E3F;}
 
-/* Plush effect on click */
-button.submit:active{transform:translateY(-1px) scale(0.98);}
-
-/* Small text */
-.small{font-size:13px;color:var(--FAFAFA);margin-top:10px}
-
-/* Info counters */
-.info-counter{margin-top:16px;font-size:15px;font-weight:600;color:#FAFAFA}
-.info-counter span{font-weight:700;display:inline-block;min-width:24px;text-align:center;}
+/* Small helper note */
+.small{font-size:13px;color:var(--muted);margin-top:8px}
 
 /* Footer */
 footer{text-align:center;color:var(--muted);font-size:13px;margin-top:28px}
@@ -99,45 +86,42 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin-top:28px}
     <h3 id="notify-title">Be First in the Lane — Shoppers Welcome</h3>
     <p>Sign up to get notified! Shoppers get first pick of indie drops in the upcoming PopUp Lane.</p>
 
-    <form id="notify-form" data-lovable-form="notify-list" data-lovable-redirect="/thank-you" aria-label="Notify Form" style="margin-top:16px">
+    <form id="notify-form" aria-label="Notify Form" style="margin-top:14px">
       <div class="form-row">
         <div class="form-col">
           <label class="sr-only" for="shopper-email">Email</label>
           <input id="shopper-email" name="email" type="email" placeholder="your email" required>
         </div>
-        <div style="display:flex;align-items:center;gap:12px">
-          <button type="submit" class="submit shop">Get Notified</button>
+        <div style="display:flex;align-items:center;gap:8px">
+          <button type="submit" class="submit">Get Notified</button>
         </div>
       </div>
-      <div class="small" style="color:#6b6f76;">We’ll only reach out when the Lane opens — no spam, just the drop.</div>
+      <div class="small">We’ll only reach out when the Lane opens — no spam, just the drop.</div>
     </form>
   </section>
 
   <!-- Merchant Early Access Section -->
   <section class="merchant-card" aria-labelledby="merchant-title">
     <h4 id="merchant-title">Merchant Early Access <span class="ai-badge">AI-Assisted</span></h4>
-    <p>Small brands can apply to feature their products in the upcoming PopUp Lane. Fill in your details and leverage AI suggestions for optimal exposure.</p>
+    <p>Small brands can apply to feature their products. Fill in your details and leverage AI suggestions for optimal exposure.</p>
 
-    <!-- Info counters -->
-    <div class="info-counter">Days Remaining: <span id="days-remaining">--</span></div>
-    <div class="info-counter">Merchant Spots Left: <span id="merchant-spots">50</span></div>
+    <div id="merchant-spots" style="font-weight:600;margin-bottom:12px">Spots Remaining: 50</div>
 
-    <form id="merchant-form" data-lovable-form="notify-list" data-lovable-redirect="/thank-you" aria-label="Merchant Early Access Form" style="margin-top:16px">
+    <form id="merchant-form" aria-label="Merchant Early Access Form">
       <input type="hidden" name="role" value="merchant">
       <div class="form-row">
         <div class="form-col">
           <label class="sr-only" for="merchant-email">Email</label>
           <input id="merchant-email" name="email" type="email" placeholder="your email" required>
-        </div>
-        <div class="form-col">
+          <div style="height:8px"></div>
           <label class="sr-only" for="brand_name">Brand Name</label>
           <input id="brand_name" name="brand_name" type="text" placeholder="Brand Name (optional)">
           <div style="height:8px"></div>
-          <label class="sr-only" for="website">Website</label>
+          <label class="sr-only" for="website">Website URL</label>
           <input id="website" name="website" type="url" placeholder="Website URL">
           <div style="height:8px"></div>
-          <label class="sr-only" for="social">Social Media</label>
-          <input id="social" name="social" type="text" placeholder="Social Media Handle / Link">
+          <label class="sr-only" for="social">Social Media Handle or Link</label>
+          <input id="social" name="social" type="text" placeholder="Instagram, TikTok, etc.">
           <div style="height:8px"></div>
           <label class="sr-only" for="category">Category</label>
           <select id="category" name="category">
@@ -149,7 +133,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin-top:28px}
             <option>Other</option>
           </select>
         </div>
-        <div style="display:flex;align-items:center;gap:12px">
+        <div style="display:flex;align-items:center;gap:8px">
           <button type="submit" class="submit merchant">Apply as Merchant</button>
         </div>
       </div>
@@ -157,48 +141,72 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin-top:28px}
     </form>
   </section>
 
-  <footer>
-    © <span id="year">2025</span> PopUp Lane
-  </footer>
+  <footer>© <span id="year">2025</span> PopUp Lane</footer>
 </div>
 
 <script>
-// Countdown & Merchant spots logic
-const endDate = new Date("2025-11-21T10:00:00");
-let merchantSpots = 50;
+// Airtable config
+const AIRTABLE_TOKEN = "patadCwohZg3BvNsN.b216f1ceded8b8b753ae047dd0ae591c3a82d426a9c5596b298453181033dc29";
+const AIRTABLE_BASE_ID = "app25rRyBeipA50Rt";
+const SHOPPER_TABLE = "Shoppers";
+const MERCHANT_TABLE = "Merchants";
+let merchantSpots = 50; // initial spots, update dynamically if needed
 
-function animateCounter(el, newVal){
-  const current = parseInt(el.textContent)||0;
-  if(current === newVal) return;
-  const step = (newVal>current)?1:-1;
-  const interval = setInterval(()=>{
-    const val = parseInt(el.textContent)||0;
-    if(val === newVal){ clearInterval(interval); return; }
-    el.textContent = val+step;
-  },40);
+async function postToAirtable(table, data){
+  const resp = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${table}`, {
+    method:'POST',
+    headers:{
+      'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+      'Content-Type':'application/json'
+    },
+    body: JSON.stringify({fields: data})
+  });
+  return resp.json();
 }
 
-function updateCounters(){
-  const now = new Date();
-  let diffDays = Math.ceil((endDate - now)/(1000*60*60*24));
-  if(diffDays < 0) diffDays = 0;
-  animateCounter(document.getElementById('days-remaining'), diffDays);
-  animateCounter(document.getElementById('merchant-spots'), merchantSpots);
-}
-updateCounters();
-setInterval(updateCounters,1000);
-
-// Merchant submit safety + decrement spots
-document.getElementById('merchant-form').addEventListener('submit',function(e){
-  const now = new Date();
-  const openDate = new Date("2025-11-21T10:00:00");
-  const closeDate = new Date("2025-11-28T23:59:59");
-  if((now >= openDate && now <= closeDate)){
-    e.preventDefault();
-    alert('Merchant applications are closed while the Lane is live. Please join the waitlist.');
-    return false;
+// Shopper form submission
+document.getElementById('notify-form').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const email = document.getElementById('shopper-email').value;
+  try {
+    await postToAirtable(SHOPPER_TABLE, {Email: email});
+    alert('Thanks! You are now on the notification list.');
+    this.reset();
+  } catch(err){
+    console.error(err);
+    alert('Oops! Something went wrong.');
   }
-  if(merchantSpots>0) merchantSpots--;
+});
+
+// Merchant form submission
+document.getElementById('merchant-form').addEventListener('submit', async function(e){
+  e.preventDefault();
+  if(merchantSpots <= 0){
+    alert('Merchant applications are full. Please join the waitlist.');
+    return;
+  }
+  const email = document.getElementById('merchant-email').value;
+  const brand = document.getElementById('brand_name').value;
+  const website = document.getElementById('website').value;
+  const social = document.getElementById('social').value;
+  const category = document.getElementById('category').value;
+
+  try {
+    await postToAirtable(MERCHANT_TABLE, {
+      Email: email,
+      BrandName: brand,
+      Website: website,
+      SocialMedia: social,
+      Category: category
+    });
+    merchantSpots--;
+    document.getElementById('merchant-spots').textContent = `Spots Remaining: ${merchantSpots}`;
+    alert('Thank you! Your merchant application is submitted.');
+    this.reset();
+  } catch(err){
+    console.error(err);
+    alert('Oops! Something went wrong.');
+  }
 });
 
 // Accessibility helper
