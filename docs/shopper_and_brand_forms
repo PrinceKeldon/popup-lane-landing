@@ -3,129 +3,156 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>PopUp Lane — Shopper & Merchant Sign Up</title>
+<title>PopUp Lane — Sign Up</title>
 
-<!-- Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
 
 <style>
-:root{
-  --bg:#FAFAFA;
-  --card:#FFFFFF;
-  --charcoal:#111111;
-  --muted:#6b6f76;
-  --wine:#8B1E3F;
-  --orange:#FF7A00;
+:root {
+  --wine: #7b2b2b;
+  --wine-light: #fbeaea;
+  --text: #1a1a1a;
+  --muted: #6b6f76;
+  --card: #fff;
+  --shadow: rgba(0,0,0,0.04);
 }
 
-/* Base styles */
-*{box-sizing:border-box}
-body{margin:0;font-family:"Inter",system-ui;line-height:1.45;color:var(--charcoal);background:var(--bg);padding:18px;}
+* { box-sizing: border-box; }
 
-/* Container */
-.wrap{max-width:980px;margin:0 auto;padding:18px}
-
-/* Card styling */
-.card{
-  margin:28px auto 36px;
-  background:var(--card);
-  border-radius:12px;
-  padding:20px;
-  max-width:860px;
-  box-shadow:0 8px 25px rgba(0,0,0,0.05);
-  border:1px solid rgba(17,18,23,0.06);
+body {
+  font-family: 'Inter', sans-serif;
+  background: #fafafa;
+  color: var(--text);
+  margin: 0;
+  padding: 24px;
 }
-.card h3{margin:0 0 8px;font-family:"Playfair Display",serif}
-.card p{margin:0 0 10px;color:var(--muted)}
 
-/* Merchant Card */
-.merchant-card{
-  background:var(--wine);
-  color:#fff;
-  border-radius:12px;
-  padding:24px;
-  margin-top:24px;
-  box-shadow:0 8px 20px rgba(0,0,0,0.08);
+.container {
+  max-width: 900px;
+  margin: 0 auto;
 }
-.merchant-card h4{margin-top:0;font-family:"Playfair Display",serif;font-size:20px}
-.ai-badge{display:inline-block;font-size:12px;font-weight:600;color:#fff;background:var(--orange);padding:2px 8px;border-radius:6px;margin-left:8px}
 
-/* Form layout */
-.form-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
-.form-col{flex:1;min-width:160px}
-input,select{width:100%;padding:10px 12px;border-radius:8px;border:1px solid rgba(17,18,23,0.06);font-size:14px}
-
-/* Buttons */
-button.submit{
-  border:none;padding:12px 18px;border-radius:10px;font-weight:700;cursor:pointer;
-  transition:all 0.3s ease;
-  background:var(--orange); color:#fff;
-  box-shadow:0 4px 12px rgba(0,0,0,0.08);
+.card {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: 0 10px 25px var(--shadow);
+  margin-bottom: 30px;
 }
-button.submit:hover{
-  transform:translateY(-2px);
-  box-shadow:0 6px 20px rgba(0,0,0,0.12);
+
+h2, h3 {
+  font-family: 'Playfair Display', serif;
+  margin-top: 0;
 }
-button.submit.merchant{background:#8B1E3F;}
 
-/* Small helper note */
-.small{font-size:13px;color:var(--muted);margin-top:8px}
+p {
+  color: var(--muted);
+}
 
-/* Footer */
-footer{text-align:center;color:var(--muted);font-size:13px;margin-top:28px}
+input, select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 15px;
+}
 
-/* Responsive */
-@media (max-width:720px){.form-row{flex-direction:column}}
+button {
+  background: var(--wine);
+  color: #fff;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 3px 10px rgba(123,43,43,0.2);
+}
+
+button:hover {
+  background: #922d2d;
+  box-shadow: 0 6px 18px rgba(123,43,43,0.3);
+  transform: translateY(-2px);
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.form-col {
+  flex: 1;
+  min-width: 200px;
+}
+
+.small {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 8px;
+}
+
+.merchant-section {
+  background: var(--wine-light);
+  border-left: 5px solid var(--wine);
+  padding: 24px;
+  border-radius: 14px;
+}
+
+.counter {
+  margin-top: 8px;
+  font-size: 14px;
+  color: var(--wine);
+  font-weight: 600;
+}
+
+footer {
+  text-align: center;
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 32px;
+}
+
+@media (max-width: 720px) {
+  .form-row { flex-direction: column; }
+}
 </style>
 </head>
+
 <body>
-<div class="wrap">
+<div class="container">
 
-  <!-- Shopper Notify Section -->
-  <section class="card" aria-labelledby="notify-title">
-    <h3 id="notify-title">Be First in the Lane — Shoppers Welcome</h3>
-    <p>Sign up to get notified! Shoppers get first pick of indie drops in the upcoming PopUp Lane.</p>
-
-    <form id="notify-form" aria-label="Notify Form" style="margin-top:14px">
+  <section class="card" id="shoppers">
+    <h2>Be First in the Lane</h2>
+    <p>Get notified when PopUp Lane opens — discover indie brands and special drops before the crowd.</p>
+    <form id="shopperForm">
       <div class="form-row">
         <div class="form-col">
-          <label class="sr-only" for="shopper-email">Email</label>
-          <input id="shopper-email" name="email" type="email" placeholder="your email" required>
+          <input type="email" name="email" placeholder="your email" required />
         </div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <button type="submit" class="submit">Get Notified</button>
+        <div>
+          <button type="submit">Get Notified</button>
         </div>
       </div>
-      <div class="small">We’ll only reach out when the Lane opens — no spam, just the drop.</div>
+      <div class="small">We’ll only email when something truly good drops — no spam.</div>
     </form>
   </section>
 
-  <!-- Merchant Early Access Section -->
-  <section class="merchant-card" aria-labelledby="merchant-title">
-    <h4 id="merchant-title">Merchant Early Access <span class="ai-badge">AI-Assisted</span></h4>
-    <p>Small brands can apply to feature their products. Fill in your details and leverage AI suggestions for optimal exposure.</p>
-
-    <div id="merchant-spots" style="font-weight:600;margin-bottom:12px">Spots Remaining: 50</div>
-
-    <form id="merchant-form" aria-label="Merchant Early Access Form">
-      <input type="hidden" name="role" value="merchant">
+  <section class="card merchant-section" id="merchants">
+    <h3>Merchant Early Access <span style="font-size:12px;background:var(--wine);color:#fff;padding:3px 6px;border-radius:4px;">AI-Assisted</span></h3>
+    <p>Feature your store in the next PopUp Lane. Limited early access spots available.</p>
+    <form id="merchantForm">
       <div class="form-row">
         <div class="form-col">
-          <label class="sr-only" for="merchant-email">Email</label>
-          <input id="merchant-email" name="email" type="email" placeholder="your email" required>
-          <div style="height:8px"></div>
-          <label class="sr-only" for="brand_name">Brand Name</label>
-          <input id="brand_name" name="brand_name" type="text" placeholder="Brand Name (optional)">
-          <div style="height:8px"></div>
-          <label class="sr-only" for="website">Website URL</label>
-          <input id="website" name="website" type="url" placeholder="Website URL">
-          <div style="height:8px"></div>
-          <label class="sr-only" for="social">Social Media Handle or Link</label>
-          <input id="social" name="social" type="text" placeholder="Instagram, TikTok, etc.">
-          <div style="height:8px"></div>
-          <label class="sr-only" for="category">Category</label>
-          <select id="category" name="category">
-            <option value="">Category (optional)</option>
+          <input type="email" name="email" placeholder="your email" required />
+        </div>
+        <div class="form-col">
+          <input type="text" name="brand_name" placeholder="brand name (optional)" />
+          <input type="url" name="website" placeholder="website url" style="margin-top:8px" />
+          <input type="text" name="social" placeholder="social media handle or link" style="margin-top:8px" />
+          <select name="category" style="margin-top:8px">
+            <option value="">select category (optional)</option>
             <option>Fashion</option>
             <option>Home</option>
             <option>Beauty & Wellness</option>
@@ -133,87 +160,77 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin-top:28px}
             <option>Other</option>
           </select>
         </div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <button type="submit" class="submit merchant">Apply as Merchant</button>
+        <div>
+          <button type="submit">Apply as Merchant</button>
         </div>
       </div>
-      <div class="small">Merchant applications may be capped — early submissions get priority.</div>
+      <div class="counter">Remaining spots: <span id="merchantCounter">...</span></div>
     </form>
   </section>
 
-  <footer>© <span id="year">2025</span> PopUp Lane</footer>
+  <footer>
+    © <span id="year"></span> PopUp Lane
+  </footer>
+
 </div>
 
 <script>
-// Airtable config
-const AIRTABLE_TOKEN = "patadCwohZg3BvNsN.b216f1ceded8b8b753ae047dd0ae591c3a82d426a9c5596b298453181033dc29";
-const AIRTABLE_BASE_ID = "app25rRyBeipA50Rt";
-const SHOPPER_TABLE = "Shoppers";
-const MERCHANT_TABLE = "Merchants";
-let merchantSpots = 50; // initial spots, update dynamically if needed
+const AIRTABLE_API = "YOUR_API_TOKEN";
+const BASE_ID = "YOUR_BASE_ID";
+const MERCHANTS_TABLE = "Merchants";
+const SHOPPERS_TABLE = "Shoppers";
 
-async function postToAirtable(table, data){
-  const resp = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${table}`, {
-    method:'POST',
-    headers:{
-      'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
-      'Content-Type':'application/json'
+document.getElementById("year").textContent = new Date().getFullYear();
+
+async function postToAirtable(table, data) {
+  const response = await fetch(`https://api.airtable.com/v0/${BASE_ID}/${table}`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${AIRTABLE_API}`,
+      "Content-Type": "application/json"
     },
-    body: JSON.stringify({fields: data})
+    body: JSON.stringify({ fields: data })
   });
-  return resp.json();
+  return response.ok;
 }
 
-// Shopper form submission
-document.getElementById('notify-form').addEventListener('submit', async function(e){
+document.getElementById("shopperForm").addEventListener("submit", async (e) => {
   e.preventDefault();
-  const email = document.getElementById('shopper-email').value;
-  try {
-    await postToAirtable(SHOPPER_TABLE, {Email: email});
-    alert('Thanks! You are now on the notification list.');
-    this.reset();
-  } catch(err){
-    console.error(err);
-    alert('Oops! Something went wrong.');
-  }
+  const email = e.target.email.value.trim();
+  const ok = await postToAirtable(SHOPPERS_TABLE, { "Email Address": email, "Opt-in Confirmation": true });
+  alert(ok ? "Thanks for joining the Lane!" : "Something went wrong — please try again.");
+  e.target.reset();
 });
 
-// Merchant form submission
-document.getElementById('merchant-form').addEventListener('submit', async function(e){
+document.getElementById("merchantForm").addEventListener("submit", async (e) => {
   e.preventDefault();
-  if(merchantSpots <= 0){
-    alert('Merchant applications are full. Please join the waitlist.');
-    return;
-  }
-  const email = document.getElementById('merchant-email').value;
-  const brand = document.getElementById('brand_name').value;
-  const website = document.getElementById('website').value;
-  const social = document.getElementById('social').value;
-  const category = document.getElementById('category').value;
-
-  try {
-    await postToAirtable(MERCHANT_TABLE, {
-      Email: email,
-      BrandName: brand,
-      Website: website,
-      SocialMedia: social,
-      Category: category
-    });
-    merchantSpots--;
-    document.getElementById('merchant-spots').textContent = `Spots Remaining: ${merchantSpots}`;
-    alert('Thank you! Your merchant application is submitted.');
-    this.reset();
-  } catch(err){
-    console.error(err);
-    alert('Oops! Something went wrong.');
-  }
+  const formData = Object.fromEntries(new FormData(e.target).entries());
+  const ok = await postToAirtable(MERCHANTS_TABLE, {
+    "Email Address": formData.email,
+    "Brand Name": formData.brand_name || "",
+    "Website": formData.website || "",
+    "Social Media": formData.social || "",
+    "Category": formData.category || "",
+    "Status": "Pending"
+  });
+  alert(ok ? "Application received! We’ll be in touch soon." : "Submission failed — please try again.");
+  e.target.reset();
+  updateMerchantCount();
 });
 
-// Accessibility helper
-(function addSrOnly(){
-  const css='.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}';
-  const s=document.createElement('style');s.innerHTML=css;document.head.appendChild(s);
-})();
+async function updateMerchantCount() {
+  const res = await fetch(`https://api.airtable.com/v0/${BASE_ID}/${MERCHANTS_TABLE}?pageSize=100`, {
+    headers: { Authorization: `Bearer ${AIRTABLE_API}` }
+  });
+  const data = await res.json();
+  const total = data.records.length;
+  const limit = 50; // Adjust number of total merchant spots
+  const remaining = Math.max(limit - total, 0);
+  document.getElementById("merchantCounter").textContent = `${remaining} of ${limit}`;
+}
+
+updateMerchantCount();
 </script>
 </body>
 </html>
+
