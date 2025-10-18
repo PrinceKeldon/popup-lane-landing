@@ -27,7 +27,8 @@ async function postToAirtable(table: string, data: Record<string, any>) {
 
   if (!response.ok) {
     const error = await response.text();
-    console.error(`Airtable API error: ${error}`);
+    console.error(`Airtable API error for ${table}:`, error);
+    console.error(`Attempted to post fields:`, JSON.stringify(data, null, 2));
     throw new Error(`Airtable API error: ${response.status}`);
   }
 
@@ -60,13 +61,14 @@ serve(async (req) => {
         }
       );
     } else if (type === 'merchant') {
+      // Match exact field names from Airtable Merchants table
       await postToAirtable(MERCHANT_TABLE, {
-        "Email": email,
-        "Brand Name": brandName || '',
-        "Website": website || '',
-        "Social Media": socialMedia || '',
-        "Category": category || '',
-        "Status": "Pending"
+        "email": email,
+        "brand_name": brandName || '',
+        "website": website || '',
+        "social": socialMedia || '',
+        "category": category || '',
+        "status": "Pending"
       });
       return new Response(
         JSON.stringify({ success: true, message: 'Merchant application submitted successfully' }),
