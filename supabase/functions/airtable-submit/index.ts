@@ -48,7 +48,10 @@ serve(async (req) => {
     console.log(`Processing ${type} submission for email: ${email}`);
 
     if (type === 'shopper') {
-      await postToAirtable(SHOPPER_TABLE, { Email: email });
+      await postToAirtable(SHOPPER_TABLE, { 
+        "Email Address": email,
+        "Opt-in Confirmation": true
+      });
       return new Response(
         JSON.stringify({ success: true, message: 'Shopper registered successfully' }),
         { 
@@ -58,11 +61,12 @@ serve(async (req) => {
       );
     } else if (type === 'merchant') {
       await postToAirtable(MERCHANT_TABLE, {
-        Email: email,
-        BrandName: brandName || '',
-        Website: website || '',
-        SocialMedia: socialMedia || '',
-        Category: category || '',
+        "Email Address": email,
+        "Brand Name": brandName || '',
+        "Website": website || '',
+        "Social Media": socialMedia || '',
+        "Category": category || '',
+        "Status": "Pending"
       });
       return new Response(
         JSON.stringify({ success: true, message: 'Merchant application submitted successfully' }),
