@@ -63,12 +63,12 @@ serve(async (req) => {
     } else if (type === 'merchant') {
       // Match exact field names from Airtable Merchants table
       await postToAirtable(MERCHANT_TABLE, {
-        "email": email,
-        "brand_name": brandName || '',
-        "website": website || '',
-        "social": socialMedia || '',
-        "category": category || '',
-        "status": "Pending"
+        "Email": email,
+        "Brand Name": brandName || '',
+        "Website URL": website || '',
+        "Social Media Handle / Link": socialMedia || '',
+        "Category": category || '',
+        "Application Status": "Pending"
       });
       return new Response(
         JSON.stringify({ success: true, message: 'Merchant application submitted successfully' }),
