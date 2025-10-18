@@ -61,7 +61,7 @@ serve(async (req) => {
       );
     } else if (type === 'merchant') {
       await postToAirtable(MERCHANT_TABLE, {
-        "Email Address": email,
+        "Email": email,
         "Brand Name": brandName || '',
         "Website": website || '',
         "Social Media": socialMedia || '',
