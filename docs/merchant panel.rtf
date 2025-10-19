@@ -1,0 +1,213 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 <!DOCTYPE html>\
+<html lang="en">\
+<head>\
+<meta charset="utf-8" />\
+<meta name="viewport" content="width=device-width,initial-scale=1" />\
+<title>PopUp Lane \'97 Merchant Lane Builder</title>\
+\
+<!-- Fonts -->\
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">\
+\
+<style>\
+:root\{\
+  --bg:#FAFAFA;\
+  --card:#FFFFFF;\
+  --charcoal:#111111;\
+  --muted:#6b6f76;\
+  --accent:#7B1F3A; /* wine red */\
+  --hover:#FF7A00; /* orange hover */\
+  --overlay: rgba(123,31,58,0.06);\
+\}\
+\
+/* Base styles */\
+*\{box-sizing:border-box\}\
+body\{\
+  margin:0;font-family:"Inter",system-ui;line-height:1.45;color:var(--charcoal);background:var(--bg);padding:18px;\
+\}\
+\
+/* Container */\
+.wrap\{max-width:980px;margin:0 auto;padding:18px\}\
+\
+/* Card styling */\
+.card\{\
+  margin:24px auto;\
+  background:var(--card);\
+  border-radius:12px;\
+  padding:24px;\
+  max-width:860px;\
+  box-shadow:0 10px 30px rgba(17,18,23,0.03);\
+  border:1px solid rgba(17,18,23,0.04);\
+\}\
+.card h3, .card h4\{margin:0 0 12px;font-family:"Playfair Display",serif; color:var(--accent);\}\
+\
+/* Plush button */\
+button\{\
+  background:var(--accent);\
+  color:#fff;\
+  border:none;\
+  padding:12px 18px;\
+  border-radius:10px;\
+  font-weight:700;\
+  cursor:pointer;\
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;\
+\}\
+button:hover\{\
+  transform: translateY(-3px);\
+  box-shadow:0 8px 20px rgba(0,0,0,0.15);\
+  background:var(--hover);\
+\}\
+\
+/* Form layout */\
+.form-row\{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px\}\
+.form-col\{flex:1;min-width:160px\}\
+input,select,textarea\{width:100%;padding:10px 12px;border-radius:8px;border:1px solid rgba(17,18,23,0.06);font-size:14px\}\
+textarea\{resize:vertical\}\
+\
+/* Product preview */\
+.product-list\{margin-top:18px\}\
+.product-card\{\
+  background:var(--overlay);\
+  padding:12px 16px;\
+  border-radius:10px;\
+  margin-bottom:12px;\
+  display:flex;\
+  justify-content:space-between;\
+  align-items:center;\
+\}\
+.product-card span\{font-weight:600\}\
+.remove-btn\{background:#FF4D4D;color:#fff;padding:6px 12px;border-radius:8px;cursor:pointer;transition:0.2s\}\
+.remove-btn:hover\{transform:translateY(-2px); box-shadow:0 6px 15px rgba(0,0,0,0.12)\}\
+\
+/* Countdown & spots */\
+.status-bar\{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding:12px;background:#fff;border-radius:10px;box-shadow:0 6px 15px rgba(17,18,23,0.03);font-weight:600\}\
+\
+/* Small helper note */\
+.small\{font-size:13px;color:var(--muted);margin-top:8px\}\
+\
+/* Footer */\
+footer\{text-align:center;color:var(--muted);font-size:13px;margin-top:28px\}\
+\
+/* Responsive */\
+@media (max-width:720px)\{\
+  .form-row\{flex-direction:column\}\
+\}\
+</style>\
+</head>\
+<body>\
+<div class="wrap">\
+\
+  <section class="card" aria-labelledby="merchant-title">\
+    <h3 id="merchant-title">Build Your Lane \'97 Merchant Access</h3>\
+    <p>Welcome, <span id="merchant-email-placeholder">merchant@example.com</span>! Use this space to populate your PopUp Lane items ahead of early shoppers.</p>\
+\
+    <div class="status-bar">\
+      <div>Lane opens in <span id="days-remaining">00</span> days</div>\
+      <div>Spots remaining: <span id="spots-remaining">10</span></div>\
+    </div>\
+\
+    <!-- Product Form -->\
+    <form id="product-form" style="margin-top:18px">\
+      <div class="form-row">\
+        <div class="form-col">\
+          <label class="sr-only" for="product-name">Product Name</label>\
+          <input id="product-name" name="product_name" type="text" placeholder="Product Name" required>\
+        </div>\
+        <div class="form-col">\
+          <label class="sr-only" for="product-desc">Product Description</label>\
+          <textarea id="product-desc" name="product_desc" placeholder="Short description" required></textarea>\
+        </div>\
+      </div>\
+      <div class="form-row">\
+        <div class="form-col">\
+          <label class="sr-only" for="product-price">Price</label>\
+          <input id="product-price" name="product_price" type="text" placeholder="Price (e.g., 29.99)">\
+        </div>\
+        <div class="form-col">\
+          <label class="sr-only" for="product-website">Website URL</label>\
+          <input id="product-website" name="product_website" type="url" placeholder="Website URL">\
+        </div>\
+        <div class="form-col">\
+          <label class="sr-only" for="product-social">Social Media</label>\
+          <input id="product-social" name="product_social" type="text" placeholder="Instagram / Social Handle">\
+        </div>\
+      </div>\
+      <button type="submit">Add Product</button>\
+      <div class="small">You can add multiple products before submitting for early lane approval.</div>\
+    </form>\
+\
+    <!-- Product Preview -->\
+    <div class="product-list" id="product-list"></div>\
+\
+  </section>\
+\
+  <footer>\
+    \'a9 <span id="year">2025</span> PopUp Lane\
+  </footer>\
+</div>\
+\
+<script>\
+const DAYS_TO_OPEN = new Date("2025-11-17T00:00:00");\
+const spotsEl = document.getElementById('spots-remaining');\
+let spotsRemaining = 10; // placeholder for live counter\
+\
+// Countdown calculation\
+function updateCountdown()\{\
+  const now = new Date();\
+  const diff = Math.max(0,DAYS_TO_OPEN - now);\
+  const days = Math.floor(diff / (1000*60*60*24));\
+  document.getElementById('days-remaining').textContent = days;\
+\}\
+updateCountdown();\
+setInterval(updateCountdown, 1000*60*60); // update every hour\
+\
+// Product form logic\
+const productForm = document.getElementById('product-form');\
+const productList = document.getElementById('product-list');\
+\
+productForm.addEventListener('submit', function(e)\{\
+  e.preventDefault();\
+  const name = document.getElementById('product-name').value;\
+  const desc = document.getElementById('product-desc').value;\
+  const price = document.getElementById('product-price').value;\
+  const website = document.getElementById('product-website').value;\
+  const social = document.getElementById('product-social').value;\
+\
+  if(!name || !desc) return;\
+\
+  const card = document.createElement('div');\
+  card.className = 'product-card';\
+  card.innerHTML = `<div>\
+                      <span>$\{name\}</span> - $\{desc\} $\{price ? '($'+price+')' : ''\}<br>\
+                      $\{website ? 'Website: '+website+' | ' : ''\}$\{social ? 'Social: '+social : ''\}\
+                    </div>\
+                    <div class="remove-btn">Remove</div>`;\
+  productList.appendChild(card);\
+\
+  // Remove button\
+  card.querySelector('.remove-btn').addEventListener('click', function()\{\
+    productList.removeChild(card);\
+    spotsRemaining++;\
+    spotsEl.textContent = spotsRemaining;\
+  \});\
+\
+  // Clear form\
+  productForm.reset();\
+\
+  // Decrement spots\
+  spotsRemaining = Math.max(0, spotsRemaining-1);\
+  spotsEl.textContent = spotsRemaining;\
+\});\
+\
+// Set current year\
+document.getElementById('year').textContent = new Date().getFullYear();\
+</script>\
+</body>\
+</html>\
+}
