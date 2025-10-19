@@ -61,8 +61,8 @@ serve(async (req) => {
         }
       );
     } else if (type === 'merchant') {
-      // Match exact field names from Airtable Merchants table
-      await postToAirtable(MERCHANT_TABLE, {
+      // Post to Airtable
+      const airtableResult = await postToAirtable(MERCHANT_TABLE, {
         "Email": email,
         "Brand Name": brandName || '',
         "Website URL": website || '',
@@ -70,8 +70,64 @@ serve(async (req) => {
         "Category": category || '',
         "Application Status": "Pending"
       });
+
+      // Create merchant record in Supabase
+      const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+      const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+
+      const merchantResponse = await fetch(`${supabaseUrl}/rest/v1/merchants`, {
+        method: 'POST',
+        headers: {
+          'apikey': supabaseKey,
+          'Authorization': `Bearer ${supabaseKey}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=representation'
+        },
+        body: JSON.stringify({
+          email: email,
+          brand_name: brandName || '',
+          website_url: website || '',
+          social_media: socialMedia || '',
+          category: category || '',
+          application_status: 'Pending',
+          airtable_record_id: airtableResult.id
+        })
+      });
+
+      if (!merchantResponse.ok) {
+        const error = await merchantResponse.text();
+        console.error('Supabase merchant creation error:', error);
+      }
+
+      // Get total merchant count for spots remaining
+      const countResponse = await fetch(`${supabaseUrl}/rest/v1/merchants?select=count`, {
+        headers: {
+          'apikey': supabaseKey,
+          'Authorization': `Bearer ${supabaseKey}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'count=exact'
+        }
+      });
+
+      let spotsRemaining = 50; // Default
+      if (countResponse.ok) {
+        const countHeader = countResponse.headers.get('content-range');
+        if (countHeader) {
+          const total = parseInt(countHeader.split('/')[1]);
+          spotsRemaining = Math.max(0, 50 - total);
+        }
+      }
+
       return new Response(
-        JSON.stringify({ success: true, message: 'Merchant application submitted successfully' }),
+        JSON.stringify({ 
+          success: true, 
+          message: 'Merchant application submitted successfully',
+          merchantData: {
+            email,
+            brandName: brandName || '',
+            spotsRemaining
+          }
+        }),
         { 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           status: 200,

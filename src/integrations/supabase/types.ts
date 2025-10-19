@@ -14,7 +14,98 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      merchant_products: {
+        Row: {
+          created_at: string
+          display_order: number
+          id: string
+          merchant_id: string
+          price: number | null
+          product_description: string
+          product_name: string
+          social_media: string | null
+          updated_at: string
+          website_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          merchant_id: string
+          price?: number | null
+          product_description: string
+          product_name: string
+          social_media?: string | null
+          updated_at?: string
+          website_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          merchant_id?: string
+          price?: number | null
+          product_description?: string
+          product_name?: string
+          social_media?: string | null
+          updated_at?: string
+          website_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "merchant_products_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      merchants: {
+        Row: {
+          airtable_record_id: string | null
+          application_status: string
+          brand_name: string
+          category: string | null
+          created_at: string
+          email: string
+          id: string
+          social_media: string | null
+          spots_claimed: number
+          updated_at: string
+          user_id: string | null
+          website_url: string | null
+        }
+        Insert: {
+          airtable_record_id?: string | null
+          application_status?: string
+          brand_name: string
+          category?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          social_media?: string | null
+          spots_claimed?: number
+          updated_at?: string
+          user_id?: string | null
+          website_url?: string | null
+        }
+        Update: {
+          airtable_record_id?: string | null
+          application_status?: string
+          brand_name?: string
+          category?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          social_media?: string | null
+          spots_claimed?: number
+          updated_at?: string
+          user_id?: string | null
+          website_url?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

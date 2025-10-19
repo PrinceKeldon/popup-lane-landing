@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { MerchantConfirmationModal } from "./MerchantConfirmationModal";
 
 export const SignupForms = () => {
   const [shopperEmail, setShopperEmail] = useState("");
@@ -14,6 +15,12 @@ export const SignupForms = () => {
   const [category, setCategory] = useState("");
   const [daysRemaining, setDaysRemaining] = useState(0);
   const [merchantSpots, setMerchantSpots] = useState(50);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [confirmationData, setConfirmationData] = useState<{
+    email: string;
+    brandName: string;
+    spotsRemaining: number;
+  } | null>(null);
 
   useEffect(() => {
     const endDate = new Date("2025-11-21T10:00:00");
@@ -88,20 +95,28 @@ export const SignupForms = () => {
 
       if (error) throw error;
 
-      if (merchantSpots > 0) {
-        setMerchantSpots((prev) => prev - 1);
+      if (data?.success && data?.merchantData) {
+        toast({
+          title: "Application Received!",
+          description: "We'll review your merchant application soon.",
+        });
+
+        // Show confirmation modal
+        setConfirmationData(data.merchantData);
+        setShowConfirmationModal(true);
+
+        // Clear form
+        setMerchantEmail("");
+        setBrandName("");
+        setWebsite("");
+        setSocial("");
+        setCategory("");
+
+        // Update spots from server response
+        if (data.merchantData.spotsRemaining !== undefined) {
+          setMerchantSpots(data.merchantData.spotsRemaining);
+        }
       }
-
-      toast({
-        title: "Application Received!",
-        description: "We'll review your merchant application soon.",
-      });
-
-      setMerchantEmail("");
-      setBrandName("");
-      setWebsite("");
-      setSocial("");
-      setCategory("");
     } catch (error) {
       console.error('Error submitting merchant form:', error);
       toast({
@@ -113,7 +128,16 @@ export const SignupForms = () => {
   };
 
   return (
-    <section className="py-16 px-4 max-w-[980px] mx-auto">
+    <>
+      {confirmationData && (
+        <MerchantConfirmationModal
+          isOpen={showConfirmationModal}
+          onClose={() => setShowConfirmationModal(false)}
+          merchantData={confirmationData}
+        />
+      )}
+      
+      <section className="py-16 px-4 max-w-[980px] mx-auto">
       {/* Shopper Notify Section */}
       <div
         className="rounded-2xl p-7 mb-7 shadow-[0_8px_20px_rgba(0,0,0,0.05)] border border-border bg-card"
@@ -263,5 +287,6 @@ export const SignupForms = () => {
         </form>
       </div>
     </section>
+    </>
   );
 };
