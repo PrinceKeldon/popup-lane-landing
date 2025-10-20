@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>PopUp Lane — Admin</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#faf7f6;
+  --card:#ffffff;
+  --muted:#6b6f76;
+  --accent:#7b1e2e; /* wine */
+  --accent-2:#ff7a00; /* orange */
+  --shadow: 0 10px 30px rgba(11,10,10,0.06);
+  --glass: rgba(17,18,23,0.03);
+  --success:#28c76f;
+  --danger:#ff4d4d;
+}
+
+*{box-sizing:border-box}
+body{margin:0;font-family:"Inter",system-ui, -apple-system, "Segoe UI", Roboto; background:var(--bg); color:#111; line-height:1.45}
+.container{max-width:1200px;margin:28px auto;padding:20px}
+.header{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:18px}
+.brand{display:flex;gap:12px;align-items:center}
+.logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(180deg,var(--accent),#a33748);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-family:"Playfair Display",serif}
+.title{font-family:"Playfair Display",serif;font-size:18px}
+.controls{display:flex;gap:10px;align-items:center}
+
+/* Auth modal */
+.auth-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;z-index:2000}
+.auth-card{width:100%;max-width:420px;background:var(--card);padding:20px;border-radius:12px;box-shadow:var(--shadow);text-align:center}
+.auth-card input{width:100%;padding:10px;border-radius:8px;border:1px solid var(--glass);margin-top:8px}
+
+/* Overview cards */
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px}
+.card{background:var(--card);padding:18px;border-radius:12px;box-shadow:var(--shadow);border:1px solid var(--glass)}
+.card h4{margin:0 0 8px;font-size:13px;color:var(--muted);font-weight:600}
+.card .big{font-size:22px;font-weight:700;margin-top:6px;color:var(--accent)}
+
+/* Main two-column layout */
+.layout{display:grid;grid-template-columns:1fr 420px;gap:18px}
+.section{background:var(--card);padding:18px;border-radius:12px;box-shadow:var(--shadow);border:1px solid var(--glass)}
+
+/* Merchant table */
+.table{width:100%;border-collapse:collapse}
+.table th,.table td{padding:10px 8px;border-bottom:1px solid #f2f2f2;text-align:left;font-size:14px}
+.table th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px}
+.action-btn{padding:8px 10px;border-radius:10px;border:none;cursor:pointer;font-weight:700}
+.approve{background:var(--accent-2);color:#fff}
+.reject{background:transparent;border:1px solid var(--danger);color:var(--danger)}
+.small{font-size:13px;color:var(--muted)}
+
+/* Settings */
+.setting-row{display:flex;gap:10px;align-items:center;margin-bottom:10px}
+.input{padding:10px 12px;border-radius:8px;border:1px solid var(--glass);width:100%}
+
+/* Footer */
+.footer{margin-top:18px;text-align:center;color:var(--muted);font-size:13px}
+
+/* Responsive */
+@media (max-width:1000px){ .grid{grid-template-columns:repeat(2,1fr)} .layout{grid-template-columns:1fr} }
+@media (max-width:600px){ .grid{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+  <div class="container" id="app">
+
+    <!-- Header -->
+    <div class="header">
+      <div class="brand">
+        <div class="logo">PL</div>
+        <div>
+          <div class="title">PopUp Lane — Admin</div>
+          <div style="font-size:13px;color:var(--muted)">Manage merchants, shoppers, and lane state</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div id="authStatus" class="small">Not signed in</div>
+        <button id="signOutBtn" style="display:none" class="action-btn" onclick="signOut()">Sign out</button>
+      </div>
+    </div>
+
+    <!-- Overview Cards -->
+    <div class="grid" aria-live="polite" id="overviewGrid">
+      <div class="card">
+        <h4>Merchants — Total</h4>
+        <div class="big" id="merchantsTotal">—</div>
+        <div class="small">Includes pending, approved</div>
+      </div>
+
+      <div class="card">
+        <h4>Merchants — Pending</h4>
+        <div class="big" id="merchantsPending">—</div>
+        <div class="small">Need approval</div>
+      </div>
+
+      <div class="card">
+        <h4>Shoppers Signed Up</h4>
+        <div class="big" id="shoppersTotal">—</div>
+        <div class="small">Emails collected</div>
+      </div>
+
+      <div class="card">
+        <h4>Spots Remaining</h4>
+        <div class="big" id="spotsRemaining">—</div>
+        <div class="small">Limited slots for this lane</div>
+      </div>
+    </div>
+
+    <div class="layout">
+      <!-- Left: Merchant table -->
+      <div class="section" aria-labelledby="merchantsHeading">
+        <h3 id="merchantsHeading" style="font-family:'Playfair Display',serif;color:var(--accent);margin:0 0 12px">Merchant Applications</h3>
+        <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center">
+          <input id="searchInput" class="input" placeholder="Search by email or brand..." />
+          <button id="refreshBtn" class="action-btn" style="background:#eee;color:#111;border-radius:8px" onclick="loadMerchants()">Refresh</button>
+        </div>
+
+        <div style="overflow:auto;max-height:520px">
+          <table class="table" id="merchantsTable" aria-live="polite">
+            <thead>
+              <tr><th>Brand</th><th>Email</th><th>Category</th><th>Status</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="merchantsTbody">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <!-- Right: Settings + Shoppers -->
+      <div>
+        <div class="section" aria-labelledby="settingsHeading">
+          <h4 id="settingsHeading" style="color:var(--muted);margin:0 0 12px">Lane Settings</h4>
+
+          <div class="setting-row">
+            <label style="width:140px;color:var(--muted);font-weight:600">Early Access</label>
+            <input id="earlyDate" class="input" type="datetime-local" />
+          </div>
+
+          <div class="setting-row">
+            <label style="width:140px;color:var(--muted);font-weight:600">Lane Status</label>
+            <select id="laneStatus" class="input" style="max-width:220px">
+              <option value="closed">Closed</option>
+              <option value="open">Open</option>
+              <option value="paused">Paused</option>
+            </select>
+          </div>
+
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button id="saveSettings" class="action-btn" onclick="saveSettings()">Save Settings</button>
+            <button id="pushAnnouncement" class="action-btn" style="background:var(--accent-2)" onclick="pushAnnouncement()">Announce</button>
+          </div>
+
+          <div class="small" style="margin-top:12px">Change the early access date and lane status. Publishing will update front-end widgets.</div>
+        </div>
+
+        <div class="section" aria-labelledby="shoppersHeading" style="margin-top:14px">
+          <h4 id="shoppersHeading" style="color:var(--muted);margin:0 0 12px">Shoppers</h4>
+          <div style="display:flex;gap:8px;margin-bottom:10px">
+            <button class="action-btn" onclick="loadShoppers()" style="background:#eee;color:#111">Refresh</button>
+            <button class="action-btn" onclick="exportShoppersCSV()" style="background:#eee;color:#111">Export CSV</button>
+          </div>
+
+          <div style="max-height:300px;overflow:auto">
+            <table class="table" id="shoppersTable">
+              <thead><tr><th>Email</th><th>Joined</th></tr></thead>
+              <tbody id="shoppersTbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="footer">© <span id="year"></span> PopUp Lane — Admin</div>
+  </div>
+
+  <!-- Simple password gate (replace or remove if using real auth) -->
+  <div id="authOverlay" class="auth-overlay" role="dialog" aria-modal="true">
+    <div class="auth-card" role="document" aria-labelledby="authTitle">
+      <h3 id="authTitle" style="margin:0 0 6px;font-family:'Playfair Display',serif">Admin Access</h3>
+      <div class="small" style="margin-bottom:12px">Enter admin pass to continue</div>
+      <input id="adminPass" type="password" placeholder="Admin pass" aria-label="Admin password" />
+      <div style="margin-top:12px">
+        <button id="adminUnlock" class="action-btn" onclick="tryUnlock()">Unlock</button>
+      </div>
+      <div id="authNote" class="small" style="margin-top:10px;color:var(--muted)"></div>
+    </div>
+  </div>
+
+<script>
+/* ===========================
+   CONFIG — replace placeholders
+   =========================== */
+const AIRTABLE_TOKEN = "YOUR_AIRTABLE_TOKEN"; // <-- replace: patXXXX...
+const AIRTABLE_BASE = "YOUR_BASE_ID";         // <-- replace: appXXXX...
+const MERCHANTS_TABLE = "Merchants";
+const SHOPPERS_TABLE = "Shoppers";
+
+/* Simple admin pass for MVP (change!) */
+const ADMIN_PASS = "popuplane-admin"; // change to a safer secret or integrate real auth
+
+/* ===========================
+   Utilities: Airtable helpers
+   =========================== */
+const airtableHeaders = () => ({
+  "Authorization": `Bearer ${AIRTABLE_TOKEN}`,
+  "Content-Type": "application/json"
+});
+
+async function airtableList(table, pageSize=100) {
+  const url = `https://api.airtable.com/v0/${AIRTABLE_BASE}/${encodeURIComponent(table)}?pageSize=${pageSize}`;
+  const res = await fetch(url, { headers: airtableHeaders() });
+  if(!res.ok) throw new Error('Airtable list failed: ' + res.status);
+  const json = await res.json();
+  return json.records || [];
+}
+
+async function airtablePatch(table, recordId, fields){
+  const url = `https://api.airtable.com/v0/${AIRTABLE_BASE}/${encodeURIComponent(table)}`;
+  const body = JSON.stringify({ records: [{ id: recordId, fields }] });
+  const res = await fetch(url, { method: "PATCH", headers: airtableHeaders(), body });
+  if(!res.ok) {
+    const text = await res.text();
+    throw new Error('Airtable patch failed: ' + text);
+  }
+  return res.json();
+}
+
+/* ===========================
+   Authentication (simple)
+   =========================== */
+const authOverlay = document.getElementById('authOverlay');
+const authStatus = document.getElementById('authStatus');
+const signOutBtn = document.getElementById('signOutBtn');
+
+function tryUnlock(){
+  const v = document.getElementById('adminPass').value;
+  if(v === ADMIN_PASS){
+    localStorage.setItem('popupla_admin_auth', '1');
+    authOverlay.style.display = 'none';
+    authStatus.textContent = 'Signed in';
+    signOutBtn.style.display = 'inline-block';
+    initAdmin();
+  } else {
+    document.getElementById('authNote').textContent = 'Incorrect password.';
+  }
+}
+
+function signOut(){
+  localStorage.removeItem('popupla_admin_auth');
+  location.reload();
+}
+
+/* Auto-check auth */
+(function(){
+  const ok = localStorage.getItem('popupla_admin_auth');
+  if(!ok){
+    authOverlay.style.display = 'flex';
+  } else {
+    authOverlay.style.display = 'none';
+    authStatus.textContent = 'Signed in';
+    signOutBtn.style.display = 'inline-block';
+    initAdmin();
+  }
+})();
+
+/* ===========================
+   App logic
+   =========================== */
+const merchantsTbody = document.getElementById('merchantsTbody');
+const merchantsTotalEl = document.getElementById('merchantsTotal');
+const merchantsPendingEl = document.getElementById('merchantsPending');
+const shoppersTotalEl = document.getElementById('shoppersTotal');
+const spotsRemainingEl = document.getElementById('spotsRemaining');
+const shoppersTbody = document.getElementById('shoppersTbody');
+const yearEl = document.getElementById('year');
+yearEl.textContent = new Date().getFullYear();
+
+let merchantsCache = [];
+let shoppersCache = [];
+let spotsLimit = 50; // default; you can move this to Airtable setting
+
+async function initAdmin(){
+  try {
+    await loadMerchants();
+    await loadShoppers();
+    await loadSettings();
+  } catch(err){ console.error(err); alert('Init error: ' + err.message); }
+}
+
+/* Load merchants and render */
+async function loadMerchants(){
+  merchantsTbody.innerHTML = '<tr><td colspan="5" class="small">Loading…</td></tr>';
+  try {
+    const records = await airtableList(MERCHANTS_TABLE, 100);
+    merchantsCache = records;
+    renderMerchants(records);
+    updateOverview();
+  } catch(err){
+    merchantsTbody.innerHTML = `<tr><td colspan="5" class="small">Failed to load merchants</td></tr>`;
+    console.error(err);
+  }
+}
+
+function renderMerchants(records){
+  merchantsTbody.innerHTML = '';
+  const q = (document.getElementById('searchInput')||{}).value?.toLowerCase?.() || '';
+  const filtered = records.filter(r => {
+    const f = r.fields || {};
+    const brand = (f['Brand Name'] || '').toString().toLowerCase();
+    const email = (f['Email'] || '').toString().toLowerCase();
+    if(!q) return true;
+    return brand.includes(q) || email.includes(q);
+  });
+  if(filtered.length === 0){
+    merchantsTbody.innerHTML = '<tr><td colspan="5" class="small">No merchant applications found.</td></tr>';
+    return;
+  }
+
+  filtered.forEach(rec => {
+    const f = rec.fields || {};
+    const tr = document.createElement('tr');
+    const brand = f['Brand Name'] || '—';
+    const email = f['Email'] || '—';
+    const cat = f['Category'] || '—';
+    const status = f['Application Status'] || f['Status'] || 'Pending';
+
+    tr.innerHTML = `
+      <td>${escapeHtml(brand)}</td>
+      <td>${escapeHtml(email)}</td>
+      <td>${escapeHtml(cat)}</td>
+      <td>${escapeHtml(status)}</td>
+      <td>
+        ${status !== 'Approved' ? `<button class="action-btn approve" data-id="${rec.id}">Approve</button>` : ''}
+        ${status !== 'Rejected' ? `<button class="action-btn reject" data-id="${rec.id}">Reject</button>` : ''}
+        <button class="action-btn" data-id="${rec.id}" style="background:#eee;color:#111">View</button>
+      </td>
+    `;
+    merchantsTbody.appendChild(tr);
+
+    // action bindings
+    const approveBtn = tr.querySelector('.approve');
+    if(approveBtn) approveBtn.addEventListener('click', ()=> handleApprove(rec.id));
+    const rejectBtn = tr.querySelector('.reject');
+    if(rejectBtn) rejectBtn.addEventListener('click', ()=> handleReject(rec.id));
+    const viewBtn = tr.querySelector('button[data-id]:not(.approve):not(.reject)');
+    if(viewBtn) viewBtn.addEventListener('click', ()=> showMerchantDetails(rec));
+  });
+}
+
+/* Overview counts */
+function updateOverview(){
+  const total = merchantsCache.length;
+  const pending = merchantsCache.filter(r => {
+    const s = (r.fields['Application Status'] || r.fields['Status'] || '').toString().toLowerCase();
+    return !s || s === '' || s === 'pending';
+  }).length;
+  merchantsTotalEl.textContent = total;
+  merchantsPendingEl.textContent = pending;
+  shoppersTotalEl.textContent = shoppersCache.length || '—';
+  spotsRemainingEl.textContent = Math.max(spotsLimit - total, 0);
+}
+
+/* Load shoppers */
+async function loadShoppers(){
+  try {
+    const recs = await airtableList(SHOPPERS_TABLE, 200);
+    shoppersCache = recs;
+    renderShoppers(recs);
+    updateOverview();
+  } catch(err){
+    console.error(err);
+    document.getElementById('shoppersTbody').innerHTML = '<tr><td class="small">Failed to load</td></tr>';
+  }
+}
+
+function renderShoppers(records){
+  const tbody = document.getElementById('shoppersTbody');
+  tbody.innerHTML = '';
+  if(records.length === 0) tbody.innerHTML = '<tr><td class="small">No shoppers yet</td></tr>';
+  records.forEach(r => {
+    const f = r.fields || {};
+    const email = f['Email Address'] || f['Email'] || '—';
+    const date = f['Date Joined'] || f['Created'] || (r.createdTime || '');
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${escapeHtml(email)}</td><td>${escapeHtml(date)}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+/* Approve / Reject handlers */
+async function handleApprove(recordId){
+  if(!confirm('Approve this merchant?')) return;
+  try {
+    await airtablePatch(MERCHANTS_TABLE, recordId, { 'Application Status': 'Approved', 'Visibility Status': 'Listed' });
+    await loadMerchants();
+    alert('Merchant approved.');
+  } catch(err){ alert('Approve failed: ' + err.message); console.error(err); }
+}
+
+async function handleReject(recordId){
+  if(!confirm('Reject this merchant?')) return;
+  try {
+    await airtablePatch(MERCHANTS_TABLE, recordId, { 'Application Status': 'Rejected', 'Visibility Status': 'Hidden' });
+    await loadMerchants();
+    alert('Merchant rejected.');
+  } catch(err){ alert('Reject failed: ' + err.message); console.error(err); }
+}
+
+/* Merchant detail modal (quick) */
+function showMerchantDetails(rec){
+  const f = rec.fields || {};
+  const items = [
+    `Brand: ${f['Brand Name'] || ''}`,
+    `Email: ${f['Email'] || ''}`,
+    `Website: ${f['Website URL'] || f['Website'] || ''}`,
+    `Social: ${f['Social Media'] || f['Social'] || ''}`,
+    `Category: ${f['Category'] || ''}`,
+    `Status: ${f['Application Status'] || f['Status'] || 'Pending'}`
+  ];
+  alert(items.join('\n\n') + '\n\n(Use Approve / Reject in the table to update status.)');
+}
+
+/* Settings: load/save (simple approach: store in localStorage as fallback) */
+async function loadSettings(){
+  // Try to read a Settings table in Airtable first if available (optional)
+  // For MVP we'll read earlyDate from localStorage or default.
+  const stored = localStorage.getItem('popu_lane_settings');
+  if(stored){
+    const s = JSON.parse(stored);
+    document.getElementById('earlyDate').value = s.earlyDate || '';
+    document.getElementById('laneStatus').value = s.laneStatus || 'closed';
+    spotsLimit = s.spotsLimit || spotsLimit;
+  } else {
+    // default early date fallback
+    document.getElementById('earlyDate').value = new Date("2025-11-17T10:00:00").toISOString().slice(0,16);
+    document.getElementById('laneStatus').value = 'closed';
+  }
+  updateOverview();
+}
+
+function saveSettings(){
+  const earlyDate = document.getElementById('earlyDate').value;
+  const laneStatus = document.getElementById('laneStatus').value;
+  const payload = { earlyDate, laneStatus, spotsLimit };
+  localStorage.setItem('popu_lane_settings', JSON.stringify(payload));
+  alert('Settings saved locally. For production, persist to Airtable or your backend.');
+}
+
+/* Announcement placeholder */
+function pushAnnouncement(){
+  const text = prompt('Announcement to push to front page (preview only):','PopUp Lane opens soon — get ready!');
+  if(text) alert('Announcement saved (demo). Implement deploy hook to publish this to the site.');
+}
+
+/* Export shoppers CSV */
+function exportShoppersCSV(){
+  if(!shoppersCache || shoppersCache.length === 0) return alert('No shoppers to export.');
+  const rows = [['Email','Date Joined']];
+  shoppersCache.forEach(r => {
+    const f = r.fields || {};
+    const email = f['Email Address'] || f['Email'] || '';
+    const date = f['Date Joined'] || r.createdTime || '';
+    rows.push([email,date]);
+  });
+  const csv = rows.map(r => r.map(c => `"${String(c||'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `popuplane_shoppers_${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+/* Utils */
+function escapeHtml(s){ if(!s) return ''; return String(s).replace(/[&<>"']/g, (m)=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+/* Init: wire search input */
+document.getElementById('searchInput').addEventListener('input', ()=> renderMerchants(merchantsCache));
+
+/* Expose some dev helpers */
+window._reloadMerchants = loadMerchants;
+window._reloadShoppers = loadShoppers;
+
+</script>
+</body>
+</html>
