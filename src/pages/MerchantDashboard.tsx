@@ -102,9 +102,20 @@ export default function MerchantDashboard() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b">
+      <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <h2 className="text-xl font-semibold">PopUp Lane Merchant Portal</h2>
+          <div className="flex items-center gap-4">
+            <Button 
+              variant="ghost" 
+              onClick={() => navigate("/")}
+              className="text-xl font-serif font-bold hover:opacity-80"
+            >
+              PopUp Lane
+            </Button>
+            <span className="text-sm text-muted-foreground hidden sm:inline">
+              / Merchant Portal
+            </span>
+          </div>
           <Button variant="ghost" size="sm" onClick={handleSignOut}>
             <LogOut className="h-4 w-4 mr-2" />
             Sign Out
