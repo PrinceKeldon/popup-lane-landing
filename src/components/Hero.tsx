@@ -64,7 +64,11 @@ export const Hero = () => {
         <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mt-4.5" role="navigation" aria-label="Primary actions">
           {isOpen ? (
             <>
-              <Button size="lg" className="text-base px-8 bg-primary text-primary-foreground shadow-[var(--shadow-button)] hover:bg-primary/90 group">
+              <Button 
+                size="lg" 
+                className="text-base px-8 bg-primary text-primary-foreground shadow-[var(--shadow-button)] hover:bg-primary/90 group"
+                onClick={() => window.location.href = '/lane'}
+              >
                 Shop Now
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>

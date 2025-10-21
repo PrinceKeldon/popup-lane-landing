@@ -47,6 +47,10 @@ export const Navigation = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-6">
+            <Link to="/lane" className="text-sm font-medium hover:text-primary transition-colors">
+              The Lane
+            </Link>
+            
             {/* For Merchants Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -111,6 +115,16 @@ export const Navigation = () => {
         {/* Mobile Menu */}
         {mobileMenuOpen && (
           <div className="md:hidden py-4 space-y-3 border-t border-border/50">
+            <Button
+              variant="ghost"
+              className="w-full justify-start"
+              onClick={() => {
+                navigate("/lane");
+                setMobileMenuOpen(false);
+              }}
+            >
+              The Lane
+            </Button>
             {user ? (
               <>
                 <Button

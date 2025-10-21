@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import TheLane from "./pages/TheLane";
 import MerchantDashboard from "./pages/MerchantDashboard";
 import MerchantLogin from "./pages/MerchantLogin";
 import MerchantSignup from "./pages/MerchantSignup";
@@ -23,6 +24,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/lane" element={<TheLane />} />
             <Route path="/merchant/dashboard" element={<MerchantDashboard />} />
             <Route path="/merchant/login" element={<MerchantLogin />} />
             <Route path="/merchant/signup" element={<MerchantSignup />} />

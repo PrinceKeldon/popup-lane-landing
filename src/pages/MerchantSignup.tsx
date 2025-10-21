@@ -66,14 +66,23 @@ export default function MerchantSignup() {
       if (signupError) throw signupError;
 
       if (authData.user) {
-        // Link user to merchant record
-        const { error: updateError } = await supabase
+        // Link user to merchant record by email
+        const { data: merchantData, error: updateError } = await supabase
           .from("merchants")
           .update({ user_id: authData.user.id })
-          .eq("email", values.email);
+          .eq("email", values.email)
+          .select()
+          .single();
 
-        if (updateError) {
+        if (updateError || !merchantData) {
           console.error("Error linking merchant:", updateError);
+          toast({
+            title: "Account created, but...",
+            description: "No merchant application found with this email. Please apply first.",
+            variant: "destructive",
+          });
+          await supabase.auth.signOut();
+          return;
         }
 
         toast({
