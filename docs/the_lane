@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>PopUp Lane — Discover Small Brands with Big Energy</title>
+<meta name="description" content="PopUp Lane — a digital pop-up street where emerging labels meet eager shoppers. Discover small brands and ambitious merchants.">
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+/* ======================================================
+   PopUp Lane — Shopper Experience (Neutral + Wine Accent)
+   - Palette: Neutral base with wine accent (#A23E48 → #C05A61)
+   - Centered editorial hero
+   - Commented for easy Lovable handoff
+   ====================================================== */
+
+/* ====== Color tokens - edit here for theme changes ====== */
+:root{
+  --bg: #FAF9F8;           /* warm neutral background */
+  --card: #FFFFFF;         /* card background */
+  --text: #141414;         /* primary text */
+  --muted: #5f6163;        /* secondary text */
+  --wine: #A23E48;         /* primary accent (wine) */
+  --wine-2: #C05A61;       /* secondary accent */
+  --shadow: 0 18px 50px rgba(17,18,23,0.06);
+  --glass: rgba(255,255,255,0.75);
+  --maxw: 1200px;
+  --accent-gradient: linear-gradient(90deg,var(--wine),var(--wine-2));
+}
+
+/* ====== Base ====== */
+*{box-sizing:border-box}
+body{margin:0;font-family:"Inter",system-ui,Arial;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:36px 18px 96px}
+
+/* ====== HERO (centered editorial) ====== */
+.hero{
+  text-align:center;padding:48px 18px;border-radius:12px;margin-bottom:20px;
+  background: linear-gradient(180deg, rgba(192,90,97,0.03), rgba(250,250,250,0.65));
+  backdrop-filter: blur(4px);
+  border:1px solid rgba(162,62,72,0.04);
+}
+.eyebrow{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:1.6px;margin-bottom:12px}
+.hero h1{font-family:"Space Grotesk",serif;font-size:clamp(28px,4.6vw,52px);line-height:1.02;margin:0;color:var(--text)}
+.hero p{max-width:860px;margin:12px auto 20px;color:var(--muted);font-size:16px}
+
+/* Live pill + countdown */
+.hero .status-row{display:flex;gap:12px;justify-content:center;align-items:center;margin-top:10px;flex-wrap:wrap}
+.pill{padding:8px 12px;border-radius:999px;background:var(--card);border:1px solid rgba(17,18,23,0.04);font-weight:600}
+.live-pill{background:var(--wine);color:#fff;box-shadow:0 10px 30px rgba(162,62,72,0.12)}
+
+/* Countdown segments */
+.countdown{display:flex;gap:12px;justify-content:center;margin-top:14px;font-family:Inter,monospace}
+.countseg{display:flex;flex-direction:column;align-items:center}
+.countnum{background:var(--card);padding:8px 12px;border-radius:8px;border:1px solid rgba(17,18,23,0.04);font-weight:700}
+.countlabel{font-size:12px;color:var(--muted);margin-top:6px}
+
+/* CTA group */
+.hero .ctas{display:flex;gap:12px;justify-content:center;margin-top:18px;flex-wrap:wrap}
+.btn{padding:12px 18px;border-radius:10px;border:none;font-weight:700;cursor:pointer}
+.btn-primary{background:var(--accent-gradient);color:#fff;box-shadow:0 10px 30px rgba(162,62,72,0.06)}
+.btn-ghost{background:transparent;border:1px solid rgba(17,18,23,0.06);color:var(--text)}
+
+/* ====== LANE TOPBAR & FILTERS ====== */
+.lane-wrap{margin-top:26px}
+.lane-topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+.lane-topbar h3{margin:0;font-family:"Space Grotesk",sans-serif}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.filter{padding:8px 12px;border-radius:999px;border:1px solid rgba(17,18,23,0.06);background:var(--card);color:var(--muted);cursor:pointer;font-weight:600}
+.filter.active{background:var(--wine);color:#fff;border-color:transparent}
+
+/* ====== FEED (horizontal lane) ====== */
+.feed{display:flex;gap:16px;overflow:auto;padding-bottom:8px;scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
+.tile{flex:0 0 300px;background:var(--card);border-radius:14px;padding:16px;border:1px solid rgba(17,18,23,0.04);box-shadow:var(--shadow);transition:transform .28s ease,box-shadow .28s}
+.tile:hover{transform:translateY(-8px);box-shadow:0 24px 60px rgba(17,18,23,0.08)}
+.tile .logo{width:76px;height:76px;border-radius:12px;background:#faf6f6;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;margin-bottom:12px;color:var(--wine)}
+.tile h4{margin:0 0 6px;font-size:16px}
+.tile p{margin:0;color:var(--muted);font-size:14px;margin-bottom:12px}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.badge{background:rgba(162,62,72,0.06);color:var(--wine);padding:6px 8px;border-radius:8px;font-size:12px;font-weight:700}
+
+/* tile actions */
+.tile .actions{display:flex;gap:8px;align-items:center}
+.btn-visit{background:linear-gradient(90deg,var(--wine),var(--wine-2));color:#fff;border:none;padding:10px 14px;border-radius:8px;font-weight:700;cursor:pointer}
+.btn-save{background:transparent;border:1px solid rgba(17,18,23,0.06);padding:8px 12px;border-radius:8px;color:var(--wine);font-weight:700;cursor:pointer}
+
+/* ====== SPOTLIGHT MODAL ====== */
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;align-items:center;justify-content:center;z-index:900}
+.modal{width:min(920px,95%);background:var(--card);border-radius:14px;padding:18px;display:flex;gap:18px;box-shadow:0 30px 80px rgba(17,18,23,0.5)}
+.modal-left{flex:1;min-width:280px}
+.modal-right{flex:1;display:flex;flex-direction:column;gap:12px}
+.hero-img{width:100%;height:260px;border-radius:10px;background:#faf6f6;object-fit:cover}
+.modal h2{margin:0}
+.small-muted{color:var(--muted);font-size:14px}
+
+/* ====== MY FINDS DRAWER ====== */
+.drawer{position:fixed;right:18px;bottom:18px;width:360px;max-width:calc(100% - 40px);background:var(--card);border-radius:12px;padding:12px;box-shadow:0 30px 70px rgba(17,18,23,0.12);z-index:800}
+.drawer h4{margin:0 0 8px}
+.find-item{display:flex;align-items:center;gap:10px;padding:8px;border-radius:8px;border:1px solid rgba(17,18,23,0.03);margin-bottom:8px}
+
+/* ====== LAST CHANCE BANNER & CLOSED STATE ====== */
+.last-chance{position:sticky;bottom:16px;left:50%;transform:translateX(-50%);max-width:980px;margin:0 auto;padding:12px 18px;border-radius:999px;background:var(--wine);color:#fff;font-weight:700;display:none;z-index:700}
+.closed-overlay{padding:40px;border-radius:12px;text-align:center;background:linear-gradient(180deg,#fff,#fbfbfb);border:1px solid rgba(17,18,23,0.04);box-shadow:var(--shadow);margin-top:20px;display:none}
+
+/* ====== UTILITY ====== */
+.muted{color:var(--muted)}
+.small{font-size:13px;color:var(--muted)}
+.hidden{display:none}
+
+/* ====== Responsive ====== */
+@media (max-width:900px){
+  .tile{flex:0 0 260px}
+  .modal{flex-direction:column;padding:14px}
+  .hero{padding:36px 10px}
+  .drawer{width:92%;right:4%;bottom:12px}
+}
+</style>
+</head>
+<body>
+  <main class="wrap" id="app">
+
+    <!-- HERO — Centered editorial -->
+    <section class="hero" id="hero-section" aria-labelledby="hero-title">
+      <div class="eyebrow" id="eyebrow">Black Friday Pop-Up</div>
+      <h1 id="hero-title">Discover Small Brands with Big Energy</h1>
+      <p id="hero-sub">A digital pop-up street where emerging labels and ambitious merchants meet eager shoppers — limited-time moments, curated attention.</p>
+
+      <div class="status-row" role="status" aria-live="polite">
+        <div id="state-pill" class="pill">Coming Soon</div>
+        <div id="live-counter" class="small muted">— shoppers browsing</div>
+      </div>
+
+      <!-- Countdown -->
+      <div class="countdown" aria-hidden="false" id="countdown">
+        <div class="countseg"><div class="countnum" id="days">00</div><div class="countlabel">Days</div></div>
+        <div class="countseg"><div class="countnum" id="hours">00</div><div class="countlabel">Hrs</div></div>
+        <div class="countseg"><div class="countnum" id="mins">00</div><div class="countlabel">Min</div></div>
+        <div class="countseg"><div class="countnum" id="secs">00</div><div class="countlabel">Sec</div></div>
+      </div>
+
+      <div class="ctas" role="group" aria-label="Hero actions">
+        <button id="walk-lane" class="btn btn-primary">Walk the Lane</button>
+        <button id="notify-cta" class="btn btn-ghost">Get Notified</button>
+      </div>
+    </section>
+
+    <!-- LANE: Topbar & Filters -->
+    <section class="lane-wrap" aria-labelledby="lane-title">
+      <div class="lane-topbar">
+        <h3 id="lane-title">The Lane</h3>
+        <div class="filters" role="list">
+          <button class="filter active" data-filter="all">All</button>
+          <button class="filter" data-filter="emerging">Emerging</button>
+          <button class="filter" data-filter="founder">Founder-Led</button>
+          <button class="filter" data-filter="sustainable">Sustainable</button>
+          <button class="filter" data-filter="boutique">Boutique</button>
+          <button class="filter" data-filter="tech">Tech</button>
+          <button class="filter" data-filter="style">Style</button>
+        </div>
+      </div>
+
+      <!-- Feed: horizontal lane of brand tiles -->
+      <div class="feed" id="feed" aria-live="polite" aria-busy="false">
+        <!-- JS populates tiles -->
+      </div>
+
+      <!-- Last chance banner (sticks to bottom when within threshold) -->
+      <div id="last-chance" class="last-chance" role="status" aria-live="polite">Last chance — Lane closes in 2 hours</div>
+
+      <!-- Closed overlay -->
+      <div id="closed-overlay" class="closed-overlay" role="status" aria-live="polite">
+        <h3>The Lane is Closed</h3>
+        <p class="muted">Thanks for visiting. The Lane reopens for the holidays — sign up to be notified.</p>
+        <div style="margin-top:12px"><button class="btn btn-primary" id="closed-notify">Get Notified</button></div>
+      </div>
+    </section>
+
+    <!-- My Finds drawer -->
+    <aside id="my-finds" class="drawer" aria-labelledby="finds-title" role="region">
+      <h4 id="finds-title">My Finds</h4>
+      <div id="finds-list">
+        <!-- saved items go here -->
+      </div>
+      <div style="display:flex;gap:10px;justify-content:space-between;align-items:center;margin-top:8px">
+        <button class="btn btn-ghost" id="clear-finds">Clear</button>
+        <button class="btn btn-primary" id="email-finds">Email My Finds</button>
+      </div>
+    </aside>
+
+    <!-- Spotlight modal -->
+    <div id="modal-backdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
+      <div class="modal" role="document">
+        <div class="modal-left">
+          <img id="modal-hero" class="hero-img" alt="">
+        </div>
+        <div class="modal-right">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <h2 id="modal-title">Brand Name</h2>
+              <div class="small-muted" id="modal-tag">Tagline or quick blurb</div>
+            </div>
+            <div id="modal-badges"></div>
+          </div>
+
+          <p id="modal-story" class="small-muted" style="margin-top:8px"></p>
+
+          <div id="modal-products" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+            <!-- product thumbs -->
+          </div>
+
+          <div style="margin-top:12px;display:flex;gap:8px">
+            <a id="modal-shop" class="btn btn-visit" href="#" target="_blank" rel="noopener">Visit Store</a>
+            <button id="modal-save" class="btn btn-save">Save</button>
+            <button id="modal-share" class="btn btn-ghost">Share</button>
+          </div>
+
+          <div id="modal-footer-note" class="small-muted" style="margin-top:8px"></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+<script>
+/* ===========================================================
+   PopUp Lane — Shopper Experience (Neutral + Wine Accent)
+   - Config at top for easy edits (open/close dates, API endpoints)
+   - Replace POPUP_CONFIG.api.merchants with your Airtable proxy endpoint
+   - Inline comments mark where to hook analytics, server, or Lovable
+   =========================================================== */
+
+/* =========================
+   CONFIG (edit per season)
+   ========================= */
+const POPUP_CONFIG = {
+  seasonName: "BLACK FRIDAY ’25",
+  openDate: "2025-11-21T10:00:00",   // local timezone
+  closeDate: "2025-11-28T23:59:59",
+  api: {
+    merchants: "/api/merchants?status=Approved" // change to your Airtable proxy or server endpoint
+  },
+  tracking: {
+    utm_source: "popuplane",
+    utm_campaign: "blackfriday25"
+  },
+  // fallback sample merchants used when API is unavailable
+  sampleMerchants: [
+    { id:'loom', name:'Loom & Found', tagline:'Handwoven home essentials', logoText:'LF', hero:'', badges:['Emerging','Sustainable'], shopUrl:'https://example.com/loom', products:[] },
+    { id:'bright', name:'Bright Studio', tagline:'Modern ceramics & gifts', logoText:'BS', hero:'', badges:['Boutique'], shopUrl:'https://example.com/bright', products:[] },
+    { id:'indie', name:'Indie Flame', tagline:'Small-batch candles', logoText:'IF', hero:'', badges:['Founder-Led','Limited'], shopUrl:'https://example.com/indie', products:[] },
+    { id:'thread', name:'Thread Theory', tagline:'Apparel with intent', logoText:'TT', hero:'', badges:['Style','Trending'], shopUrl:'https://example.com/thread', products:[] }
+  ],
+  lastChanceMinutes: 180,
+  liveCounterSimulated: true
+};
+
+/* =========================
+   Helpers
+   ========================= */
+const $ = id => document.getElementById(id);
+const pad = n => String(n).padStart(2,'0');
+const escapeHtml = s => { if(!s && s !== 0) return ''; return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); };
+
+/* =========================
+   App state
+   ========================= */
+let APP = { merchants: [], finds: [], current: null };
+
+/* =========================
+   DOM refs
+   ========================= */
+const feed = $('feed');
+const statePill = $('state-pill');
+const liveCounter = $('live-counter');
+const lastChance = $('last-chance');
+const closedOverlay = $('closed-overlay');
+const walkBtn = $('walk-lane');
+const notifyBtn = $('notify-cta');
+
+/* Modal refs */
+const modalBackdrop = $('modal-backdrop');
+const modalTitle = $('modal-title');
+const modalTag = $('modal-tag');
+const modalStory = $('modal-story');
+const modalHero = $('modal-hero');
+const modalBadges = $('modal-badges');
+const modalProducts = $('modal-products');
+const modalShop = $('modal-shop');
+const modalSave = $('modal-save');
+const modalShare = $('modal-share');
+const modalFooterNote = $('modal-footer-note');
+
+/* My Finds */
+const findsList = $('finds-list');
+const clearFindsBtn = $('clear-finds');
+const emailFindsBtn = $('email-finds');
+
+/* =========================
+   Initialization
+   ========================= */
+document.addEventListener('DOMContentLoaded', async () => {
+  loadFinds();
+  await loadMerchants();
+  renderFeed();
+  attachFilterHandlers();
+  attachHeroHandlers();
+  attachModalHandlers();
+  startCountdown();
+  startLiveCounter();
+  setInterval(updateLastChance, 30000);
+});
+
+/* =========================
+   Load merchants: try API, fallback to sample
+   ========================= */
+async function loadMerchants(){
+  try {
+    const res = await fetch(POPUP_CONFIG.api.merchants);
+    if(res.ok){
+      const data = await res.json();
+      if(Array.isArray(data) && data.length>0){
+        APP.merchants = data.map(normalize);
+        return;
+      }
+    }
+    APP.merchants = POPUP_CONFIG.sampleMerchants.map(normalize);
+  } catch (err){
+    console.warn('Merchant API error, using sample data', err);
+    APP.merchants = POPUP_CONFIG.sampleMerchants.map(normalize);
+  }
+}
+
+function normalize(m){
+  return {
+    id: m.id || (m.name || 'brand').toLowerCase().replace(/\s+/g,'-'),
+    name: m.name || m.brand_name || 'Brand',
+    tagline: m.tagline || '',
+    logoText: m.logoText || (m.name? m.name.split(' ').map(x=>x[0]).join('').slice(0,2):'BR'),
+    hero: m.hero || '',
+    badges: m.badges || m.tags || [],
+    shopUrl: m.shopUrl || m.store || '#',
+    products: m.products || []
+  };
+}
+
+/* =========================
+   Render feed
+   ========================= */
+function renderFeed(filter='all'){
+  feed.setAttribute('aria-busy','true');
+  feed.innerHTML = '';
+  const merchants = APP.merchants.filter(m=>{
+    if(filter==='all') return true;
+    if(filter==='emerging') return m.badges.includes('Emerging');
+    if(filter==='founder') return m.badges.includes('Founder-Led') || m.badges.includes('Founder');
+    if(filter==='sustainable') return m.badges.includes('Sustainable');
+    if(filter==='boutique') return m.badges.includes('Boutique');
+    if(filter==='tech') return m.badges.includes('Tech');
+    if(filter==='style') return m.badges.includes('Style');
+    return true;
+  });
+
+  merchants.forEach(m=>{
+    const el = document.createElement('article');
+    el.className = 'tile';
+    el.innerHTML = `
+      <div class="logo" aria-hidden="true">${escapeHtml(m.logoText)}</div>
+      <h4>${escapeHtml(m.name)}</h4>
+      <p class="muted">${escapeHtml(m.tagline)}</p>
+      <div class="badges">${(m.badges||[]).map(b=>`<span class="badge">${escapeHtml(b)}</span>`).join('')}</div>
+      <div class="actions">
+        <button class="btn-visit" data-id="${escapeHtml(m.id)}">Visit Store</button>
+        <button class="btn-save" data-id="${escapeHtml(m.id)}">${isSaved(m.id)?'Saved':'Save'}</button>
+      </div>
+    `;
+    el.querySelector('.btn-visit').addEventListener('click', ()=> openModal(m.id));
+    el.querySelector('.btn-save').addEventListener('click', (e)=> { toggleSave(m.id); e.target.textContent = isSaved(m.id)?'Saved':'Save'; });
+    feed.appendChild(el);
+  });
+
+  feed.setAttribute('aria-busy','false');
+}
+
+/* =========================
+   Modal handlers
+   ========================= */
+function attachModalHandlers(){
+  modalBackdrop.addEventListener('click', (e)=> { if(e.target===modalBackdrop) closeModal(); });
+  modalSave.addEventListener('click', ()=> { if(APP.current) toggleSave(APP.current.id); modalSave.textContent = isSaved(APP.current.id)?'Saved':'Save'; });
+  modalShare.addEventListener('click', ()=> APP.current && share(APP.current));
+}
+
+/* open modal */
+function openModal(id){
+  const m = APP.merchants.find(x=> x.id === id);
+  if(!m) return;
+  APP.current = m;
+  modalTitle.textContent = m.name;
+  modalTag.textContent = m.tagline || '';
+  modalStory.textContent = m.description || (m.tagline? m.tagline : '');
+  modalHero.src = m.hero || '';
+  modalHero.alt = m.name + ' hero';
+  modalBadges.innerHTML = (m.badges || []).map(b=> `<span class="badge">${escapeHtml(b)}</span>`).join('');
+  modalProducts.innerHTML = (m.products || []).slice(0,4).map(p=>{
+    const d = document.createElement('div');
+    d.style.width='80px'; d.style.height='70px'; d.style.borderRadius='8px'; d.style.background='#faf6f6'; d.title = p.title || '';
+    return d.outerHTML;
+  }).join('');
+  modalShop.href = addUtm(m.shopUrl, {source:POPUP_CONFIG.tracking.utm_source, campaign:POPUP_CONFIG.tracking.utm_campaign, content:m.id});
+  modalShop.onclick = ()=> trackClickOut(m);
+  modalSave.textContent = isSaved(m.id)?'Saved':'Save';
+  modalFooterNote.textContent = 'You will be taken to the merchant store to complete purchase — PopUp Lane does not process payments.';
+  modalBackdrop.style.display = 'flex';
+  modalBackdrop.setAttribute('aria-hidden','false');
+}
+
+/* close modal */
+function closeModal(){ modalBackdrop.style.display = 'none'; modalBackdrop.setAttribute('aria-hidden','true'); APP.current = null; }
+
+/* =========================
+   Save / My Finds (localStorage)
+   ========================= */
+function loadFinds(){ try{ APP.finds = JSON.parse(localStorage.getItem('pl_finds')||'[]')||[]; }catch(e){ APP.finds = []; } renderFinds(); }
+function saveFinds(){ localStorage.setItem('pl_finds', JSON.stringify(APP.finds)); renderFinds(); }
+function isSaved(id){ return APP.finds.includes(id); }
+function toggleSave(id){
+  if(isSaved(id)) APP.finds = APP.finds.filter(x=> x!==id);
+  else APP.finds.push(id);
+  saveFinds();
+}
+function renderFinds(){
+  findsList.innerHTML = '';
+  if(APP.finds.length===0){ findsList.innerHTML = '<div class="small muted">Save brands as you browse — we’ll email your finds before the Lane closes.</div>'; return; }
+  APP.finds.forEach(id=>{
+    const m = APP.merchants.find(x=> x.id===id);
+    if(!m) return;
+    const div = document.createElement('div');
+    div.className='find-item';
+    div.innerHTML = `<div class="logo">${escapeHtml(m.logoText)}</div><div style="flex:1"><strong>${escapeHtml(m.name)}</strong><div class="small muted">${escapeHtml(m.tagline)}</div></div><button class="btn btn-ghost" data-id="${escapeHtml(m.id)}">Remove</button>`;
+    div.querySelector('button').addEventListener('click', ()=> { APP.finds = APP.finds.filter(x=> x!==m.id); saveFinds(); });
+    findsList.appendChild(div);
+  });
+}
+function clearFinds(){ if(!confirm('Clear saved brands?')) return; APP.finds=[]; saveFinds(); }
+function emailFinds(){ const email = prompt('Enter your email to receive your saved brands:'); if(!email) return; /* POST to server to email in production */ alert('Thanks — we would email your saved brands to ' + email); }
+
+/* =========================
+   Sharing & tracking
+   ========================= */
+function share(m){ const url = addUtm(m.shopUrl, {source:POPUP_CONFIG.tracking.utm_source, campaign:POPUP_CONFIG.tracking.utm_campaign, content:m.id}); if(navigator.share){ navigator.share({title:`Check out ${m.name} on PopUp Lane`, text:m.tagline || '', url}); }else{ navigator.clipboard.writeText(url).then(()=> alert('Link copied to clipboard')); } }
+function addUtm(url, params){ try{ const u = new URL(url); if(params.source) u.searchParams.set('utm_source', params.source); if(params.campaign) u.searchParams.set('utm_campaign', params.campaign); if(params.content) u.searchParams.set('utm_content', params.content); return u.toString(); }catch(e){ return url; } }
+function trackClickOut(m){ /* Hook analytics here (Plausible / GA / PostHog) */ console.log('clickout', m.id); }
+
+/* =========================
+   Filters & handlers
+   ========================= */
+function attachFilterHandlers(){ document.querySelectorAll('.filter').forEach(btn=>{ btn.addEventListener('click', ()=>{ document.querySelectorAll('.filter').forEach(f=>f.classList.remove('active')); btn.classList.add('active'); renderFeed(btn.dataset.filter); }); }); }
+function attachHeroHandlers(){ walkBtn.addEventListener('click', ()=> document.querySelector('.feed').scrollTo({left:0,behavior:'smooth'})); notifyBtn.addEventListener('click', ()=> window.location.href = '/#notify'); }
+
+/* =========================
+   Countdown & Lane state
+   ========================= */
+function startCountdown(){
+  const openT = new Date(POPUP_CONFIG.openDate).getTime();
+  const closeT = new Date(POPUP_CONFIG.closeDate).getTime();
+  const dEl = $('days'), hEl = $('hours'), mEl = $('mins'), sEl = $('secs');
+  function update(){
+    const now = Date.now();
+    let state;
+    if(now < openT) state='coming';
+    else if(now >= openT && now <= closeT) state='open';
+    else state='closed';
+
+    // update pill
+    if(state==='coming'){ statePill.textContent = 'Coming Soon'; statePill.className='pill'; closedOverlay.style.display='none'; lastChance.style.display='none'; }
+    else if(state==='open'){ statePill.textContent='Lane Open'; statePill.className='pill live-pill'; closedOverlay.style.display='none'; updateLastChance(); }
+    else { statePill.textContent='Closed'; statePill.className='pill'; closedOverlay.style.display='block'; lastChance.style.display='none'; }
+
+    // countdown target (if coming -> open, if open -> close, if closed -> next open (fallback) )
+    const target = state==='coming' ? openT : state==='open' ? closeT : openT;
+    const diff = Math.max(0, target - now);
+    const t = { days: Math.floor(diff/(24*3600*1000)), hours: Math.floor(diff/(3600*1000))%24, mins: Math.floor(diff/60000)%60, secs: Math.floor(diff/1000)%60 };
+    if(dEl) dEl.textContent = pad(t.days); if(hEl) hEl.textContent = pad(t.hours); if(mEl) mEl.textContent = pad(t.mins); if(sEl) sEl.textContent = pad(t.secs);
+  }
+  update();
+  setInterval(update, 1000);
+}
+
+/* last chance banner logic */
+function updateLastChance(){
+  const now = Date.now();
+  const closeT = new Date(POPUP_CONFIG.closeDate).getTime();
+  const minsLeft = Math.floor((closeT - now)/(60*1000));
+  if(minsLeft > 0 && minsLeft <= POPUP_CONFIG.lastChanceMinutes){
+    lastChance.style.display = 'block';
+    const hrs = Math.floor(minsLeft/60), mins = minsLeft%60;
+    lastChance.textContent = `Last chance — Lane closes in ${hrs}h ${mins}m`;
+  } else lastChance.style.display='none';
+}
+
+/* =========================
+   Live counter (simulated)
+   ========================= */
+function startLiveCounter(){
+  if(!POPUP_CONFIG.liveCounterSimulated){ liveCounter.textContent=''; return; }
+  let val = Math.floor(Math.random()*140)+20;
+  liveCounter.textContent = `${val} shoppers browsing`;
+  setInterval(()=> { val += Math.floor(Math.random()*7)-3; val = Math.max(6,val); liveCounter.textContent = `${val} shoppers browsing`; }, 5000 + Math.random()*5000);
+}
+
+/* =========================
+   Utility: open merchant store in new tab with tracking
+   ========================= */
+function openMerchantShop(m){ trackClickOut(m); const url = addUtm(m.shopUrl, {source:POPUP_CONFIG.tracking.utm_source, campaign:POPUP_CONFIG.tracking.utm_campaign, content:m.id}); window.open(url, '_blank', 'noopener'); }
+
+/* =========================
+   Accessibility: keyboard
+   ========================= */
+document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeModal(); });
+</script>
+</body>
+</html>
