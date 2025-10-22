@@ -7,6 +7,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import TheLane from "./pages/TheLane";
+import LanePreview from "./pages/LanePreview";
 import MerchantDashboard from "./pages/MerchantDashboard";
 import MerchantLogin from "./pages/MerchantLogin";
 import MerchantSignup from "./pages/MerchantSignup";
@@ -24,7 +25,8 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/lane" element={<TheLane />} />
+          <Route path="/lane" element={<TheLane />} />
+          <Route path="/lane-preview" element={<LanePreview />} />
             <Route path="/merchant/dashboard" element={<MerchantDashboard />} />
             <Route path="/merchant/login" element={<MerchantLogin />} />
             <Route path="/merchant/signup" element={<MerchantSignup />} />
