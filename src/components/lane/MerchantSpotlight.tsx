@@ -38,15 +38,15 @@ export default function MerchantSpotlight({
   if (isLoading || !merchant) {
     return (
       <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-wine" />
+        <Loader2 className="h-8 w-8 animate-spin text-[hsl(var(--wine))]" />
       </div>
     );
   }
 
   return (
-    <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 overflow-y-auto">
+    <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 overflow-y-auto animate-in fade-in duration-200">
       <div className="min-h-screen py-8 px-4">
-        <div className="max-w-4xl mx-auto bg-card rounded-lg shadow-xl overflow-hidden animate-scale-in">
+        <div className="max-w-4xl mx-auto bg-card rounded-2xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
           {/* Header */}
           <div className="relative h-64 bg-gradient-to-br from-wine/10 via-wine/20 to-wine/10 flex items-center justify-center">
             <Button
@@ -77,7 +77,7 @@ export default function MerchantSpotlight({
                 {merchant.website_url && (
                   <Button
                     onClick={() => window.open(merchant.website_url, "_blank")}
-                    className="bg-wine hover:bg-wine-light text-white"
+                    className="bg-[hsl(var(--wine))] hover:bg-[hsl(var(--wine-light))] text-white"
                   >
                     <ExternalLink className="h-4 w-4 mr-2" />
                     Visit Store
@@ -86,7 +86,11 @@ export default function MerchantSpotlight({
                 <Button
                   variant={isSaved ? "default" : "outline"}
                   onClick={() => onSave(merchantId)}
-                  className={isSaved ? "bg-wine hover:bg-wine-light text-white" : ""}
+                  className={
+                    isSaved
+                      ? "bg-[hsl(var(--wine))] hover:bg-[hsl(var(--wine-light))] text-white"
+                      : ""
+                  }
                 >
                   <Heart className={`h-4 w-4 ${isSaved ? "fill-current" : ""}`} />
                 </Button>
@@ -120,7 +124,7 @@ export default function MerchantSpotlight({
                         {product.product_description}
                       </p>
                       {product.price && (
-                        <p className="text-lg font-bold text-wine">
+                        <p className="text-lg font-bold text-[hsl(var(--wine))]">
                           ${parseFloat(product.price).toFixed(2)}
                         </p>
                       )}

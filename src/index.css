@@ -42,7 +42,10 @@ All colors MUST be HSL.
     --charcoal: 220 15% 8%;
     --glass: 220 15% 8% / 0.06;
     --open-overlay: 40 100% 92% / 0.18;
-    --wine: 345 69% 33%;
+    --wine: 352 65% 45%;
+    --wine-light: 352 55% 57%;
+    --urgent-red: 4 90% 58%;
+    --urgent-red-light: 4 100% 66%;
     --orange: 28 100% 50%;
     
     /* Gradients */
@@ -51,8 +54,10 @@ All colors MUST be HSL.
     
     /* Shadows */
     --shadow-subtle: 0 6px 20px hsl(220 15% 8% / 0.04);
-    --shadow-card: 0 6px 18px hsl(220 15% 8% / 0.03);
-    --shadow-button: 0 8px 28px hsl(220 15% 8% / 0.08);
+    --shadow-card: 0 18px 50px rgba(17, 18, 23, 0.06);
+    --shadow-elegant: 0 10px 30px rgba(17, 18, 23, 0.04);
+    --shadow-hover: 0 25px 60px rgba(17, 18, 23, 0.12);
+    --shadow-button: 0 10px 30px rgba(162, 62, 72, 0.06);
     
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
