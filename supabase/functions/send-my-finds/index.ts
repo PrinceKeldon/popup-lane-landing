@@ -1,7 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { Resend } from "npm:resend@4.0.0";
 
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+const resendApiKey = Deno.env.get("RESEND_API_KEY");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -36,6 +35,17 @@ const handler = async (req: Request): Promise<Response> => {
         JSON.stringify({ error: "Email and brands are required" }),
         {
           status: 400,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
+
+    if (!resendApiKey) {
+      console.error("RESEND_API_KEY is not set");
+      return new Response(
+        JSON.stringify({ error: "Email service not configured" }),
+        {
+          status: 500,
           headers: { "Content-Type": "application/json", ...corsHeaders },
         }
       );
@@ -82,16 +92,31 @@ const handler = async (req: Request): Promise<Response> => {
       </html>
     `;
 
-    const emailResponse = await resend.emails.send({
-      from: "PopUp Lane <onboarding@resend.dev>",
-      to: [email],
-      subject: "Your Saved Brands from PopUp Lane",
-      html: emailHTML,
+    // Use Resend API directly via fetch
+    const resendResponse = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${resendApiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: "PopUp Lane <onboarding@resend.dev>",
+        to: [email],
+        subject: "Your Saved Brands from PopUp Lane",
+        html: emailHTML,
+      }),
     });
 
-    console.log("Email sent successfully:", emailResponse);
+    if (!resendResponse.ok) {
+      const errorText = await resendResponse.text();
+      console.error("Resend API error:", errorText);
+      throw new Error(`Resend API error: ${errorText}`);
+    }
 
-    return new Response(JSON.stringify({ success: true, data: emailResponse }), {
+    const responseData = await resendResponse.json();
+    console.log("Email sent successfully:", responseData);
+
+    return new Response(JSON.stringify({ success: true, data: responseData }), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
