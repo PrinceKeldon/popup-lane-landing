@@ -320,9 +320,9 @@ const MOCK_BRANDS = [
     badges:['Emerging','Sustainable'],
     shopUrl:'https://example.com/loom',
     images:[
-      'https://placehold.co/800x520/C05A61/fff?text=Loom+Throw',
-      'https://placehold.co/800x520/A23E48/fff?text=Loom+Pillow',
-      'https://placehold.co/800x520/ffe6e6/6b3a3a?text=Loom+Set'
+      'https://images.unsplash.com/photo-1631889993959-41b4e9c6e3c5?w=800&h=520&fit=crop',
+      'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=800&h=520&fit=crop',
+      'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=800&h=520&fit=crop'
     ],
     offer:{headline:'30% OFF', snapshot:'Selected linens • Free shipping over $80'}
   },
@@ -336,9 +336,9 @@ const MOCK_BRANDS = [
     badges:['Boutique'],
     shopUrl:'https://example.com/bright',
     images:[
-      'https://placehold.co/800x520/ffd6d6/6b3a3a?text=Glazed+Cup',
-      'https://placehold.co/800x520/ffefef/6b3a3a?text=Ceramic+Set',
-      'https://placehold.co/800x520/fff0f0/6b3a3a?text=Plate'
+      'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=800&h=520&fit=crop',
+      'https://images.unsplash.com/photo-1610701596007-11502861dcfa?w=800&h=520&fit=crop',
+      'https://images.unsplash.com/photo-1604578762246-41134e37f9cc?w=800&h=520&fit=crop'
     ],
     offer:{headline:'Buy 2 Get 1', snapshot:'Limited sets • Ends Nov 26'}
   },
@@ -352,9 +352,9 @@ const MOCK_BRANDS = [
     badges:['Style','Trending'],
     shopUrl:'https://example.com/thread',
     images:[
-      'https://placehold.co/800x520/efe6e2/6b3a3a?text=Everyday+Tee',
-      'https://placehold.co/800x520/e9e0dc/6b3a3a?text=Classic+Shirt',
-      'https://placehold.co/800x520/f0eae6/6b3a3a?text=Comfort+Jacket'
+      'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&h=520&fit=crop',
+      'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=800&h=520&fit=crop',
+      'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=800&h=520&fit=crop'
     ],
     offer:{headline:'25% OFF', snapshot:'Selected styles • Extra 10% with code LANE10'}
   },

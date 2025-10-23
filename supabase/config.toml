@@ -2,3 +2,6 @@ project_id = "rvjlpzahlcgfdxecrjkq"
 
 [functions.airtable-submit]
 verify_jwt = false
+
+[functions.send-my-finds]
+verify_jwt = false

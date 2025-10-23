@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { CountdownTimer } from "@/components/CountdownTimer";
+import { POPUP_LANE_CONFIG } from "@/lib/constants";
 
 interface LaneHeroProps {
   isOpen: boolean;
@@ -48,8 +49,8 @@ export default function LaneHero({ isOpen, nextEventDate }: LaneHeroProps) {
           <CountdownTimer
             targetDate={
               isOpen
-                ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
-                : nextEventDate || new Date().toISOString()
+                ? POPUP_LANE_CONFIG.LANE_CLOSE_DATE.toISOString()
+                : POPUP_LANE_CONFIG.LANE_OPEN_DATE.toISOString()
             }
             isOpen={isOpen}
           />

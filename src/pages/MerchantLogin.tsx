@@ -49,12 +49,39 @@ export default function MerchantLogin() {
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
     setIsLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data: authData, error } = await supabase.auth.signInWithPassword({
         email: values.email,
         password: values.password,
       });
 
       if (error) throw error;
+
+      // Check if user has a merchant record
+      if (authData.user) {
+        const { data: merchantData } = await supabase
+          .from("merchants")
+          .select("*")
+          .eq("user_id", authData.user.id)
+          .maybeSingle();
+
+        // If no merchant record with user_id, try to link by email
+        if (!merchantData) {
+          const { data: merchantByEmail } = await supabase
+            .from("merchants")
+            .select("*")
+            .eq("email", values.email)
+            .eq("application_status", "Approved")
+            .maybeSingle();
+
+          if (merchantByEmail && !merchantByEmail.user_id) {
+            // Link the merchant record to this user
+            await supabase
+              .from("merchants")
+              .update({ user_id: authData.user.id })
+              .eq("id", merchantByEmail.id);
+          }
+        }
+      }
 
       toast({
         title: "Welcome back!",

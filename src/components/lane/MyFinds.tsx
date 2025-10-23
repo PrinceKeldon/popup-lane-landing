@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Heart, Mail, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 
 interface MyFindsProps {
   savedMerchantIds: string[];
@@ -17,6 +18,7 @@ export default function MyFinds({
   onMerchantClick,
 }: MyFindsProps) {
   const { toast } = useToast();
+  const [isSending, setIsSending] = useState(false);
 
   const { data: savedMerchants } = useQuery({
     queryKey: ["saved-merchants", savedMerchantIds],
@@ -34,22 +36,44 @@ export default function MyFinds({
     enabled: savedMerchantIds.length > 0,
   });
 
-  const handleEmailFinds = () => {
-    const merchantList = savedMerchants
-      ?.map((m) => `${m.brand_name} - ${m.website_url || "No website"}`)
-      .join("\n");
+  const handleEmailFinds = async () => {
+    const email = prompt("Enter your email to receive your saved brands:");
+    if (!email) return;
 
-    const subject = encodeURIComponent("My PopUp Lane Finds");
-    const body = encodeURIComponent(
-      `Here are my favorite brands from The Lane:\n\n${merchantList}`
-    );
+    setIsSending(true);
+    try {
+      const brands = savedMerchants || [];
+      const { error } = await supabase.functions.invoke("send-my-finds", {
+        body: { email, brands },
+      });
 
-    window.location.href = `mailto:?subject=${subject}&body=${body}`;
-    
-    toast({
-      title: "Email ready!",
-      description: "Opening your email client...",
-    });
+      if (error) throw error;
+
+      toast({
+        title: "Email sent!",
+        description: `Your saved brands have been emailed to ${email}`,
+      });
+    } catch (error: any) {
+      console.error("Error sending email:", error);
+      // Fallback to mailto if edge function fails
+      const merchantList = savedMerchants
+        ?.map((m) => `${m.brand_name} - ${m.website_url || "No website"}`)
+        .join("\n");
+
+      const subject = encodeURIComponent("My PopUp Lane Finds");
+      const body = encodeURIComponent(
+        `Here are my favorite brands from The Lane:\n\n${merchantList}`
+      );
+
+      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+      
+      toast({
+        title: "Opening email client",
+        description: "Email service unavailable, using your default email app",
+      });
+    } finally {
+      setIsSending(false);
+    }
   };
 
   if (!savedMerchants || savedMerchants.length === 0) return null;
@@ -103,9 +127,10 @@ export default function MyFinds({
           <Button
             onClick={handleEmailFinds}
             className="w-full bg-wine hover:bg-wine-light text-white"
+            disabled={isSending}
           >
             <Mail className="h-4 w-4 mr-2" />
-            Email My Finds
+            {isSending ? "Sending..." : "Email My Finds"}
           </Button>
         </div>
       </div>
