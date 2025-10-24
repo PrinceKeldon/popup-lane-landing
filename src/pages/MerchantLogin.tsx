@@ -56,30 +56,21 @@ export default function MerchantLogin() {
 
       if (error) throw error;
 
-      // Check if user has a merchant record
       if (authData.user) {
-        const { data: merchantData } = await supabase
-          .from("merchants")
-          .select("*")
-          .eq("user_id", authData.user.id)
-          .maybeSingle();
-
-        // If no merchant record with user_id, try to link by email
-        if (!merchantData) {
-          const { data: merchantByEmail } = await supabase
+        // Try to link merchant account if it exists
+        try {
+          const { error: linkError } = await supabase
             .from("merchants")
-            .select("*")
+            .update({ user_id: authData.user.id })
             .eq("email", values.email)
             .eq("application_status", "Approved")
-            .maybeSingle();
+            .is("user_id", null);
 
-          if (merchantByEmail && !merchantByEmail.user_id) {
-            // Link the merchant record to this user
-            await supabase
-              .from("merchants")
-              .update({ user_id: authData.user.id })
-              .eq("id", merchantByEmail.id);
+          if (linkError) {
+            console.log("No merchant account to link or already linked:", linkError);
           }
+        } catch (linkErr) {
+          console.log("Account linking attempt failed:", linkErr);
         }
       }
 
