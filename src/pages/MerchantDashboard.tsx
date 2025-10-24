@@ -58,28 +58,46 @@ export default function MerchantDashboard() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user?.email) return null;
 
-      const { data: merchantByEmail } = await supabase
+      const { data: merchantByEmail, error: emailError } = await supabase
         .from("merchants")
         .select("*")
         .eq("email", user.email)
         .eq("application_status", "Approved")
         .maybeSingle();
 
-      if (merchantByEmail && !merchantByEmail.user_id) {
-        // Try to link the account
-        await supabase
+      if (emailError) throw emailError;
+      if (!merchantByEmail) return null;
+
+      // If merchant found by email but not linked, link it now
+      if (!merchantByEmail.user_id) {
+        const { error: updateError } = await supabase
           .from("merchants")
           .update({ user_id: userId })
           .eq("id", merchantByEmail.id);
 
-        // Refetch to get the updated merchant data
-        return { ...merchantByEmail, user_id: userId };
+        if (updateError) {
+          console.error("Failed to link merchant account:", updateError);
+          throw updateError;
+        }
+
+        // Wait a moment for the update to propagate
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        // Fetch the updated merchant record
+        const { data: linkedMerchant, error: linkedError } = await supabase
+          .from("merchants")
+          .select("*")
+          .eq("id", merchantByEmail.id)
+          .single();
+
+        if (linkedError) throw linkedError;
+        return linkedMerchant;
       }
 
       return merchantByEmail;
     },
     enabled: !!userId,
-    retry: 2,
+    retry: 3,
     retryDelay: 1000,
   });
 
