@@ -39,21 +39,48 @@ export default function MerchantDashboard() {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
-  const { data: merchant, isLoading } = useQuery({
+  const { data: merchant, isLoading, refetch } = useQuery({
     queryKey: ["merchant", userId],
     queryFn: async () => {
       if (!userId) return null;
 
-      const { data, error } = await supabase
+      // First try to find by user_id
+      const { data: merchantByUserId, error: userIdError } = await supabase
         .from("merchants")
         .select("*")
         .eq("user_id", userId)
         .maybeSingle();
 
-      if (error) throw error;
-      return data;
+      if (userIdError) throw userIdError;
+      if (merchantByUserId) return merchantByUserId;
+
+      // If not found by user_id, try to find by email and link it
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user?.email) return null;
+
+      const { data: merchantByEmail } = await supabase
+        .from("merchants")
+        .select("*")
+        .eq("email", user.email)
+        .eq("application_status", "Approved")
+        .maybeSingle();
+
+      if (merchantByEmail && !merchantByEmail.user_id) {
+        // Try to link the account
+        await supabase
+          .from("merchants")
+          .update({ user_id: userId })
+          .eq("id", merchantByEmail.id);
+
+        // Refetch to get the updated merchant data
+        return { ...merchantByEmail, user_id: userId };
+      }
+
+      return merchantByEmail;
     },
     enabled: !!userId,
+    retry: 2,
+    retryDelay: 1000,
   });
 
   const { data: products = [] } = useQuery({
