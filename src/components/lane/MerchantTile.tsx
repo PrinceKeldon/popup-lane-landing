@@ -21,21 +21,29 @@ export default function MerchantTile({
 
   return (
     <div className="group relative bg-card border rounded-xl overflow-hidden shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-hover)] transition-all duration-300 hover:-translate-y-2">
-      {/* Logo Placeholder */}
+      {/* Product Image or Logo Placeholder */}
       <div
-        className="relative h-40 bg-gradient-to-br from-wine/5 via-wine/10 to-wine/5 flex items-center justify-center cursor-pointer"
+        className="relative h-40 bg-gradient-to-br from-wine/5 via-wine/10 to-wine/5 flex items-center justify-center cursor-pointer overflow-hidden"
         onClick={onClick}
       >
+        {firstProduct?.image_url ? (
+          <img 
+            src={firstProduct.image_url} 
+            alt={firstProduct.product_name}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+        ) : (
+          <div className="w-20 h-20 rounded-full bg-wine/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <span className="text-3xl font-bold text-wine">
+              {merchant.brand_name.charAt(0).toUpperCase()}
+            </span>
+          </div>
+        )}
         {firstProduct?.price && (
           <div className="absolute top-2 left-2 bg-[hsl(var(--urgent-red))] text-white px-2.5 py-1.5 rounded-lg font-bold text-xs shadow-lg z-10">
             FROM ${parseFloat(String(firstProduct.price)).toFixed(0)}
           </div>
         )}
-        <div className="w-20 h-20 rounded-full bg-wine/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-          <span className="text-3xl font-bold text-wine">
-            {merchant.brand_name.charAt(0).toUpperCase()}
-          </span>
-        </div>
       </div>
 
       {/* Content */}

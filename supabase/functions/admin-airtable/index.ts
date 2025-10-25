@@ -86,6 +86,32 @@ serve(async (req) => {
         }
 
         const data = await response.json();
+
+        // If updating Merchants table, also sync with Supabase merchants table
+        if (table === 'Merchants' && fields['Application Status']) {
+          try {
+            // Find the merchant by airtable_record_id
+            const { data: merchant } = await supabaseClient
+              .from('merchants')
+              .select('id')
+              .eq('airtable_record_id', recordId)
+              .single();
+
+            if (merchant) {
+              // Update the merchant status in Supabase
+              await supabaseClient
+                .from('merchants')
+                .update({
+                  application_status: fields['Application Status']
+                })
+                .eq('id', merchant.id);
+            }
+          } catch (syncError) {
+            console.error('Error syncing to Supabase:', syncError);
+            // Don't fail the whole request if sync fails
+          }
+        }
+
         return new Response(JSON.stringify(data), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         });

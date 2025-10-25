@@ -92,6 +92,15 @@ export const ProductList = ({ merchantId }: ProductListProps) => {
             </Button>
           </CardHeader>
           <CardContent className="space-y-2">
+            {product.image_url && (
+              <div className="w-full h-48 rounded-lg overflow-hidden mb-3">
+                <img 
+                  src={product.image_url} 
+                  alt={product.product_name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
             <p className="text-sm text-muted-foreground">{product.product_description}</p>
             {product.price && (
               <p className="text-lg font-semibold">${Number(product.price).toFixed(2)}</p>

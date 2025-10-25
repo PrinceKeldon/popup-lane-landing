@@ -14,7 +14,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2 } from "lucide-react";
+import { Loader2, Upload } from "lucide-react";
+import { useState } from "react";
 
 const productSchema = z.object({
   product_name: z.string().min(1, "Product name is required").max(100),
@@ -22,6 +23,7 @@ const productSchema = z.object({
   price: z.string().optional(),
   website_url: z.string().url("Invalid URL").optional().or(z.literal("")),
   social_media: z.string().max(200).optional(),
+  image: z.instanceof(File).optional(),
 });
 
 interface ProductFormProps {
@@ -31,6 +33,7 @@ interface ProductFormProps {
 
 export const ProductForm = ({ merchantId, onSuccess }: ProductFormProps) => {
   const { toast } = useToast();
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof productSchema>>({
     resolver: zodResolver(productSchema),
@@ -45,6 +48,31 @@ export const ProductForm = ({ merchantId, onSuccess }: ProductFormProps) => {
 
   const onSubmit = async (values: z.infer<typeof productSchema>) => {
     try {
+      let imageUrl = null;
+
+      // Upload image if provided
+      if (values.image) {
+        const fileExt = values.image.name.split('.').pop();
+        const fileName = `${merchantId}-${Date.now()}.${fileExt}`;
+        const filePath = `${fileName}`;
+
+        const { error: uploadError, data } = await supabase.storage
+          .from('product-images')
+          .upload(filePath, values.image, {
+            cacheControl: '3600',
+            upsert: false
+          });
+
+        if (uploadError) throw uploadError;
+
+        // Get public URL
+        const { data: { publicUrl } } = supabase.storage
+          .from('product-images')
+          .getPublicUrl(filePath);
+
+        imageUrl = publicUrl;
+      }
+
       const { error } = await supabase.from("merchant_products").insert({
         merchant_id: merchantId,
         product_name: values.product_name,
@@ -52,6 +80,7 @@ export const ProductForm = ({ merchantId, onSuccess }: ProductFormProps) => {
         price: values.price ? parseFloat(values.price) : null,
         website_url: values.website_url || null,
         social_media: values.social_media || null,
+        image_url: imageUrl,
       });
 
       if (error) throw error;
@@ -62,6 +91,7 @@ export const ProductForm = ({ merchantId, onSuccess }: ProductFormProps) => {
       });
 
       form.reset();
+      setImagePreview(null);
       onSuccess();
     } catch (error: any) {
       toast({
@@ -144,6 +174,49 @@ export const ProductForm = ({ merchantId, onSuccess }: ProductFormProps) => {
               <FormLabel>Social Media</FormLabel>
               <FormControl>
                 <Input placeholder="@yourbrand" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="image"
+          render={({ field: { value, onChange, ...field } }) => (
+            <FormItem>
+              <FormLabel>Product Image</FormLabel>
+              <FormControl>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4">
+                    <Input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp,image/jpg"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          onChange(file);
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            setImagePreview(reader.result as string);
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      }}
+                      {...field}
+                    />
+                    <Upload className="h-4 w-4 text-muted-foreground" />
+                  </div>
+                  {imagePreview && (
+                    <div className="relative w-full h-48 rounded-lg overflow-hidden border">
+                      <img
+                        src={imagePreview}
+                        alt="Preview"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>

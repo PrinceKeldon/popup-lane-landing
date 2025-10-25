@@ -46,6 +46,7 @@ export type Database = {
           created_at: string
           display_order: number
           id: string
+          image_url: string | null
           merchant_id: string
           price: number | null
           product_description: string
@@ -58,6 +59,7 @@ export type Database = {
           created_at?: string
           display_order?: number
           id?: string
+          image_url?: string | null
           merchant_id: string
           price?: number | null
           product_description: string
@@ -70,6 +72,7 @@ export type Database = {
           created_at?: string
           display_order?: number
           id?: string
+          image_url?: string | null
           merchant_id?: string
           price?: number | null
           product_description?: string

@@ -117,28 +117,39 @@ export default function MerchantSpotlight({
                   {merchant.merchant_products.map((product: any) => (
                     <div
                       key={product.id}
-                      className="border rounded-lg p-4 space-y-2 hover:shadow-md transition-shadow"
+                      className="border rounded-lg overflow-hidden space-y-2 hover:shadow-md transition-shadow"
                     >
-                      <h4 className="font-semibold">{product.product_name}</h4>
-                      <p className="text-sm text-muted-foreground line-clamp-2">
-                        {product.product_description}
-                      </p>
-                      {product.price && (
-                        <p className="text-lg font-bold text-[hsl(var(--wine))]">
-                          ${parseFloat(product.price).toFixed(2)}
+                      {product.image_url && (
+                        <div className="w-full h-48">
+                          <img 
+                            src={product.image_url} 
+                            alt={product.product_name}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      )}
+                      <div className="p-4 space-y-2">
+                        <h4 className="font-semibold">{product.product_name}</h4>
+                        <p className="text-sm text-muted-foreground line-clamp-2">
+                          {product.product_description}
                         </p>
-                      )}
-                      {product.website_url && (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="w-full"
-                          onClick={() => window.open(product.website_url, "_blank")}
-                        >
-                          <Globe className="h-3 w-3 mr-2" />
-                          View Product
-                        </Button>
-                      )}
+                        {product.price && (
+                          <p className="text-lg font-bold text-[hsl(var(--wine))]">
+                            ${parseFloat(product.price).toFixed(2)}
+                          </p>
+                        )}
+                        {product.website_url && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="w-full"
+                            onClick={() => window.open(product.website_url, "_blank")}
+                          >
+                            <Globe className="h-3 w-3 mr-2" />
+                            View Product
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>
