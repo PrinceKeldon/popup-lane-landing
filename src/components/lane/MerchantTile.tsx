@@ -39,9 +39,18 @@ export default function MerchantTile({
             </span>
           </div>
         )}
-        {firstProduct?.price && (
-          <div className="absolute top-2 left-2 bg-[hsl(var(--urgent-red))] text-white px-2.5 py-1.5 rounded-lg font-bold text-xs shadow-lg z-10">
-            FROM ${parseFloat(String(firstProduct.price)).toFixed(0)}
+        {firstProduct?.discount_percentage ? (
+          <div className="absolute top-2 left-2 bg-[hsl(var(--urgent-red))] text-white px-2.5 py-1.5 rounded-lg font-bold text-xs shadow-lg z-10 animate-pulse-badge">
+            {firstProduct.discount_percentage}% OFF
+          </div>
+        ) : firstProduct?.price && (
+          <div className="absolute top-2 left-2 bg-[hsl(var(--wine))] text-white px-2.5 py-1.5 rounded-lg font-bold text-xs shadow-lg z-10">
+            ${parseFloat(String(firstProduct.price)).toFixed(0)}
+          </div>
+        )}
+        {firstProduct?.offer_text && (
+          <div className="absolute bottom-2 left-2 right-2 bg-black/70 text-white px-2 py-1 rounded-md text-xs font-semibold text-center">
+            {firstProduct.offer_text}
           </div>
         )}
       </div>
@@ -63,8 +72,20 @@ export default function MerchantTile({
         </div>
 
         {firstProduct && (
-          <div className="bg-wine/5 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-wine">
-            {firstProduct.product_name}
+          <div className="space-y-1">
+            <div className="bg-wine/5 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-wine">
+              {firstProduct.product_name}
+            </div>
+            {firstProduct.discount_percentage && firstProduct.original_price && (
+              <div className="flex items-center gap-2 text-xs">
+                <span className="line-through text-muted-foreground">
+                  ${parseFloat(String(firstProduct.original_price)).toFixed(2)}
+                </span>
+                <span className="font-bold text-[hsl(var(--urgent-red))]">
+                  ${(parseFloat(String(firstProduct.original_price)) * (1 - firstProduct.discount_percentage / 100)).toFixed(2)}
+                </span>
+              </div>
+            )}
           </div>
         )}
 

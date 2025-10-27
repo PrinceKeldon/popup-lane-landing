@@ -21,6 +21,9 @@ const productSchema = z.object({
   product_name: z.string().min(1, "Product name is required").max(100),
   product_description: z.string().min(1, "Description is required").max(500),
   price: z.string().optional(),
+  original_price: z.string().optional(),
+  discount_percentage: z.string().optional(),
+  offer_text: z.string().max(100).optional(),
   website_url: z.string().url("Invalid URL").optional().or(z.literal("")),
   social_media: z.string().max(200).optional(),
   image: z.instanceof(File).optional(),
@@ -41,6 +44,9 @@ export const ProductForm = ({ merchantId, onSuccess }: ProductFormProps) => {
       product_name: "",
       product_description: "",
       price: "",
+      original_price: "",
+      discount_percentage: "",
+      offer_text: "",
       website_url: "",
       social_media: "",
     },
@@ -78,6 +84,9 @@ export const ProductForm = ({ merchantId, onSuccess }: ProductFormProps) => {
         product_name: values.product_name,
         product_description: values.product_description,
         price: values.price ? parseFloat(values.price) : null,
+        original_price: values.original_price ? parseFloat(values.original_price) : null,
+        discount_percentage: values.discount_percentage ? parseInt(values.discount_percentage) : null,
+        offer_text: values.offer_text || null,
         website_url: values.website_url || null,
         social_media: values.social_media || null,
         image_url: imageUrl,
@@ -143,9 +152,53 @@ export const ProductForm = ({ merchantId, onSuccess }: ProductFormProps) => {
           name="price"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Price</FormLabel>
+              <FormLabel>Current Price</FormLabel>
               <FormControl>
                 <Input type="number" step="0.01" placeholder="29.99" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="original_price"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Original Price (for discount)</FormLabel>
+                <FormControl>
+                  <Input type="number" step="0.01" placeholder="39.99" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="discount_percentage"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Discount %</FormLabel>
+                <FormControl>
+                  <Input type="number" min="0" max="100" placeholder="25" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <FormField
+          control={form.control}
+          name="offer_text"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Special Offer Text</FormLabel>
+              <FormControl>
+                <Input placeholder="Limited time offer!" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

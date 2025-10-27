@@ -44,10 +44,14 @@ export type Database = {
       merchant_products: {
         Row: {
           created_at: string
+          discount_percentage: number | null
           display_order: number
           id: string
           image_url: string | null
+          image_urls: Json | null
           merchant_id: string
+          offer_text: string | null
+          original_price: number | null
           price: number | null
           product_description: string
           product_name: string
@@ -57,10 +61,14 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          discount_percentage?: number | null
           display_order?: number
           id?: string
           image_url?: string | null
+          image_urls?: Json | null
           merchant_id: string
+          offer_text?: string | null
+          original_price?: number | null
           price?: number | null
           product_description: string
           product_name: string
@@ -70,10 +78,14 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          discount_percentage?: number | null
           display_order?: number
           id?: string
           image_url?: string | null
+          image_urls?: Json | null
           merchant_id?: string
+          offer_text?: string | null
+          original_price?: number | null
           price?: number | null
           product_description?: string
           product_name?: string
@@ -97,11 +109,13 @@ export type Database = {
           application_status: string
           brand_name: string
           category: string | null
+          click_count: number
           created_at: string
           email: string
           id: string
           social_media: string | null
           spots_claimed: number
+          tier: string | null
           updated_at: string
           user_id: string | null
           website_url: string | null
@@ -111,11 +125,13 @@ export type Database = {
           application_status?: string
           brand_name: string
           category?: string | null
+          click_count?: number
           created_at?: string
           email: string
           id?: string
           social_media?: string | null
           spots_claimed?: number
+          tier?: string | null
           updated_at?: string
           user_id?: string | null
           website_url?: string | null
@@ -125,11 +141,13 @@ export type Database = {
           application_status?: string
           brand_name?: string
           category?: string | null
+          click_count?: number
           created_at?: string
           email?: string
           id?: string
           social_media?: string | null
           spots_claimed?: number
+          tier?: string | null
           updated_at?: string
           user_id?: string | null
           website_url?: string | null

@@ -25,6 +25,7 @@ export default function FeaturedSection({
           merchant_products (*)
         `)
         .eq("application_status", "Approved")
+        .eq("tier", "featured")
         .order("created_at", { ascending: false })
         .limit(4);
 
@@ -52,19 +53,32 @@ export default function FeaturedSection({
                 <div className="bg-card border-2 border-transparent rounded-2xl overflow-hidden shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-hover)] hover:border-wine/10 transition-all duration-300 hover:-translate-y-2 cursor-pointer">
                   {/* Image/Logo Area */}
                   <div
-                    className="relative h-48 bg-gradient-to-br from-wine/5 via-wine/10 to-wine/5 flex items-center justify-center"
+                    className="relative h-48 bg-gradient-to-br from-wine/5 via-wine/10 to-wine/5 flex items-center justify-center overflow-hidden"
                     onClick={() => onMerchantClick(merchant.id)}
                   >
-                    {firstProduct?.price && (
-                      <div className="absolute top-3 left-3 bg-[hsl(var(--urgent-red))] text-white px-3 py-2 rounded-lg font-bold text-sm shadow-lg z-10 animate-pulse">
-                        FROM ${parseFloat(String(firstProduct.price)).toFixed(0)}
+                    {firstProduct?.image_url ? (
+                      <img 
+                        src={firstProduct.image_url} 
+                        alt={firstProduct.product_name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="w-24 h-24 rounded-full bg-wine/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <span className="text-4xl font-bold text-wine">
+                          {merchant.brand_name.charAt(0).toUpperCase()}
+                        </span>
                       </div>
                     )}
-                    <div className="w-24 h-24 rounded-full bg-wine/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <span className="text-4xl font-bold text-wine">
-                        {merchant.brand_name.charAt(0).toUpperCase()}
-                      </span>
-                    </div>
+                    {firstProduct?.discount_percentage && (
+                      <div className="absolute top-3 left-3 bg-[hsl(var(--urgent-red))] text-white px-3 py-2 rounded-lg font-bold text-sm shadow-lg z-10 animate-pulse-badge">
+                        {firstProduct.discount_percentage}% OFF
+                      </div>
+                    )}
+                    {firstProduct?.offer_text && (
+                      <div className="absolute bottom-3 left-3 right-3 bg-black/70 text-white px-3 py-2 rounded-lg text-xs font-semibold text-center z-10">
+                        {firstProduct.offer_text}
+                      </div>
+                    )}
                   </div>
 
                   {/* Content */}
