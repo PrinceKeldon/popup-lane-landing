@@ -1,0 +1,15 @@
+
+---
+
+### 💡 **Recommended Tagline for Commit Notes**
+> “Invisible security, same heartbeat — protecting the pulse without slowing it down.”
+
+---
+
+### ✅ **Optional Developer Notes**
+If using React:
+- Add `useAnonSession()` hook to manage token lifecycle.
+- Add `useCaptcha()` helper to wrap reCAPTCHA logic.
+- Keep both abstracted from UI so composer remains clean.
+
+---
