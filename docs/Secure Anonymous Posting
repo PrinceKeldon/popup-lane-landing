@@ -1,0 +1,56 @@
+### 🪶 **Secure Anonymous Posting (Invisible Layer)**
+
+**Commit Title:**
+`feat(security): add invisible protection layers to submit-pulse edge function`
+
+---
+
+**Commit Description (paste directly):**
+
+```
+### Summary
+Hardened the `submit-pulse` edge function to prevent spam and abuse while keeping the posting experience fully anonymous and frictionless.
+
+### Changes Implemented
+1. **Anonymous Session Tokens**
+   - Added `/api/init-session` endpoint to issue short-lived (24h) anonymous tokens.
+   - Tokens stored temporarily (KV/DB) and required for each post request.
+   - Prevents API access without a verified session identity.
+
+2. **Invisible reCAPTCHA v3 Verification**
+   - Integrated Google reCAPTCHA v3 (invisible mode).
+   - Frontend sends `g-recaptcha-response` token with post submission.
+   - Server validates with Google API; rejects low-score submissions (<0.5).
+   - Keeps experience seamless for 99% of users.
+
+3. **Server-Side Rate Limiting**
+   - Implemented IP + anon_token-based rate limiter:
+     - Max 1 post per 30s
+     - Max 5 posts per 5m
+   - Friendly rejection message: “The world’s heartbeat needs a pause. Try again soon.”
+
+4. **Abuse Logging**
+   - Added lightweight logging for rejected submissions:
+     - Timestamp, hashed IP, region, reason (token_invalid / captcha_failed / rate_limit)
+   - No personal data stored (hashed IP only).
+
+### Security & UX Balance
+- No login or user accounts required.
+- No visible CAPTCHAs unless suspicious activity detected.
+- Fully anonymous, compliant, and resistant to bot spam.
+- All messages maintain Global Pulse’s calm, poetic tone.
+
+### Acceptance Criteria
+- ✅ Anonymous posts still possible with no login friction.
+- ✅ Flood/spam attempts via API or fake fingerprints blocked.
+- ✅ Edge functions log abuse attempts for monitoring.
+- ✅ Invisible to normal users, effective against automation.
+```
+
+---
+
+**Recommended Tagline for Commit Notes:**
+
+> “Invisible protection for a frictionless world — the Pulse stays human.”
+
+
