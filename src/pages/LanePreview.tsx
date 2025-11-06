@@ -193,7 +193,7 @@ export default function LanePreview() {
                       <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
                         BY {merchant.brand_name}
                       </p>
-                      {merchant.category && <Badge variant="secondary" className="text-xs">
+                      {merchant.category && <Badge variant="secondary" className="text-xs bg-transparent">
                           {merchant.category}
                         </Badge>}
                     </div>
