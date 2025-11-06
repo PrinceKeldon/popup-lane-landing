@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
-export type LaneState = "open" | "closed";
+export type LaneState = "open" | "closed" | "paused";
 
 interface LaneStateConfig {
   state: LaneState;
@@ -8,25 +9,31 @@ interface LaneStateConfig {
 }
 
 export const useLaneState = (): LaneStateConfig => {
-  const [state, setState] = useState<LaneState>("open");
+  const { data: settings } = useQuery({
+    queryKey: ["lane-settings"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("lane_settings")
+        .select("*")
+        .order("updated_at", { ascending: false })
+        .limit(1)
+        .single();
 
-  useEffect(() => {
-    // Check if we're in an active season
-    // For now, we'll check if we're within Black Friday season (late Nov)
-    const now = new Date();
-    const currentMonth = now.getMonth(); // 0-indexed (November = 10)
-    const currentDay = now.getDate();
-    
-    // Open from Nov 15 to Dec 5 (Black Friday season)
-    const isBlackFridaySeason = 
-      (currentMonth === 10 && currentDay >= 15) || // Nov 15-30
-      (currentMonth === 11 && currentDay <= 5);     // Dec 1-5
-    
-    setState(isBlackFridaySeason ? "open" : "closed");
-  }, []);
+      if (error) {
+        console.error("Error fetching lane settings:", error);
+        return null;
+      }
+
+      return data;
+    },
+    refetchInterval: 30000, // Refetch every 30 seconds to pick up admin changes
+  });
+
+  const state = (settings?.lane_status as LaneState) || "closed";
+  const nextEventDate = state === "closed" ? settings?.early_access_date : undefined;
 
   return {
     state,
-    nextEventDate: state === "closed" ? "2025-11-15" : undefined,
+    nextEventDate,
   };
 };
