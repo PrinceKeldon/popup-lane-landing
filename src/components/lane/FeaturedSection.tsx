@@ -92,16 +92,16 @@ export default function FeaturedSection({
                       </Badge>
                     )}
 
-                    <div className="rounded bg-[#fbfcfb]/90 px-[6px] mx-0 py-[3px] my-[19px]">
-                      <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
-                        BY {merchant.brand_name}
-                      </p>
-                {merchant.category && (
-                  <Badge variant="secondary" className="text-xs w-fit border-0 px-2 py-0.5 bg-white text-wine">
-                    {merchant.category}
-                  </Badge>
-                )}
-                    </div>
+                <div className="rounded bg-[#fbfcfb]/90 px-[6px] py-[3px] my-[19px] w-fit">
+                  <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
+                    BY {merchant.brand_name}
+                  </p>
+                  {merchant.category && (
+                    <Badge variant="secondary" className="text-xs w-fit border-0 px-2 py-0.5 bg-white text-wine">
+                      {merchant.category}
+                    </Badge>
+                  )}
+                </div>
 
                     {firstProduct && (
                       <>

@@ -88,7 +88,7 @@ export default function TrendingSection({ onMerchantClick }: TrendingSectionProp
                         {firstProduct.product_name}
                       </Badge>
                     )}
-                    <div className="rounded bg-[#fbfcfb]/90 px-[6px] py-[3px]">
+                    <div className="rounded bg-[#fbfcfb]/90 px-[6px] py-[3px] w-fit">
                       <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
                         BY {merchant.brand_name}
                       </p>

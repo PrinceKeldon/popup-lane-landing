@@ -64,7 +64,7 @@ export default function MerchantTile({
           </Badge>
         )}
 
-        <div className="rounded bg-[#fbfcfb]/90 px-[6px] mx-0 py-[3px] my-[19px]">
+        <div className="rounded bg-[#fbfcfb]/90 px-[6px] py-[3px] my-[19px] w-fit">
           <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
             BY {merchant.brand_name}
           </p>

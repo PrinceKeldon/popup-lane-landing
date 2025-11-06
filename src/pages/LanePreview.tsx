@@ -100,7 +100,7 @@ export default function LanePreview() {
                     {mainProduct && <Badge className="leading-tight text-sm font-medium text-black px-3 w-fit my-0 py-[3px] bg-[#f5f8f9]">
                         {mainProduct.product_name}
                       </Badge>}
-                    <div className="rounded bg-[#fbfcfb]/90 px-[6px] mx-0 py-[3px] my-[19px]">
+                    <div className="rounded bg-[#fbfcfb]/90 px-[6px] py-[3px] my-[19px] w-fit">
                       <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
                         BY {merchant.brand_name}
                       </p>
@@ -143,7 +143,7 @@ export default function LanePreview() {
                     {mainProduct && <Badge className="text-sm font-medium text-black px-3 w-fit my-0 py-[3px] bg-[#f5f8f9]">
                         {mainProduct.product_name}
                       </Badge>}
-                    <div className="rounded bg-[#fbfcfb]/90 px-[6px] py-[3px]">
+                    <div className="rounded bg-[#fbfcfb]/90 px-[6px] py-[3px] w-fit">
                       <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
                         BY {merchant.brand_name}
                       </p>
@@ -177,7 +177,7 @@ export default function LanePreview() {
                     {mainProduct && <Badge className="leading-tight text-sm font-medium text-black px-3 w-fit my-0 py-[3px] bg-[#f5f8f9]">
                         {mainProduct.product_name}
                       </Badge>}
-                    <div className="flex items-center justify-between rounded bg-[#fbfcfb]/90 px-[6px] mx-0 py-[3px] my-[19px]">
+                    <div className="rounded bg-[#fbfcfb]/90 px-[6px] py-[3px] my-[19px] w-fit">
                       <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
                         BY {merchant.brand_name}
                       </p>
