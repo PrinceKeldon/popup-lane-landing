@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const resendApiKey = Deno.env.get("RESEND_API_KEY");
 
@@ -8,12 +9,36 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
+// Validation schemas
+const brandSchema = z.object({
+  id: z.string().uuid(),
+  brand_name: z.string().trim().min(1).max(100),
+  category: z.string().max(50).optional(),
+  website_url: z.string().url().startsWith('http').max(500).optional(),
+  social_media: z.string().url().startsWith('http').max(500).optional()
+});
+
+const requestSchema = z.object({
+  email: z.string().email().max(255),
+  brands: z.array(brandSchema).min(1).max(50)
+});
+
 interface Brand {
   id: string;
   brand_name: string;
   category?: string;
   website_url?: string;
   social_media?: string;
+}
+
+// HTML escaping function to prevent XSS
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }
 
 interface SendMyFindsRequest {
@@ -28,17 +53,25 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { email, brands }: SendMyFindsRequest = await req.json();
-
-    if (!email || !brands || brands.length === 0) {
+    const body = await req.json();
+    
+    // Validate input
+    const validation = requestSchema.safeParse(body);
+    if (!validation.success) {
+      console.error("Validation failed:", validation.error);
       return new Response(
-        JSON.stringify({ error: "Email and brands are required" }),
+        JSON.stringify({ 
+          error: "Invalid input data", 
+          details: validation.error.issues 
+        }),
         {
           status: 400,
           headers: { "Content-Type": "application/json", ...corsHeaders },
         }
       );
     }
+
+    const { email, brands } = validation.data;
 
     if (!resendApiKey) {
       console.error("RESEND_API_KEY is not set");
@@ -51,15 +84,15 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // Build the email HTML
+    // Build the email HTML with proper escaping
     const brandsHTML = brands
       .map(
         (brand) => `
       <div style="margin-bottom: 24px; padding: 16px; border: 1px solid #e5e7eb; border-radius: 8px; background: #ffffff;">
-        <h3 style="margin: 0 0 8px; color: #A23E48; font-size: 18px;">${brand.brand_name}</h3>
-        ${brand.category ? `<p style="margin: 4px 0; color: #6b7280; font-size: 14px;">Category: ${brand.category}</p>` : ""}
-        ${brand.website_url ? `<p style="margin: 4px 0;"><a href="${brand.website_url}" style="color: #A23E48; text-decoration: none;">Visit Website →</a></p>` : ""}
-        ${brand.social_media ? `<p style="margin: 4px 0;"><a href="${brand.social_media}" style="color: #A23E48; text-decoration: none;">Social Media →</a></p>` : ""}
+        <h3 style="margin: 0 0 8px; color: #A23E48; font-size: 18px;">${escapeHtml(brand.brand_name)}</h3>
+        ${brand.category ? `<p style="margin: 4px 0; color: #6b7280; font-size: 14px;">Category: ${escapeHtml(brand.category)}</p>` : ""}
+        ${brand.website_url ? `<p style="margin: 4px 0;"><a href="${escapeHtml(brand.website_url)}" style="color: #A23E48; text-decoration: none;">Visit Website →</a></p>` : ""}
+        ${brand.social_media ? `<p style="margin: 4px 0;"><a href="${escapeHtml(brand.social_media)}" style="color: #A23E48; text-decoration: none;">Social Media →</a></p>` : ""}
       </div>
     `
       )
