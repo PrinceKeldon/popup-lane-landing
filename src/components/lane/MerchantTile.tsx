@@ -19,7 +19,11 @@ export default function MerchantTile({
 }: MerchantTileProps) {
   const productCount = merchant.merchant_products?.length || 0;
 
-  const firstProduct = merchant.merchant_products?.[0];
+  // Prioritize products with images for better visual display
+  const firstProduct = merchant.merchant_products?.find(p => {
+    const imgs = getProductImages(p);
+    return imgs.length > 0;
+  }) || merchant.merchant_products?.[0];
 
   const images = firstProduct ? getProductImages(firstProduct) : [];
 

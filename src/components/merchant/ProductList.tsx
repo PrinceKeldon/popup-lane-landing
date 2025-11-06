@@ -3,8 +3,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Trash2, Loader2 } from "lucide-react";
+import { Trash2, Loader2, Edit } from "lucide-react";
 import { useState } from "react";
+import { ProductForm } from "./ProductForm";
 
 interface ProductListProps {
   merchantId: string;
@@ -14,6 +15,7 @@ export const ProductList = ({ merchantId }: ProductListProps) => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [editingProduct, setEditingProduct] = useState<any | null>(null);
 
   const { data: products = [], isLoading } = useQuery({
     queryKey: ["merchant-products", merchantId],
@@ -72,24 +74,56 @@ export const ProductList = ({ merchantId }: ProductListProps) => {
     );
   }
 
+  // If editing a product, show the form
+  if (editingProduct) {
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-semibold">Edit Product</h3>
+          <Button variant="outline" onClick={() => setEditingProduct(null)}>
+            Cancel
+          </Button>
+        </div>
+        <ProductForm
+          merchantId={merchantId}
+          productId={editingProduct.id}
+          initialData={editingProduct}
+          onSuccess={() => {
+            setEditingProduct(null);
+            queryClient.invalidateQueries({ queryKey: ["merchant-products", merchantId] });
+          }}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="grid gap-4 md:grid-cols-2">
       {products.map((product) => (
         <Card key={product.id}>
           <CardHeader className="flex flex-row items-start justify-between space-y-0">
             <CardTitle className="text-lg">{product.product_name}</CardTitle>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => handleDelete(product.id)}
-              disabled={deletingId === product.id}
-            >
-              {deletingId === product.id ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Trash2 className="h-4 w-4 text-destructive" />
-              )}
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setEditingProduct(product)}
+              >
+                <Edit className="h-4 w-4 text-primary" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => handleDelete(product.id)}
+                disabled={deletingId === product.id}
+              >
+                {deletingId === product.id ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Trash2 className="h-4 w-4 text-destructive" />
+                )}
+              </Button>
+            </div>
           </CardHeader>
           <CardContent className="space-y-2">
             {product.image_url && (

@@ -14,8 +14,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, Upload } from "lucide-react";
-import { useState } from "react";
+import { Loader2, Upload, X } from "lucide-react";
+import { useState, useEffect } from "react";
 
 const productSchema = z.object({
   product_name: z.string().min(1, "Product name is required").max(100),
@@ -32,11 +32,15 @@ const productSchema = z.object({
 interface ProductFormProps {
   merchantId: string;
   onSuccess: () => void;
+  productId?: string;
+  initialData?: any;
 }
 
-export const ProductForm = ({ merchantId, onSuccess }: ProductFormProps) => {
+export const ProductForm = ({ merchantId, onSuccess, productId, initialData }: ProductFormProps) => {
   const { toast } = useToast();
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [existingImages, setExistingImages] = useState<string[]>([]);
+  const isEditMode = !!productId;
 
   const form = useForm<z.infer<typeof productSchema>>({
     resolver: zodResolver(productSchema),
@@ -52,9 +56,33 @@ export const ProductForm = ({ merchantId, onSuccess }: ProductFormProps) => {
     },
   });
 
+  // Load initial data when in edit mode
+  useEffect(() => {
+    if (initialData) {
+      form.reset({
+        product_name: initialData.product_name || "",
+        product_description: initialData.product_description || "",
+        price: initialData.price?.toString() || "",
+        original_price: initialData.original_price?.toString() || "",
+        discount_percentage: initialData.discount_percentage?.toString() || "",
+        offer_text: initialData.offer_text || "",
+        website_url: initialData.website_url || "",
+        social_media: initialData.social_media || "",
+      });
+      
+      // Load existing images
+      const existingImgs = initialData.image_urls || [];
+      setExistingImages(existingImgs);
+    }
+  }, [initialData, form]);
+
+  const handleRemoveExistingImage = (index: number) => {
+    setExistingImages(prev => prev.filter((_, i) => i !== index));
+  };
+
   const onSubmit = async (values: z.infer<typeof productSchema>) => {
     try {
-      const imageUrls: string[] = [];
+      const imageUrls: string[] = [...existingImages];
 
       // Upload multiple images if provided
       if (values.images && values.images.length > 0) {
@@ -81,7 +109,7 @@ export const ProductForm = ({ merchantId, onSuccess }: ProductFormProps) => {
         }
       }
 
-      const { error } = await supabase.from("merchant_products").insert({
+      const productData = {
         merchant_id: merchantId,
         product_name: values.product_name,
         product_description: values.product_description,
@@ -91,19 +119,36 @@ export const ProductForm = ({ merchantId, onSuccess }: ProductFormProps) => {
         offer_text: values.offer_text || null,
         website_url: values.website_url || null,
         social_media: values.social_media || null,
-        image_url: imageUrls[0] || null, // First image as primary
-        image_urls: imageUrls, // All images in jsonb array
-      });
+        image_url: imageUrls[0] || null,
+        image_urls: imageUrls,
+      };
+
+      let error;
+      if (isEditMode) {
+        const result = await supabase
+          .from("merchant_products")
+          .update(productData)
+          .eq("id", productId);
+        error = result.error;
+      } else {
+        const result = await supabase
+          .from("merchant_products")
+          .insert(productData);
+        error = result.error;
+      }
 
       if (error) throw error;
 
       toast({
-        title: "Product added!",
-        description: "Your product has been added to your lane.",
+        title: isEditMode ? "Product updated!" : "Product added!",
+        description: isEditMode 
+          ? "Your product has been updated." 
+          : "Your product has been added to your lane.",
       });
 
       form.reset();
       setImagePreviews([]);
+      setExistingImages([]);
       onSuccess();
     } catch (error: any) {
       toast({
@@ -241,54 +286,90 @@ export const ProductForm = ({ merchantId, onSuccess }: ProductFormProps) => {
           name="images"
           render={({ field: { value, onChange, ...field } }) => (
             <FormItem>
-              <FormLabel>Product Images (Max 4)</FormLabel>
+              <FormLabel>Product Images (Max 4 total)</FormLabel>
               <FormControl>
                 <div className="space-y-4">
-                  <div className="flex items-center gap-4">
-                    <Input
-                      type="file"
-                      accept="image/jpeg,image/png,image/webp,image/jpg"
-                      multiple
-                      onChange={(e) => {
-                        const files = Array.from(e.target.files || []);
-                        if (files.length > 4) {
-                          toast({
-                            title: "Too many images",
-                            description: "Maximum 4 images allowed",
-                            variant: "destructive",
-                          });
-                          return;
-                        }
-                        onChange(files);
-                        
-                        // Generate previews
-                        const previews: string[] = [];
-                        files.forEach((file) => {
-                          const reader = new FileReader();
-                          reader.onloadend = () => {
-                            previews.push(reader.result as string);
-                            if (previews.length === files.length) {
-                              setImagePreviews(previews);
+                  {/* Existing Images */}
+                  {existingImages.length > 0 && (
+                    <div>
+                      <p className="text-sm text-muted-foreground mb-2">Existing Images</p>
+                      <div className="grid grid-cols-2 gap-4">
+                        {existingImages.map((url, idx) => (
+                          <div key={idx} className="relative w-full h-32 rounded-lg overflow-hidden border">
+                            <img
+                              src={url}
+                              alt={`Existing ${idx + 1}`}
+                              className="w-full h-full object-cover"
+                            />
+                            <Button
+                              type="button"
+                              variant="destructive"
+                              size="icon"
+                              className="absolute top-2 right-2 h-6 w-6"
+                              onClick={() => handleRemoveExistingImage(idx)}
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* New Images Upload */}
+                  {existingImages.length < 4 && (
+                    <div>
+                      <p className="text-sm text-muted-foreground mb-2">
+                        Add New Images ({existingImages.length}/4 slots used)
+                      </p>
+                      <div className="flex items-center gap-4">
+                        <Input
+                          type="file"
+                          accept="image/jpeg,image/png,image/webp,image/jpg"
+                          multiple
+                          onChange={(e) => {
+                            const files = Array.from(e.target.files || []);
+                            const totalImages = existingImages.length + files.length;
+                            if (totalImages > 4) {
+                              toast({
+                                title: "Too many images",
+                                description: `Maximum 4 images allowed. You can add ${4 - existingImages.length} more.`,
+                                variant: "destructive",
+                              });
+                              return;
                             }
-                          };
-                          reader.readAsDataURL(file);
-                        });
-                      }}
-                      {...field}
-                    />
-                    <Upload className="h-4 w-4 text-muted-foreground" />
-                  </div>
-                  {imagePreviews.length > 0 && (
-                    <div className="grid grid-cols-2 gap-4">
-                      {imagePreviews.map((preview, idx) => (
-                        <div key={idx} className="relative w-full h-32 rounded-lg overflow-hidden border">
-                          <img
-                            src={preview}
-                            alt={`Preview ${idx + 1}`}
-                            className="w-full h-full object-cover"
-                          />
+                            onChange(files);
+                            
+                            // Generate previews
+                            const previews: string[] = [];
+                            files.forEach((file) => {
+                              const reader = new FileReader();
+                              reader.onloadend = () => {
+                                previews.push(reader.result as string);
+                                if (previews.length === files.length) {
+                                  setImagePreviews(previews);
+                                }
+                              };
+                              reader.readAsDataURL(file);
+                            });
+                          }}
+                          {...field}
+                        />
+                        <Upload className="h-4 w-4 text-muted-foreground" />
+                      </div>
+                      {imagePreviews.length > 0 && (
+                        <div className="grid grid-cols-2 gap-4 mt-4">
+                          {imagePreviews.map((preview, idx) => (
+                            <div key={idx} className="relative w-full h-32 rounded-lg overflow-hidden border">
+                              <img
+                                src={preview}
+                                alt={`Preview ${idx + 1}`}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                          ))}
                         </div>
-                      ))}
+                      )}
                     </div>
                   )}
                 </div>
@@ -300,7 +381,7 @@ export const ProductForm = ({ merchantId, onSuccess }: ProductFormProps) => {
 
         <Button type="submit" disabled={form.formState.isSubmitting}>
           {form.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Add Product
+          {isEditMode ? "Update Product" : "Add Product"}
         </Button>
       </form>
     </Form>
