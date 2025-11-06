@@ -192,7 +192,7 @@ export default function LanePreview() {
                     {mainProduct && <Badge className="leading-tight text-sm font-medium text-black px-3 w-fit my-0 py-[3px] bg-[#f5f8f9]">
                         {mainProduct.product_name}
                       </Badge>}
-                    <div className="flex items-center justify-between rounded bg-[#fbfcfb]/90 px-[6px] py-[4px] mx-0 my-[9px]">
+                    <div className="flex items-center justify-between rounded bg-[#fbfcfb]/90 px-[6px] mx-0 py-[3px] my-[19px]">
                       <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
                         BY {merchant.brand_name}
                       </p>
