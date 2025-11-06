@@ -258,31 +258,9 @@ export default function LanePreview() {
                       BY {merchant.brand_name}
                     </p>
                     {mainProduct && (
-                      <>
-                        <h4 className="text-base font-bold leading-tight text-foreground">
-                          {mainProduct.product_name}
-                        </h4>
-                        {mainProduct.discount_percentage && mainProduct.original_price ? (
-                          <div className="flex items-baseline gap-2 text-sm pt-1">
-                            <span className="text-lg font-bold">
-                              ${(parseFloat(String(mainProduct.original_price)) * (1 - mainProduct.discount_percentage / 100)).toFixed(2)}
-                            </span>
-                            <span className="line-through text-muted-foreground text-sm">
-                              ${parseFloat(String(mainProduct.original_price)).toFixed(2)}
-                            </span>
-                            <span className="text-red-600 font-bold text-sm">
-                              {mainProduct.discount_percentage}% Off
-                            </span>
-                          </div>
-                        ) : mainProduct.price ? (
-                          <div className="flex items-baseline gap-2 text-sm pt-1">
-                            <span className="font-semibold text-muted-foreground">Starting at</span>
-                            <span className="text-lg font-bold">
-                              ${parseFloat(String(mainProduct.price)).toFixed(2)}
-                            </span>
-                          </div>
-                        ) : null}
-                      </>
+                      <h4 className="text-base font-bold leading-tight text-foreground">
+                        {mainProduct.product_name}
+                      </h4>
                     )}
                     {merchant.category && (
                       <Badge variant="secondary" className="text-xs w-fit">
