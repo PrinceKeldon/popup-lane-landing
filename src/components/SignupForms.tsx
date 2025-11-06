@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -9,6 +9,9 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@/component
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { MerchantConfirmationModal } from "./MerchantConfirmationModal";
+import { useCountdown } from "@/hooks/useCountdown";
+import { useMerchantSpots } from "@/hooks/useMerchantSpots";
+import { useLaneSettings } from "@/hooks/useLaneSettings";
 
 // Validation schemas matching server-side rules
 const shopperSchema = z.object({
@@ -52,8 +55,10 @@ type ShopperFormData = z.infer<typeof shopperSchema>;
 type MerchantFormData = z.infer<typeof merchantSchema>;
 
 export const SignupForms = () => {
-  const [daysRemaining, setDaysRemaining] = useState(0);
-  const [merchantSpots, setMerchantSpots] = useState(50);
+  const { earlyAccessDate, laneStatus } = useLaneSettings();
+  const { spotsRemaining } = useMerchantSpots();
+  const countdown = useCountdown(earlyAccessDate);
+  
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [confirmationData, setConfirmationData] = useState<{
     email: string;
@@ -77,21 +82,6 @@ export const SignupForms = () => {
       category: undefined,
     },
   });
-
-  useEffect(() => {
-    const endDate = new Date("2025-11-21T10:00:00");
-
-    const updateCountdown = () => {
-      const now = new Date();
-      const diffMs = endDate.getTime() - now.getTime();
-      const days = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-      setDaysRemaining(days > 0 ? days : 0);
-    };
-
-    updateCountdown();
-    const interval = setInterval(updateCountdown, 1000);
-    return () => clearInterval(interval);
-  }, []);
 
   const handleShopperSubmit = async (formData: ShopperFormData) => {
     try {
@@ -120,11 +110,8 @@ export const SignupForms = () => {
   };
 
   const handleMerchantSubmit = async (formData: MerchantFormData) => {
-    const now = new Date();
-    const openDate = new Date("2025-11-21T10:00:00");
-    const closeDate = new Date("2025-11-28T23:59:59");
-
-    if (now >= openDate && now <= closeDate) {
+    // Check if lane is currently open (applications not accepted during live period)
+    if (laneStatus === "open") {
       toast({
         title: "Applications Closed",
         description: "Merchant applications are closed while the Lane is live. Please join the waitlist.",
@@ -159,11 +146,6 @@ export const SignupForms = () => {
 
         // Clear form
         merchantForm.reset();
-
-        // Update spots from server response
-        if (data.merchantData.spotsRemaining !== undefined) {
-          setMerchantSpots(data.merchantData.spotsRemaining);
-        }
       }
     } catch (error: any) {
       console.error('Error submitting merchant form:', error);
@@ -256,10 +238,10 @@ export const SignupForms = () => {
 
         {/* Info Counters */}
         <div className="text-[15px] font-semibold mb-2">
-          Days Remaining: <span className="font-bold inline-block min-w-[24px] text-center">{daysRemaining}</span>
+          Days Remaining: <span className="font-bold inline-block min-w-[24px] text-center">{countdown.days}</span>
         </div>
         <div className="text-[15px] font-semibold mb-4">
-          Merchant Spots Left: <span className="font-bold inline-block min-w-[24px] text-center">{merchantSpots}</span>
+          Merchant Spots Left: <span className="font-bold inline-block min-w-[24px] text-center">{spotsRemaining}</span>
         </div>
 
         <Form {...merchantForm}>

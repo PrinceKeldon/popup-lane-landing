@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useCountdown } from "@/hooks/useCountdown";
+import { useLaneSettings } from "@/hooks/useLaneSettings";
 import { POPUP_LANE_CONFIG } from "@/lib/constants";
 import { CheckCircle } from "lucide-react";
 
@@ -27,7 +28,8 @@ export const MerchantConfirmationModal = ({
   merchantData,
 }: MerchantConfirmationModalProps) => {
   const navigate = useNavigate();
-  const countdown = useCountdown(POPUP_LANE_CONFIG.LANE_OPEN_DATE);
+  const { earlyAccessDate } = useLaneSettings();
+  const countdown = useCountdown(earlyAccessDate);
 
   const handleBuildLane = () => {
     if (!countdown.isExpired) {

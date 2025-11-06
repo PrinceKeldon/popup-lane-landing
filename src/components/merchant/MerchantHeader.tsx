@@ -1,6 +1,6 @@
 import { useCountdown } from "@/hooks/useCountdown";
 import { useMerchantSpots } from "@/hooks/useMerchantSpots";
-import { POPUP_LANE_CONFIG } from "@/lib/constants";
+import { useLaneSettings } from "@/hooks/useLaneSettings";
 
 interface MerchantHeaderProps {
   brandName: string;
@@ -9,7 +9,8 @@ interface MerchantHeaderProps {
 }
 
 export const MerchantHeader = ({ brandName, email, productCount }: MerchantHeaderProps) => {
-  const countdown = useCountdown(POPUP_LANE_CONFIG.LANE_OPEN_DATE);
+  const { earlyAccessDate } = useLaneSettings();
+  const countdown = useCountdown(earlyAccessDate);
   const { spotsRemaining } = useMerchantSpots();
 
   return (

@@ -12,6 +12,9 @@ import { Card } from "@/components/ui/card";
 import { LogOut } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
+import { useLaneSettings } from "@/hooks/useLaneSettings";
+import { useMerchantSpots } from "@/hooks/useMerchantSpots";
+import { useCountdown } from "@/hooks/useCountdown";
 
 interface AirtableRecord {
   id: string;
@@ -23,10 +26,12 @@ export default function AdminDashboard() {
   const { isAdmin, loading: authLoading } = useAdminAuth();
   const { listRecords, updateRecord, loading: airtableLoading } = useAirtable();
   const navigate = useNavigate();
+  const { earlyAccessDate, spotsLimit } = useLaneSettings();
+  const { spotsRemaining } = useMerchantSpots();
+  const countdown = useCountdown(earlyAccessDate);
 
   const [merchants, setMerchants] = useState<AirtableRecord[]>([]);
   const [shoppers, setShoppers] = useState<AirtableRecord[]>([]);
-  const [spotsLimit, setSpotsLimit] = useState(50);
 
   useEffect(() => {
     if (isAdmin) {
@@ -113,7 +118,6 @@ export default function AdminDashboard() {
     return !status || status === '' || status === 'pending';
   }).length;
   const shoppersTotal = shoppers.length;
-  const spotsRemaining = Math.max(spotsLimit - merchantsTotal, 0);
 
   return (
     <div className="min-h-screen bg-background">
@@ -144,6 +148,8 @@ export default function AdminDashboard() {
           merchantsPending={merchantsPending}
           shoppersTotal={shoppersTotal}
           spotsRemaining={spotsRemaining}
+          daysUntilOpen={countdown.days}
+          isOpen={countdown.isExpired}
         />
 
         <div className="space-y-6">

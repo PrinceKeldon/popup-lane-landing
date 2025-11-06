@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Zap } from "lucide-react";
 import { CountdownTimer } from "./CountdownTimer";
 import { useLaneState } from "@/hooks/use-lane-state";
-import { POPUP_LANE_CONFIG } from "@/lib/constants";
 
 export const Hero = () => {
   const { state, nextEventDate } = useLaneState();
@@ -57,7 +56,7 @@ export const Hero = () => {
 
         {/* Countdown Timer */}
         <CountdownTimer 
-          targetDate={isOpen ? POPUP_LANE_CONFIG.LANE_CLOSE_DATE.toISOString() : POPUP_LANE_CONFIG.LANE_OPEN_DATE.toISOString()} 
+          targetDate={nextEventDate} 
           isOpen={isOpen}
         />
 
