@@ -14,7 +14,7 @@ export const useLaneSettings = () => {
       if (error) throw error;
       return data;
     },
-    refetchInterval: 10000, // Refetch every 10 seconds for near-real-time updates
+    refetchInterval: 5000, // Refetch every 5 seconds for real-time sync
   });
 
   return {

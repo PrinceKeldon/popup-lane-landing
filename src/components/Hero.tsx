@@ -1,15 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Zap } from "lucide-react";
 import { CountdownTimer } from "./CountdownTimer";
-import { useLaneState } from "@/hooks/use-lane-state";
+import { useLaneSettings } from "@/hooks/useLaneSettings";
 
 export const Hero = () => {
-  const { state, nextEventDate } = useLaneState();
-  const isOpen = state === "open";
+  const { earlyAccessDate, laneStatus } = useLaneSettings();
+  const isOpen = laneStatus === "open";
+  const nextEventDate = earlyAccessDate.toISOString();
 
   return (
     <section 
-      className={`relative py-12 sm:py-16 text-center transition-all duration-[450ms] ease-out will-change-transform rounded-lg ${
+      className={`relative py-8 sm:py-12 md:py-16 px-3 sm:px-4 text-center transition-all duration-[450ms] ease-out will-change-transform rounded-lg ${
         isOpen ? 'transform -translate-y-2.5 bg-[hsl(var(--open-overlay))]' : ''
       }`}
       role="banner"
@@ -66,7 +67,7 @@ export const Hero = () => {
             <>
               <Button 
                 size="lg" 
-                className="text-base px-8 bg-primary text-primary-foreground shadow-[var(--shadow-button)] hover:bg-primary/90 group"
+                className="w-full sm:w-auto min-h-[44px] text-base px-8 bg-primary text-primary-foreground shadow-[var(--shadow-button)] hover:bg-primary/90 group"
                 onClick={() => window.location.href = '/lane'}
               >
                 Shop Now
@@ -75,7 +76,7 @@ export const Hero = () => {
               <Button 
                 size="lg" 
                 variant="outline" 
-                className="text-base px-8 bg-transparent border-input hover:bg-accent/10"
+                className="w-full sm:w-auto min-h-[44px] text-base px-8 bg-transparent border-input hover:bg-accent/10"
                 onClick={() => {
                   const formsSection = document.getElementById("signup-forms");
                   formsSection?.scrollIntoView({ behavior: "smooth" });
@@ -88,7 +89,7 @@ export const Hero = () => {
             <>
               <Button 
                 size="lg" 
-                className="text-base px-8 bg-primary text-primary-foreground shadow-[var(--shadow-button)] hover:bg-primary/90 group"
+                className="w-full sm:w-auto min-h-[44px] text-base px-8 bg-primary text-primary-foreground shadow-[var(--shadow-button)] hover:bg-primary/90 group"
                 onClick={() => {
                   const formsSection = document.getElementById("signup-forms");
                   formsSection?.scrollIntoView({ behavior: "smooth" });
@@ -97,7 +98,7 @@ export const Hero = () => {
                 Join the Lane Club
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
-              <Button size="lg" variant="outline" className="text-base px-8 bg-transparent border-input hover:bg-accent/10">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto min-h-[44px] text-base px-8 bg-transparent border-input hover:bg-accent/10">
                 Browse the Backroom
               </Button>
             </>

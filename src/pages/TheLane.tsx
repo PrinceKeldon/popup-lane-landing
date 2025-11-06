@@ -5,11 +5,27 @@ import LaneFeed from "@/components/lane/LaneFeed";
 import MerchantSpotlight from "@/components/lane/MerchantSpotlight";
 import MyFinds from "@/components/lane/MyFinds";
 import { Footer } from "@/components/Footer";
-import { useLaneState } from "@/hooks/use-lane-state";
+import { useLaneSettings } from "@/hooks/useLaneSettings";
 import { supabase } from "@/integrations/supabase/client";
+import { SEOHead } from "@/components/SEOHead";
 
 export default function TheLane() {
-  const { state: laneStatus, nextEventDate } = useLaneState();
+  const { earlyAccessDate, laneStatus } = useLaneSettings();
+  const nextEventDate = earlyAccessDate.toISOString();
+  
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    "name": "PopUp Lane Black Friday '25",
+    "description": "Shop curated small brands with exclusive Black Friday offers",
+    "startDate": earlyAccessDate.toISOString(),
+    "eventStatus": laneStatus === 'open' ? "https://schema.org/EventScheduled" : "https://schema.org/EventPostponed",
+    "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode",
+    "location": {
+      "@type": "VirtualLocation",
+      "url": `${window.location.origin}/lane`
+    }
+  };
   const [selectedMerchantId, setSelectedMerchantId] = useState<string | null>(null);
   const [savedMerchantIds, setSavedMerchantIds] = useState<string[]>(() => {
     const saved = localStorage.getItem("savedMerchants");
@@ -55,6 +71,12 @@ export default function TheLane() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title="Walk The Lane | Shop Small Brands | PopUp Lane"
+        description="Browse curated small brands with exclusive Black Friday offers. Limited-time pop-up shop featuring indie makers and creators."
+        canonical={`${window.location.origin}/lane`}
+        structuredData={structuredData}
+      />
       <Navigation />
       
       <main>

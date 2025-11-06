@@ -7,10 +7,27 @@ import { Button } from "@/components/ui/button";
 import { BrandCarousel } from "@/components/BrandCarousel";
 import { SignupForms } from "@/components/SignupForms";
 import { Footer } from "@/components/Footer";
+import { SEOHead } from "@/components/SEOHead";
 
 const Index = () => {
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "PopUp Lane",
+    "description": "A seasonal digital pop-up for curated small-brand Black Friday deals",
+    "url": window.location.origin,
+    "logo": `${window.location.origin}/placeholder.svg`,
+    "sameAs": []
+  };
+
   return (
     <>
+      <SEOHead
+        title="PopUp Lane — Black Friday '25 | Curated Small Brand Deals"
+        description="Discover limited-time Black Friday deals from indie brands. A seasonal digital pop-up featuring curated small businesses with exclusive offers."
+        canonical={window.location.origin}
+        structuredData={structuredData}
+      />
       <Navigation />
       <main className="min-h-screen">
         <Hero />

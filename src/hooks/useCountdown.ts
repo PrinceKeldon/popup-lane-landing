@@ -19,8 +19,9 @@ export const useCountdown = (targetDate: Date): CountdownReturn => {
 
   useEffect(() => {
     const calculateTimeRemaining = () => {
+      // Normalize to UTC to prevent timezone drift
       const now = new Date().getTime();
-      const target = targetDate.getTime();
+      const target = new Date(targetDate).getTime();
       const difference = target - now;
 
       if (difference <= 0) {

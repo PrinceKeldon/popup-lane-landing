@@ -12,12 +12,20 @@ import { CountdownTimer } from "@/components/CountdownTimer";
 import ProductImageCarousel from "@/components/lane/ProductImageCarousel";
 import { getProductImages, getProductImagesFromMultiple } from "@/lib/image-utils";
 import { useLaneSettings } from "@/hooks/useLaneSettings";
+import { SEOHead } from "@/components/SEOHead";
 export default function LanePreview() {
   const [selectedMerchantId, setSelectedMerchantId] = useState<string | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
   const { earlyAccessDate, laneStatus } = useLaneSettings();
   const isOpen = laneStatus === "open";
+  
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Preview The Lane - PopUp Lane",
+    "description": "Get a sneak peek of PopUp Lane's Black Friday event featuring curated small brands"
+  };
   
   const {
     data: merchants,
@@ -69,6 +77,12 @@ export default function LanePreview() {
       </div>;
   }
   return <div className="min-h-screen bg-background">
+      <SEOHead
+        title="Preview The Lane | PopUp Lane Black Friday"
+        description="Get a sneak peek of PopUp Lane's Black Friday event. Preview featured brands, trending shops, and exclusive deals before they go live."
+        canonical={`${window.location.origin}/lane-preview`}
+        structuredData={structuredData}
+      />
       <Navigation />
       
       <main className="container mx-auto px-4 py-8 max-w-7xl">
