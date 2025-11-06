@@ -58,9 +58,9 @@ export default function FeaturedSection({
                 key={merchant.id}
                 className="group flex-none w-[340px] snap-start"
               >
-                <div className="bg-card border-2 border-transparent rounded-2xl overflow-hidden shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-hover)] hover:border-wine/10 transition-all duration-300 hover:-translate-y-2 cursor-pointer">
+                <div className="bg-card border-2 border-transparent rounded-2xl overflow-hidden shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-hover)] hover:border-wine/10 transition-all duration-300 hover:-translate-y-2 cursor-pointer flex flex-col min-h-[420px]">
                   {/* Image Carousel */}
-                  <div onClick={() => onMerchantClick(merchant.id)}>
+                  <div onClick={() => onMerchantClick(merchant.id)} className="flex-shrink-0">
                     <ProductImageCarousel
                       images={images}
                       brandName={merchant.brand_name}
@@ -76,7 +76,7 @@ export default function FeaturedSection({
                   </div>
 
                   {/* Content */}
-                  <div className="p-5 space-y-3">
+                  <div className="p-5 pt-4 space-y-3 flex-1 flex flex-col bg-card/95 border-t border-border/5">
                     <div
                       className="cursor-pointer"
                       onClick={() => onMerchantClick(merchant.id)}
@@ -102,7 +102,7 @@ export default function FeaturedSection({
                     )}
 
                     {/* Actions */}
-                    <div className="flex gap-2 pt-2">
+                    <div className="flex gap-2 pt-3 mt-auto">
                       <Button
                         size="sm"
                         className="flex-1 bg-[hsl(var(--wine))] hover:bg-[hsl(var(--wine-light))] text-white"

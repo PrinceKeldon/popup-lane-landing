@@ -58,23 +58,25 @@ export default function TrendingSection({ onMerchantClick }: TrendingSectionProp
                 className="flex-none w-[260px] snap-start cursor-pointer group"
                 onClick={() => onMerchantClick(merchant.id)}
               >
-                <div className="bg-card rounded-xl p-4 shadow-[var(--shadow-elegant)] hover:shadow-[var(--shadow-hover)] transition-all duration-200 hover:-translate-y-1 space-y-3">
-                  <ProductImageCarousel
-                    images={images}
-                    brandName={merchant.brand_name}
-                    discountBadge={
-                      firstProduct?.discount_percentage && (
-                        <div className="absolute top-2 right-2 bg-[hsl(var(--urgent-red))] text-white px-2 py-1 rounded-md font-bold text-xs animate-pulse-badge">
-                          -{firstProduct.discount_percentage}%
-                        </div>
-                      )
-                    }
-                  />
-                  <div>
+                <div className="bg-card rounded-xl overflow-hidden shadow-[var(--shadow-elegant)] hover:shadow-[var(--shadow-hover)] transition-all duration-200 hover:-translate-y-1 flex flex-col min-h-[320px]">
+                  <div className="flex-shrink-0">
+                    <ProductImageCarousel
+                      images={images}
+                      brandName={merchant.brand_name}
+                      discountBadge={
+                        firstProduct?.discount_percentage && (
+                          <div className="absolute top-2 right-2 bg-[hsl(var(--urgent-red))] text-white px-2 py-1 rounded-md font-bold text-xs animate-pulse-badge">
+                            -{firstProduct.discount_percentage}%
+                          </div>
+                        )
+                      }
+                    />
+                  </div>
+                  <div className="p-4 pt-3 flex-1 flex flex-col bg-card/95 border-t border-border/5">
                     <h4 className="font-semibold text-sm mb-1">
                       {merchant.brand_name}
                     </h4>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 mt-auto">
                       <Badge
                         variant="secondary"
                         className="text-xs bg-[hsl(var(--urgent-red))]/10 text-[hsl(var(--urgent-red))]"

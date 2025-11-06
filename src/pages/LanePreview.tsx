@@ -90,11 +90,12 @@ export default function LanePreview() {
                 const mainProduct = merchant.merchant_products?.[0];
                 const images = mainProduct ? getProductImages(mainProduct) : [];
                 return (
-                  <Card 
-                    key={merchant.id} 
-                    className="overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 cursor-pointer border-2 border-transparent hover:border-wine/20"
-                    onClick={() => setSelectedMerchantId(merchant.id)}
-                  >
+                <Card 
+                  key={merchant.id} 
+                  className="flex flex-col overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 cursor-pointer border-2 border-transparent hover:border-wine/20 min-h-[420px]"
+                  onClick={() => setSelectedMerchantId(merchant.id)}
+                >
+                  <div className="flex-shrink-0">
                     <ProductImageCarousel
                       images={images}
                       brandName={merchant.brand_name}
@@ -106,25 +107,26 @@ export default function LanePreview() {
                         )
                       }
                     />
-                    <CardContent className="p-4">
-                      <h4 className="font-bold text-lg mb-2">{merchant.brand_name}</h4>
-                      <p className="text-sm text-muted-foreground mb-3">{merchant.category || "Curated"}</p>
-                      {mainProduct?.offer_text && (
-                        <div className="bg-wine/5 text-wine font-semibold text-sm p-2 rounded-lg mb-3">
-                          {mainProduct.offer_text}
-                        </div>
-                      )}
-                      <div className="flex gap-2">
-                        <Button size="sm" className="flex-1 bg-wine hover:bg-wine-light">
-                          <Store className="h-4 w-4 mr-1" />
-                          Visit
-                        </Button>
-                        <Button size="sm" variant="outline">
-                          <Bookmark className="h-4 w-4" />
-                        </Button>
+                  </div>
+                  <CardContent className="p-5 pt-4 flex-1 flex flex-col bg-card/95 border-t border-border/5">
+                    <h4 className="font-bold text-lg mb-2">{merchant.brand_name}</h4>
+                    <p className="text-sm text-muted-foreground mb-3">{merchant.category || "Curated"}</p>
+                    {mainProduct?.offer_text && (
+                      <div className="bg-wine/5 text-wine font-semibold text-sm p-2 rounded-lg mb-3">
+                        {mainProduct.offer_text}
                       </div>
-                    </CardContent>
-                  </Card>
+                    )}
+                    <div className="flex gap-2 mt-auto">
+                      <Button size="sm" className="flex-1 bg-wine hover:bg-wine-light">
+                        <Store className="h-4 w-4 mr-1" />
+                        Visit
+                      </Button>
+                      <Button size="sm" variant="outline">
+                        <Bookmark className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
                 );
               })}
             </div>
@@ -143,23 +145,25 @@ export default function LanePreview() {
                 const mainProduct = merchant.merchant_products?.[0];
                 const images = mainProduct ? getProductImages(mainProduct) : [];
                 return (
-                  <Card 
-                    key={merchant.id} 
-                    className="overflow-hidden hover:shadow-xl transition-all cursor-pointer"
-                    onClick={() => setSelectedMerchantId(merchant.id)}
-                  >
+                <Card 
+                  key={merchant.id} 
+                  className="flex flex-col overflow-hidden hover:shadow-xl transition-all cursor-pointer min-h-[340px]"
+                  onClick={() => setSelectedMerchantId(merchant.id)}
+                >
+                  <div className="flex-shrink-0">
                     <ProductImageCarousel
                       images={images}
                       brandName={merchant.brand_name}
                     />
-                    <CardContent className="p-3">
-                      <Badge className="mb-2 bg-red-50 text-red-700 hover:bg-red-100">
-                        {merchant.click_count || 0} views
-                      </Badge>
-                      <h4 className="font-bold">{merchant.brand_name}</h4>
-                      <p className="text-xs text-muted-foreground">{merchant.category}</p>
-                    </CardContent>
-                  </Card>
+                  </div>
+                  <CardContent className="p-4 pt-3 flex-1 flex flex-col bg-card/95 border-t border-border/5">
+                    <Badge className="mb-2 bg-red-50 text-red-700 hover:bg-red-100 self-start">
+                      {merchant.click_count || 0} views
+                    </Badge>
+                    <h4 className="font-bold">{merchant.brand_name}</h4>
+                    <p className="text-xs text-muted-foreground">{merchant.category}</p>
+                  </CardContent>
+                </Card>
                 );
               })}
             </div>
@@ -176,21 +180,23 @@ export default function LanePreview() {
               return (
                 <Card 
                   key={merchant.id} 
-                  className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+                  className="flex flex-col overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer min-h-[380px]"
                   onClick={() => setSelectedMerchantId(merchant.id)}
                 >
-                  <ProductImageCarousel
-                    images={images}
-                    brandName={merchant.brand_name}
-                    discountBadge={
-                      mainProduct?.discount_percentage && (
-                        <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600 text-white font-bold animate-pulse">
-                          {mainProduct.discount_percentage}% OFF
-                        </Badge>
-                      )
-                    }
-                  />
-                  <CardContent className="p-4">
+                  <div className="flex-shrink-0">
+                    <ProductImageCarousel
+                      images={images}
+                      brandName={merchant.brand_name}
+                      discountBadge={
+                        mainProduct?.discount_percentage && (
+                          <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600 text-white font-bold animate-pulse">
+                            {mainProduct.discount_percentage}% OFF
+                          </Badge>
+                        )
+                      }
+                    />
+                  </div>
+                  <CardContent className="p-5 pt-4 flex-1 flex flex-col bg-card/95 border-t border-border/5">
                     <h4 className="font-bold mb-1">{merchant.brand_name}</h4>
                     <p className="text-sm text-muted-foreground mb-2">{merchant.category}</p>
                     {mainProduct?.offer_text && (
@@ -198,7 +204,7 @@ export default function LanePreview() {
                         {mainProduct.offer_text}
                       </div>
                     )}
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 mt-auto">
                       <Button size="sm" variant="outline" className="flex-1">
                         <ExternalLink className="h-3 w-3 mr-1" />
                         Visit
