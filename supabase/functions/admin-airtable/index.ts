@@ -45,7 +45,7 @@ serve(async (req) => {
       .single();
 
     if (!roleData) {
-      console.error('User is not admin:', user.id);
+      console.error('[Admin] Access denied: user lacks admin role');
       return new Response(JSON.stringify({ error: 'Admin access required' }), {
         status: 403,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -54,7 +54,7 @@ serve(async (req) => {
 
     const { action, table, recordId, fields, pageSize = 100 } = await req.json();
 
-    console.log('Admin action:', action, 'table:', table, 'recordId:', recordId);
+    console.log(`[Admin] Action: ${action}, Table: ${table}`);
 
     switch (action) {
       case 'list': {
@@ -107,7 +107,7 @@ serve(async (req) => {
                 .eq('id', merchant.id);
             }
           } catch (syncError) {
-            console.error('Error syncing to Supabase:', syncError);
+            console.error('[Admin] Supabase sync failed');
             // Don't fail the whole request if sync fails
           }
         }
@@ -124,7 +124,7 @@ serve(async (req) => {
         });
     }
   } catch (error) {
-    console.error('Error in admin-airtable function:', error);
+    console.error('[Admin] Function error');
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return new Response(JSON.stringify({ error: errorMessage }), {
       status: 500,

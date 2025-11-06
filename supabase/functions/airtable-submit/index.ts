@@ -77,7 +77,7 @@ setInterval(() => {
 }, 5 * 60 * 1000); // Clean up every 5 minutes
 
 async function postToAirtable(table: string, data: Record<string, any>) {
-  console.log(`Posting to Airtable table: ${table}, field count: ${Object.keys(data).length}`);
+  console.log(`[Airtable] Posting to table with ${Object.keys(data).length} fields`);
   
   const response = await fetch(
     `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${table}`,
@@ -92,13 +92,12 @@ async function postToAirtable(table: string, data: Record<string, any>) {
   );
 
   if (!response.ok) {
-    const error = await response.text();
-    console.error(`Airtable API error for ${table}: ${response.status}`);
+    console.error(`[Airtable] API error: ${response.status}`);
     throw new Error(`Airtable API error: ${response.status}`);
   }
 
   const result = await response.json();
-  console.log(`Successfully posted to ${table}`);
+  console.log(`[Airtable] Successfully posted record`);
   return result;
 }
 
