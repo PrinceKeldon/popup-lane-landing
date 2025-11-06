@@ -69,7 +69,7 @@ export default function MerchantTile({
             BY {merchant.brand_name}
           </p>
           {merchant.category && (
-            <Badge variant="secondary" className="text-xs w-fit border-0 px-0 bg-[#000a00]/0">
+            <Badge variant="secondary" className="text-xs w-fit border-0 px-2 py-0.5 bg-white text-wine">
               {merchant.category}
             </Badge>
           )}
