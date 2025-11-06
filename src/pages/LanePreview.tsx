@@ -189,7 +189,7 @@ export default function LanePreview() {
                           </div>} />
                   </div>
                   <div className="px-6 pb-6 pt-3 space-y-1 flex-1 flex flex-col justify-end bg-[#f8fcf8]/50">
-                    <div className="flex items-center justify-between rounded bg-[#fdfdfd]">
+                    <div className="flex items-center justify-between bg-slate-50 rounded-none mx-0 px-[6px]">
                       <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
                         BY {merchant.brand_name}
                       </p>
