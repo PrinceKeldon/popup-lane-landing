@@ -2,6 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp } from "lucide-react";
+import ProductImageCarousel from "./ProductImageCarousel";
+import { getProductImages } from "@/lib/image-utils";
 
 interface TrendingSectionProps {
   onMerchantClick: (id: string) => void;
@@ -44,6 +46,7 @@ export default function TrendingSection({ onMerchantClick }: TrendingSectionProp
         <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide">
           {merchants.map((merchant) => {
             const firstProduct = merchant.merchant_products?.[0];
+            const images = firstProduct ? getProductImages(firstProduct) : [];
             return (
               <div
                 key={merchant.id}
@@ -51,26 +54,18 @@ export default function TrendingSection({ onMerchantClick }: TrendingSectionProp
                 onClick={() => onMerchantClick(merchant.id)}
               >
                 <div className="bg-card rounded-xl p-4 shadow-[var(--shadow-elegant)] hover:shadow-[var(--shadow-hover)] transition-all duration-200 hover:-translate-y-1 space-y-3">
-                  <div className="relative h-28 bg-gradient-to-br from-wine/5 to-wine/10 rounded-lg flex items-center justify-center overflow-hidden">
-                    {firstProduct?.image_url ? (
-                      <img 
-                        src={firstProduct.image_url} 
-                        alt={firstProduct.product_name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    ) : (
-                      <div className="w-16 h-16 rounded-full bg-wine/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <span className="text-2xl font-bold text-wine">
-                          {merchant.brand_name.charAt(0).toUpperCase()}
-                        </span>
-                      </div>
-                    )}
-                    {firstProduct?.discount_percentage && (
-                      <div className="absolute top-2 right-2 bg-[hsl(var(--urgent-red))] text-white px-2 py-1 rounded-md font-bold text-xs animate-pulse-badge">
-                        -{firstProduct.discount_percentage}%
-                      </div>
-                    )}
-                  </div>
+                  <ProductImageCarousel
+                    images={images}
+                    brandName={merchant.brand_name}
+                    className="h-28 rounded-lg"
+                    discountBadge={
+                      firstProduct?.discount_percentage && (
+                        <div className="absolute top-2 right-2 bg-[hsl(var(--urgent-red))] text-white px-2 py-1 rounded-md font-bold text-xs animate-pulse-badge">
+                          -{firstProduct.discount_percentage}%
+                        </div>
+                      )
+                    }
+                  />
                   <div>
                     <h4 className="font-semibold text-sm mb-1">
                       {merchant.brand_name}

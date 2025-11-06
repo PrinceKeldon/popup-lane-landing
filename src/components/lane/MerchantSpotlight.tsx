@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { X, ExternalLink, Heart, Globe, Instagram, Facebook } from "lucide-react";
 import { Loader2 } from "lucide-react";
+import ProductImageCarousel from "./ProductImageCarousel";
+import { getProductImages } from "@/lib/image-utils";
 
 interface MerchantSpotlightProps {
   merchantId: string;
@@ -114,20 +116,18 @@ export default function MerchantSpotlight({
               <div className="space-y-4">
                 <h3 className="text-xl font-semibold">Products</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {merchant.merchant_products.map((product: any) => (
-                    <div
-                      key={product.id}
-                      className="border rounded-lg overflow-hidden space-y-2 hover:shadow-md transition-shadow"
-                    >
-                      {product.image_url && (
-                        <div className="w-full h-48">
-                          <img 
-                            src={product.image_url} 
-                            alt={product.product_name}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                      )}
+                  {merchant.merchant_products.map((product: any) => {
+                    const images = getProductImages(product);
+                    return (
+                      <div
+                        key={product.id}
+                        className="border rounded-lg overflow-hidden space-y-2 hover:shadow-md transition-shadow"
+                      >
+                        <ProductImageCarousel
+                          images={images}
+                          brandName={merchant.brand_name}
+                          className="h-48"
+                        />
                       <div className="p-4 space-y-2">
                         <h4 className="font-semibold">{product.product_name}</h4>
                         <p className="text-sm text-muted-foreground line-clamp-2">
@@ -149,9 +149,10 @@ export default function MerchantSpotlight({
                             View Product
                           </Button>
                         )}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             )}

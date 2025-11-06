@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Bookmark, ExternalLink, Heart, Loader2, Share2, Store } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import ProductImageCarousel from "@/components/lane/ProductImageCarousel";
+import { getProductImages, getProductImagesFromMultiple } from "@/lib/image-utils";
 
 export default function LanePreview() {
   const [selectedMerchantId, setSelectedMerchantId] = useState<string | null>(null);
@@ -35,28 +37,17 @@ export default function LanePreview() {
   const selectedMerchant = merchants?.find(m => m.id === selectedMerchantId);
   const selectedProducts = selectedMerchant?.merchant_products || [];
 
-  const getProductImages = (products: any[]) => {
-    const images: string[] = [];
-    products.forEach(product => {
-      if (product.image_url) images.push(product.image_url);
-      if (product.image_urls && Array.isArray(product.image_urls)) {
-        images.push(...product.image_urls);
-      }
-    });
-    return images.length > 0 ? images.slice(0, 3) : ["https://images.unsplash.com/photo-1472851294608-062f824d29cc"];
-  };
+  const carouselImages = getProductImagesFromMultiple(selectedProducts);
 
   const handleNext = () => {
-    if (selectedProducts.length > 0) {
-      const images = getProductImages(selectedProducts);
-      setCurrentImageIndex((prev) => (prev + 1) % images.length);
+    if (carouselImages.length > 0) {
+      setCurrentImageIndex((prev) => (prev + 1) % carouselImages.length);
     }
   };
 
   const handlePrev = () => {
-    if (selectedProducts.length > 0) {
-      const images = getProductImages(selectedProducts);
-      setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
+    if (carouselImages.length > 0) {
+      setCurrentImageIndex((prev) => (prev - 1 + carouselImages.length) % carouselImages.length);
     }
   };
 
@@ -97,24 +88,25 @@ export default function LanePreview() {
             <div className="grid md:grid-cols-2 gap-6">
               {featuredMerchants.map((merchant) => {
                 const mainProduct = merchant.merchant_products?.[0];
+                const images = mainProduct ? getProductImages(mainProduct) : [];
                 return (
                   <Card 
                     key={merchant.id} 
                     className="overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 cursor-pointer border-2 border-transparent hover:border-wine/20"
                     onClick={() => setSelectedMerchantId(merchant.id)}
                   >
-                    <div className="relative h-48">
-                      <img 
-                        src={mainProduct?.image_url || "https://images.unsplash.com/photo-1472851294608-062f824d29cc"}
-                        alt={merchant.brand_name}
-                        className="w-full h-full object-cover"
-                      />
-                      {mainProduct?.discount_percentage && (
-                        <Badge className="absolute top-3 left-3 bg-red-500 hover:bg-red-600 text-white font-bold animate-pulse shadow-lg">
-                          {mainProduct.discount_percentage}% OFF
-                        </Badge>
-                      )}
-                    </div>
+                    <ProductImageCarousel
+                      images={images}
+                      brandName={merchant.brand_name}
+                      className="h-48"
+                      discountBadge={
+                        mainProduct?.discount_percentage && (
+                          <Badge className="absolute top-3 left-3 bg-red-500 hover:bg-red-600 text-white font-bold animate-pulse shadow-lg">
+                            {mainProduct.discount_percentage}% OFF
+                          </Badge>
+                        )
+                      }
+                    />
                     <CardContent className="p-4">
                       <h4 className="font-bold text-lg mb-2">{merchant.brand_name}</h4>
                       <p className="text-sm text-muted-foreground mb-3">{merchant.category || "Curated"}</p>
@@ -148,28 +140,30 @@ export default function LanePreview() {
               <p className="text-sm text-muted-foreground">What shoppers are saving most</p>
             </div>
             <div className="grid md:grid-cols-3 gap-4">
-              {trendingMerchants.map((merchant) => (
-                <Card 
-                  key={merchant.id} 
-                  className="overflow-hidden hover:shadow-xl transition-all cursor-pointer"
-                  onClick={() => setSelectedMerchantId(merchant.id)}
-                >
-                  <div className="h-28 overflow-hidden">
-                    <img 
-                      src={merchant.merchant_products?.[0]?.image_url || "https://images.unsplash.com/photo-1472851294608-062f824d29cc"}
-                      alt={merchant.brand_name}
-                      className="w-full h-full object-cover"
+              {trendingMerchants.map((merchant) => {
+                const mainProduct = merchant.merchant_products?.[0];
+                const images = mainProduct ? getProductImages(mainProduct) : [];
+                return (
+                  <Card 
+                    key={merchant.id} 
+                    className="overflow-hidden hover:shadow-xl transition-all cursor-pointer"
+                    onClick={() => setSelectedMerchantId(merchant.id)}
+                  >
+                    <ProductImageCarousel
+                      images={images}
+                      brandName={merchant.brand_name}
+                      className="h-28"
                     />
-                  </div>
-                  <CardContent className="p-3">
-                    <Badge className="mb-2 bg-red-50 text-red-700 hover:bg-red-100">
-                      {merchant.click_count || 0} views
-                    </Badge>
-                    <h4 className="font-bold">{merchant.brand_name}</h4>
-                    <p className="text-xs text-muted-foreground">{merchant.category}</p>
-                  </CardContent>
-                </Card>
-              ))}
+                    <CardContent className="p-3">
+                      <Badge className="mb-2 bg-red-50 text-red-700 hover:bg-red-100">
+                        {merchant.click_count || 0} views
+                      </Badge>
+                      <h4 className="font-bold">{merchant.brand_name}</h4>
+                      <p className="text-xs text-muted-foreground">{merchant.category}</p>
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
           </section>
         )}
@@ -180,24 +174,25 @@ export default function LanePreview() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {merchants?.map((merchant) => {
               const mainProduct = merchant.merchant_products?.[0];
+              const images = mainProduct ? getProductImages(mainProduct) : [];
               return (
                 <Card 
                   key={merchant.id} 
                   className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer"
                   onClick={() => setSelectedMerchantId(merchant.id)}
                 >
-                  <div className="relative h-40">
-                    <img 
-                      src={mainProduct?.image_url || "https://images.unsplash.com/photo-1472851294608-062f824d29cc"}
-                      alt={merchant.brand_name}
-                      className="w-full h-full object-cover"
-                    />
-                    {mainProduct?.discount_percentage && (
-                      <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600 text-white font-bold animate-pulse">
-                        {mainProduct.discount_percentage}% OFF
-                      </Badge>
-                    )}
-                  </div>
+                  <ProductImageCarousel
+                    images={images}
+                    brandName={merchant.brand_name}
+                    className="h-40"
+                    discountBadge={
+                      mainProduct?.discount_percentage && (
+                        <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600 text-white font-bold animate-pulse">
+                          {mainProduct.discount_percentage}% OFF
+                        </Badge>
+                      )
+                    }
+                  />
                   <CardContent className="p-4">
                     <h4 className="font-bold mb-1">{merchant.brand_name}</h4>
                     <p className="text-sm text-muted-foreground mb-2">{merchant.category}</p>
@@ -241,11 +236,11 @@ export default function LanePreview() {
               <div>
                 <div className="relative rounded-xl overflow-hidden bg-muted">
                   <img 
-                    src={getProductImages(selectedProducts)[currentImageIndex]}
+                    src={carouselImages[currentImageIndex]}
                     alt={selectedMerchant.brand_name}
                     className="w-full h-96 object-cover"
                   />
-                  {getProductImages(selectedProducts).length > 1 && (
+                  {carouselImages.length > 1 && (
                     <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-between px-4">
                       <Button 
                         size="icon" 
@@ -267,7 +262,7 @@ export default function LanePreview() {
                   )}
                 </div>
                 <p className="text-center text-sm text-muted-foreground mt-2">
-                  {currentImageIndex + 1} / {getProductImages(selectedProducts).length}
+                  {currentImageIndex + 1} / {carouselImages.length}
                 </p>
               </div>
 
