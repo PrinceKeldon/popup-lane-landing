@@ -32,7 +32,7 @@ export default function TrendingSection({ onMerchantClick }: TrendingSectionProp
         .eq("application_status", "Approved")
         .or("tier.eq.trending,click_count.gt.0")
         .order("click_count", { ascending: false })
-        .limit(6);
+        .limit(3);
 
       if (error) throw error;
       return data;
@@ -42,18 +42,15 @@ export default function TrendingSection({ onMerchantClick }: TrendingSectionProp
   if (!merchants || merchants.length === 0) return null;
 
   return (
-    <section className="py-6 bg-gradient-to-r from-wine/5 to-wine/10 border-y">
+    <section className="py-8 mb-12">
       <div className="container px-4">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-xl font-bold flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-wine" />
-            Trending Now
-          </h3>
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-2xl font-bold">🔥 Trending Now</h3>
           <p className="text-sm text-muted-foreground">
             What shoppers are saving most
           </p>
         </div>
-        <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide">
+        <div className="grid md:grid-cols-3 gap-4">
           {merchants.map((merchant) => {
             // Priority: 1) Featured product, 2) First product with images, 3) Any first product
             const firstProduct = merchant.merchant_products?.find(p => p.is_featured) ||
@@ -65,7 +62,7 @@ export default function TrendingSection({ onMerchantClick }: TrendingSectionProp
             return (
               <div
                 key={merchant.id}
-                className="flex-none w-[260px] snap-start cursor-pointer group"
+                className="cursor-pointer group"
                 onClick={() => onMerchantClick(merchant.id)}
               >
                 <div className="bg-card rounded-lg overflow-hidden shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-hover)] transition-all duration-300 hover:-translate-y-1 flex flex-col min-h-[380px]">

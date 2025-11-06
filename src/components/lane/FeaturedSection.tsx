@@ -39,7 +39,7 @@ export default function FeaturedSection({
         .eq("application_status", "Approved")
         .eq("tier", "featured")
         .order("created_at", { ascending: false })
-        .limit(4);
+        .limit(2);
 
       if (error) throw error;
       return data;
@@ -49,10 +49,10 @@ export default function FeaturedSection({
   if (!merchants || merchants.length === 0) return null;
 
   return (
-    <section className="py-8">
+    <section className="py-8 mb-12">
       <div className="container px-4">
         <h3 className="text-2xl font-bold mb-6">Featured Brands</h3>
-        <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
+        <div className="grid md:grid-cols-2 gap-6">
           {merchants.map((merchant) => {
             // Priority: 1) Featured product, 2) First product with images, 3) Any first product
             const firstProduct = merchant.merchant_products?.find(p => p.is_featured) ||
@@ -66,7 +66,7 @@ export default function FeaturedSection({
             return (
               <div
                 key={merchant.id}
-                className="group flex-none w-[340px] snap-start"
+                className="group"
               >
                 <div className="bg-card border-2 border-transparent rounded-lg overflow-hidden shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-hover)] hover:border-wine/10 transition-all duration-300 hover:-translate-y-1 cursor-pointer flex flex-col min-h-[420px]">
                   {/* Image Carousel */}
