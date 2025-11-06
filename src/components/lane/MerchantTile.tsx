@@ -43,15 +43,14 @@ export default function MerchantTile({
 
       {/* Content */}
       <div className="px-4 pb-3 pt-1 space-y-1 flex-1 flex flex-col justify-end relative z-10 rounded-none bg-[#000900]/0">
-        {firstProduct && <Badge className="bg-[#f5f8f9] text-sm font-medium text-black px-3 w-fit my-0 py-[3px] hover:bg-[#f5f8f9]">
+        <div className="rounded bg-[#fbfcfb]/90 px-[6px] py-[3px] my-[19px] w-fit space-y-1">
+        {firstProduct && <Badge className="bg-[#f5f8f9] text-sm font-medium text-black w-fit hover:bg-[#f5f8f9]">
             {firstProduct.product_name}
           </Badge>}
-
-        <div className="rounded bg-[#fbfcfb]/90 px-[6px] py-[3px] my-[19px] w-fit">
           <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
             BY {merchant.brand_name}
           </p>
-          {merchant.category && <Badge variant="secondary" className="text-xs w-fit border-0 px-2 py-0.5 bg-white text-wine mx-[11px]">
+          {merchant.category && <Badge variant="secondary" className="text-xs w-fit border-0 px-2 py-0.5 bg-white text-wine">
               {merchant.category}
             </Badge>}
         </div>

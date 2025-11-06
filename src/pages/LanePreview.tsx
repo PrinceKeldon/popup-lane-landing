@@ -97,10 +97,10 @@ export default function LanePreview() {
                           </div>} />
                   </div>
                   <div className="px-4 pb-3 pt-1 space-y-1 flex-1 flex flex-col justify-end relative z-10 rounded-none bg-[#000900]/0">
-                    {mainProduct && <Badge className="leading-tight text-sm font-medium text-black px-3 w-fit my-0 py-[3px] bg-[#f5f8f9]">
+                    <div className="rounded bg-[#fbfcfb]/90 px-[6px] py-[3px] my-[19px] w-fit space-y-1">
+                    {mainProduct && <Badge className="bg-[#f5f8f9] text-sm font-medium text-black w-fit hover:bg-[#f5f8f9]">
                         {mainProduct.product_name}
                       </Badge>}
-                    <div className="rounded bg-[#fbfcfb]/90 px-[6px] py-[3px] my-[19px] w-fit">
                       <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
                         BY {merchant.brand_name}
                       </p>
@@ -140,10 +140,10 @@ export default function LanePreview() {
                           </div>} />
                   </div>
                   <div className="px-4 pb-3 pt-1 space-y-1 flex-1 flex flex-col justify-end relative z-10 rounded-none bg-[#000900]/0">
-                    {mainProduct && <Badge className="text-sm font-medium text-black px-3 w-fit my-0 py-[3px] bg-[#f5f8f9]">
+                    <div className="rounded bg-[#fbfcfb]/90 px-[6px] py-[3px] w-fit space-y-1">
+                    {mainProduct && <Badge className="bg-[#f5f8f9] text-sm font-medium text-black w-fit hover:bg-[#f5f8f9]">
                         {mainProduct.product_name}
                       </Badge>}
-                    <div className="rounded bg-[#fbfcfb]/90 px-[6px] py-[3px] w-fit">
                       <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
                         BY {merchant.brand_name}
                       </p>
@@ -173,11 +173,11 @@ export default function LanePreview() {
                             {mainProduct.discount_percentage}% OFF
                           </div>} />
                   </div>
-                  <div className="px-4 pb-3 pt-1 space-y-1 flex-1 flex flex-col justify-end relative z-10 rounded-none\\n bg-[#000900]/0">
-                    {mainProduct && <Badge className="leading-tight text-sm font-medium text-black px-3 w-fit my-0 py-[3px] bg-[#f5f8f9]">
+                  <div className="px-4 pb-3 pt-1 space-y-1 flex-1 flex flex-col justify-end relative z-10 rounded-none bg-[#000900]/0">
+                    <div className="rounded bg-[#fbfcfb]/90 px-[6px] py-[3px] my-[19px] w-fit space-y-1">
+                    {mainProduct && <Badge className="bg-[#f5f8f9] text-sm font-medium text-black w-fit hover:bg-[#f5f8f9]">
                         {mainProduct.product_name}
                       </Badge>}
-                    <div className="rounded bg-[#fbfcfb]/90 px-[6px] py-[3px] my-[19px] w-fit">
                       <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
                         BY {merchant.brand_name}
                       </p>
