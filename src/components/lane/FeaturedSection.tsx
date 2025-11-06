@@ -21,7 +21,7 @@ export default function FeaturedSection({
     queryKey: ["featured-merchants"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("public_merchants")
+        .from("merchants")
         .select(`
           id,
           brand_name,

@@ -26,7 +26,7 @@ export default function MyFinds({
       if (savedMerchantIds.length === 0) return [];
       
       const { data, error } = await supabase
-        .from("public_merchants")
+        .from("merchants")
         .select("id, brand_name, website_url, social_media, category, application_status, tier, click_count, created_at, updated_at, spots_claimed")
         .in("id", savedMerchantIds);
 
