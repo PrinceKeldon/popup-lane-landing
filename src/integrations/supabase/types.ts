@@ -104,6 +104,13 @@ export type Database = {
             referencedRelation: "merchants"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "merchant_products_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "public_merchants"
+            referencedColumns: ["id"]
+          },
         ]
       }
       merchants: {
@@ -180,7 +187,51 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      public_merchants: {
+        Row: {
+          application_status: string | null
+          brand_name: string | null
+          category: string | null
+          click_count: number | null
+          created_at: string | null
+          id: string | null
+          social_media: string | null
+          spots_claimed: number | null
+          tier: string | null
+          updated_at: string | null
+          user_id: string | null
+          website_url: string | null
+        }
+        Insert: {
+          application_status?: string | null
+          brand_name?: string | null
+          category?: string | null
+          click_count?: number | null
+          created_at?: string | null
+          id?: string | null
+          social_media?: string | null
+          spots_claimed?: number | null
+          tier?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          website_url?: string | null
+        }
+        Update: {
+          application_status?: string | null
+          brand_name?: string | null
+          category?: string | null
+          click_count?: number | null
+          created_at?: string | null
+          id?: string | null
+          social_media?: string | null
+          spots_claimed?: number | null
+          tier?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          website_url?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       has_role: {

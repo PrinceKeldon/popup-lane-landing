@@ -14,7 +14,7 @@ export default function TrendingSection({ onMerchantClick }: TrendingSectionProp
     queryKey: ["trending-merchants"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("merchants")
+        .from("public_merchants")
         .select(`
           id,
           brand_name,
@@ -27,7 +27,6 @@ export default function TrendingSection({ onMerchantClick }: TrendingSectionProp
           created_at,
           updated_at,
           spots_claimed,
-          airtable_record_id,
           merchant_products (*)
         `)
         .eq("application_status", "Approved")

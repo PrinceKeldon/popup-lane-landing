@@ -22,7 +22,7 @@ export default function LanePreview() {
       const {
         data,
         error
-      } = await supabase.from("merchants").select(`
+      } = await supabase.from("public_merchants").select(`
           id,
           brand_name,
           website_url,
@@ -34,7 +34,6 @@ export default function LanePreview() {
           created_at,
           updated_at,
           spots_claimed,
-          airtable_record_id,
           merchant_products (*)
         `).eq("application_status", "Approved").order("click_count", {
         ascending: false

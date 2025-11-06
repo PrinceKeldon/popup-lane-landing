@@ -24,7 +24,7 @@ export default function MerchantSpotlight({
     queryKey: ["merchant", merchantId],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("merchants")
+        .from("public_merchants")
         .select(`
           id,
           brand_name,
@@ -37,7 +37,6 @@ export default function MerchantSpotlight({
           created_at,
           updated_at,
           spots_claimed,
-          airtable_record_id,
           merchant_products (*)
         `)
         .eq("id", merchantId)
