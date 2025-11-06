@@ -68,7 +68,7 @@ export default function TrendingSection({ onMerchantClick }: TrendingSectionProp
                 className="flex-none w-[260px] snap-start cursor-pointer group"
                 onClick={() => onMerchantClick(merchant.id)}
               >
-                <div className="bg-card rounded-xl overflow-hidden shadow-[var(--shadow-elegant)] hover:shadow-[var(--shadow-hover)] transition-all duration-200 hover:-translate-y-1 flex flex-col min-h-[320px]">
+                <div className="bg-card rounded-lg overflow-hidden shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-hover)] transition-all duration-300 hover:-translate-y-1 flex flex-col min-h-[380px]">
                   <div className="flex-shrink-0">
                     <ProductImageCarousel
                       images={images}
@@ -82,16 +82,18 @@ export default function TrendingSection({ onMerchantClick }: TrendingSectionProp
                       }
                     />
                   </div>
-                  <div className="p-5 space-y-2 flex-1 flex flex-col bg-white">
-                    <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
-                      BY {merchant.brand_name}
-                    </p>
+                  <div className="px-4 pb-3 pt-1 space-y-1 flex-1 flex flex-col justify-end relative z-10 rounded-none bg-[#000900]/0">
                     {firstProduct && (
-                      <h4 className="text-sm font-bold leading-tight text-foreground">
+                      <Badge className="bg-[#f5f8f9] text-sm font-medium text-black px-3 w-fit my-0 py-[3px] hover:bg-[#f5f8f9]">
                         {firstProduct.product_name}
-                      </h4>
+                      </Badge>
                     )}
-                    <div className="flex items-center gap-2 mt-auto pt-2">
+                    <div className="rounded bg-[#fbfcfb]/90 px-[6px] py-[3px]">
+                      <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
+                        BY {merchant.brand_name}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 pt-1">
                       <Badge
                         variant="secondary"
                         className="text-xs bg-red-50 text-red-600"

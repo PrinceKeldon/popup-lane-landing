@@ -68,7 +68,7 @@ export default function FeaturedSection({
                 key={merchant.id}
                 className="group flex-none w-[340px] snap-start"
               >
-                <div className="bg-card border-2 border-transparent rounded-2xl overflow-hidden shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-hover)] hover:border-wine/10 transition-all duration-300 hover:-translate-y-2 cursor-pointer flex flex-col min-h-[420px]">
+                <div className="bg-card border-2 border-transparent rounded-lg overflow-hidden shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-hover)] hover:border-wine/10 transition-all duration-300 hover:-translate-y-1 cursor-pointer flex flex-col min-h-[420px]">
                   {/* Image Carousel */}
                   <div onClick={() => onMerchantClick(merchant.id)} className="flex-shrink-0">
                     <ProductImageCarousel
@@ -85,22 +85,28 @@ export default function FeaturedSection({
                   </div>
 
                   {/* Content */}
-                  <div className="p-6 space-y-2 flex-1 flex flex-col bg-white z-10 relative">
-                    <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
-                      BY {merchant.brand_name}
-                    </p>
+                  <div className="px-4 pb-3 pt-1 space-y-1 flex-1 flex flex-col justify-end relative z-10 rounded-none bg-[#000900]/0">
+                    {firstProduct && (
+                      <Badge className="bg-[#f5f8f9] text-sm font-medium text-black px-3 w-fit my-0 py-[3px] hover:bg-[#f5f8f9]">
+                        {firstProduct.product_name}
+                      </Badge>
+                    )}
+
+                    <div className="rounded bg-[#fbfcfb]/90 px-[6px] mx-0 py-[3px] my-[19px]">
+                      <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
+                        BY {merchant.brand_name}
+                      </p>
+                      {merchant.category && (
+                        <Badge variant="secondary" className="text-xs w-fit border-0 px-0 bg-[#000a00]/0">
+                          {merchant.category}
+                        </Badge>
+                      )}
+                    </div>
 
                     {firstProduct && (
                       <>
-                        <h4
-                          className="text-base font-bold leading-tight text-foreground cursor-pointer hover:text-wine transition-colors"
-                          onClick={() => onMerchantClick(merchant.id)}
-                        >
-                          {firstProduct.product_name}
-                        </h4>
-
                         {firstProduct.discount_percentage && firstProduct.original_price ? (
-                          <div className="flex items-baseline gap-2 text-sm pt-1">
+                          <div className="flex items-baseline gap-2 text-sm bg-[#fbfcfb]/90 rounded px-2 py-1 w-fit">
                             <span className="text-lg font-bold">
                               ${(parseFloat(String(firstProduct.original_price)) * (1 - firstProduct.discount_percentage / 100)).toFixed(2)}
                             </span>
@@ -112,7 +118,7 @@ export default function FeaturedSection({
                             </span>
                           </div>
                         ) : firstProduct.price ? (
-                          <div className="flex items-baseline gap-2 text-sm pt-1">
+                          <div className="flex items-baseline gap-2 text-sm bg-[#fbfcfb]/90 rounded px-2 py-1 w-fit">
                             <span className="font-semibold text-muted-foreground">Starting at</span>
                             <span className="text-lg font-bold">
                               ${parseFloat(String(firstProduct.price)).toFixed(2)}
@@ -122,20 +128,14 @@ export default function FeaturedSection({
                       </>
                     )}
 
-                    {merchant.category && (
-                      <Badge variant="secondary" className="text-xs w-fit">
-                        {merchant.category}
-                      </Badge>
-                    )}
-
                     {/* Actions */}
-                    <div className="flex gap-2 pt-4 mt-auto">
+                    <div className="flex gap-2 pt-2">
                       <Button
                         size="sm"
-                        className="flex-1 bg-foreground hover:bg-foreground/90 text-background"
+                        className="flex-1 bg-foreground hover:bg-foreground/90 text-background transition-all duration-300"
                         onClick={() => onMerchantClick(merchant.id)}
                       >
-                        <ExternalLink className="h-3.5 w-3.5 mr-1.5" />
+                        <ExternalLink className="h-3 w-3 mr-1.5" />
                         View Brand
                       </Button>
                       <Button
@@ -147,12 +147,12 @@ export default function FeaturedSection({
                         }}
                         className={
                           isSaved
-                            ? "bg-foreground hover:bg-foreground/90 text-background"
-                            : "hover:bg-muted"
+                            ? "bg-foreground hover:bg-foreground/90 text-background transition-all duration-300"
+                            : "hover:bg-muted transition-all duration-300"
                         }
                       >
                         <Heart
-                          className={`h-3.5 w-3.5 ${isSaved ? "fill-current" : ""}`}
+                          className={`h-3 w-3 transition-all duration-300 ${isSaved ? "fill-current" : ""}`}
                         />
                       </Button>
                     </div>
