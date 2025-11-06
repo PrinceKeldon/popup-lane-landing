@@ -188,7 +188,7 @@ export default function LanePreview() {
                             {mainProduct.discount_percentage}% OFF
                           </div>} />
                   </div>
-                  <div className="px-4 pb-3 pt-1 space-y-1 flex-1 flex flex-col justify-end relative z-10 bg-[#000900]/[0.82] rounded-none\n">
+                  <div className="px-4 pb-3 pt-1 space-y-1 flex-1 flex flex-col justify-end relative z-10 rounded-none\\n bg-[#000900]/0">
                     <div className="flex items-center justify-between rounded-none mx-0 px-[6px] bg-transparent">
                       <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
                         BY {merchant.brand_name}
