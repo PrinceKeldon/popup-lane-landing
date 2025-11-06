@@ -36,14 +36,15 @@ export default function ProductImageCarousel({
   if (!images || images.length === 0) {
     return (
       <div className="relative h-48 bg-gradient-to-br from-wine/5 via-wine/10 to-wine/5 flex items-center justify-center">
-        <div className="w-20 h-20 rounded-full bg-wine/20 flex items-center justify-center">
+        <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/20" />
+        <div className="relative z-10 w-20 h-20 rounded-full bg-wine/20 flex items-center justify-center">
           <span className="text-3xl font-bold text-wine">
             {brandName.charAt(0).toUpperCase()}
           </span>
         </div>
         {discountBadge}
         {offerText && (
-          <div className="absolute bottom-2 left-2 right-2 bg-black/70 text-white px-2 py-1 rounded-md text-xs font-semibold text-center">
+          <div className="absolute bottom-2 left-2 right-2 bg-black/80 text-white px-2 py-1 rounded-md text-xs font-semibold text-center z-10">
             {offerText}
           </div>
         )}
@@ -61,9 +62,10 @@ export default function ProductImageCarousel({
           className="w-full h-full object-cover"
           loading="lazy"
         />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/30" />
         {discountBadge}
         {offerText && (
-          <div className="absolute bottom-2 left-2 right-2 bg-black/70 text-white px-2 py-1 rounded-md text-xs font-semibold text-center">
+          <div className="absolute bottom-2 left-2 right-2 bg-black/80 text-white px-2 py-1 rounded-md text-xs font-semibold text-center z-10">
             {offerText}
           </div>
         )}
@@ -93,12 +95,15 @@ export default function ProductImageCarousel({
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-background/80 backdrop-blur-sm hover:bg-background border-none h-8 w-8" />
-        <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-background/80 backdrop-blur-sm hover:bg-background border-none h-8 w-8" />
+        <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-background/80 backdrop-blur-sm hover:bg-background border-none h-8 w-8 z-20" />
+        <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-background/80 backdrop-blur-sm hover:bg-background border-none h-8 w-8 z-20" />
       </Carousel>
 
+      {/* Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/30 pointer-events-none z-10" />
+
       {/* Navigation Dots */}
-      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-20">
         {images.map((_, index) => (
           <div
             key={index}
@@ -114,7 +119,7 @@ export default function ProductImageCarousel({
       {/* Overlays */}
       {discountBadge}
       {offerText && (
-        <div className="absolute bottom-6 left-2 right-2 bg-black/70 text-white px-2 py-1 rounded-md text-xs font-semibold text-center">
+        <div className="absolute bottom-6 left-2 right-2 bg-black/80 text-white px-2 py-1 rounded-md text-xs font-semibold text-center z-20">
           {offerText}
         </div>
       )}

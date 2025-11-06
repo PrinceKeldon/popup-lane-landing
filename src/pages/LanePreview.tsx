@@ -178,9 +178,9 @@ export default function LanePreview() {
               const mainProduct = merchant.merchant_products?.[0];
               const images = mainProduct ? getProductImages(mainProduct) : [];
               return (
-                <Card 
+                <div 
                   key={merchant.id} 
-                  className="flex flex-col overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer min-h-[380px]"
+                  className="group relative bg-card border rounded-xl overflow-hidden shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-hover)] transition-all duration-300 hover:-translate-y-1 cursor-pointer flex flex-col min-h-[380px]"
                   onClick={() => setSelectedMerchantId(merchant.id)}
                 >
                   <div className="flex-shrink-0">
@@ -189,14 +189,14 @@ export default function LanePreview() {
                       brandName={merchant.brand_name}
                       discountBadge={
                         mainProduct?.discount_percentage && (
-                          <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600 text-white font-bold animate-pulse">
+                          <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600 text-white font-bold animate-pulse shadow-lg ring-1 ring-white/20 z-20">
                             {mainProduct.discount_percentage}% OFF
                           </Badge>
                         )
                       }
                     />
                   </div>
-                  <CardContent className="p-5 pt-4 flex-1 flex flex-col bg-card/95 border-t border-border/5">
+                  <div className="p-5 pt-4 space-y-3 flex-1 flex flex-col bg-card/95 border-t border-border/5">
                     <h4 className="font-bold mb-1">{merchant.brand_name}</h4>
                     <p className="text-sm text-muted-foreground mb-2">{merchant.category}</p>
                     {mainProduct?.offer_text && (
@@ -213,8 +213,8 @@ export default function LanePreview() {
                         <Heart className="h-3 w-3" />
                       </Button>
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
               );
             })}
           </div>
