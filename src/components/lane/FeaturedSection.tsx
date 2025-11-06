@@ -66,46 +66,63 @@ export default function FeaturedSection({
                       brandName={merchant.brand_name}
                       discountBadge={
                         firstProduct?.discount_percentage && (
-                          <div className="absolute top-3 left-3 bg-[hsl(var(--urgent-red))] text-white px-3 py-2 rounded-lg font-bold text-sm shadow-lg z-10 animate-pulse-badge">
+                          <div className="absolute top-3 left-3 bg-white text-red-600 px-3 py-1.5 text-xs font-bold uppercase tracking-wide shadow-sm z-20">
                             {firstProduct.discount_percentage}% OFF
                           </div>
                         )
                       }
-                      offerText={firstProduct?.offer_text}
                     />
                   </div>
 
                   {/* Content */}
-                  <div className="p-5 pt-4 space-y-3 flex-1 flex flex-col bg-card/95 border-t border-border/5">
-                    <div
-                      className="cursor-pointer"
-                      onClick={() => onMerchantClick(merchant.id)}
-                    >
-                      <h4 className="font-semibold text-lg mb-1">
-                        {merchant.brand_name}
-                      </h4>
-                      <p className="text-sm text-muted-foreground">
-                        {merchant.category || "Discover unique products"}
-                      </p>
-                    </div>
+                  <div className="p-6 space-y-2 flex-1 flex flex-col bg-white">
+                    <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
+                      BY {merchant.brand_name}
+                    </p>
+
+                    {firstProduct && (
+                      <>
+                        <h4
+                          className="text-base font-bold leading-tight text-foreground cursor-pointer hover:text-wine transition-colors"
+                          onClick={() => onMerchantClick(merchant.id)}
+                        >
+                          {firstProduct.product_name}
+                        </h4>
+
+                        {firstProduct.discount_percentage && firstProduct.original_price ? (
+                          <div className="flex items-baseline gap-2 text-sm pt-1">
+                            <span className="text-lg font-bold">
+                              ${(parseFloat(String(firstProduct.original_price)) * (1 - firstProduct.discount_percentage / 100)).toFixed(2)}
+                            </span>
+                            <span className="line-through text-muted-foreground text-sm">
+                              ${parseFloat(String(firstProduct.original_price)).toFixed(2)}
+                            </span>
+                            <span className="text-red-600 font-bold text-sm">
+                              {firstProduct.discount_percentage}% Off
+                            </span>
+                          </div>
+                        ) : firstProduct.price ? (
+                          <div className="flex items-baseline gap-2 text-sm pt-1">
+                            <span className="font-semibold text-muted-foreground">Starting at</span>
+                            <span className="text-lg font-bold">
+                              ${parseFloat(String(firstProduct.price)).toFixed(2)}
+                            </span>
+                          </div>
+                        ) : null}
+                      </>
+                    )}
 
                     {merchant.category && (
-                      <Badge variant="secondary" className="text-xs">
+                      <Badge variant="secondary" className="text-xs w-fit">
                         {merchant.category}
                       </Badge>
                     )}
 
-                    {firstProduct && (
-                      <div className="bg-wine/5 rounded-lg px-3 py-2 text-xs font-semibold text-wine">
-                        {firstProduct.product_name} • Limited time offer
-                      </div>
-                    )}
-
                     {/* Actions */}
-                    <div className="flex gap-2 pt-3 mt-auto">
+                    <div className="flex gap-2 pt-4 mt-auto">
                       <Button
                         size="sm"
-                        className="flex-1 bg-[hsl(var(--wine))] hover:bg-[hsl(var(--wine-light))] text-white"
+                        className="flex-1 bg-foreground hover:bg-foreground/90 text-background"
                         onClick={() => onMerchantClick(merchant.id)}
                       >
                         <ExternalLink className="h-3.5 w-3.5 mr-1.5" />
@@ -120,8 +137,8 @@ export default function FeaturedSection({
                         }}
                         className={
                           isSaved
-                            ? "bg-[hsl(var(--wine))] hover:bg-[hsl(var(--wine-light))] text-white"
-                            : ""
+                            ? "bg-foreground hover:bg-foreground/90 text-background"
+                            : "hover:bg-muted"
                         }
                       >
                         <Heart

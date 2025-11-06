@@ -37,59 +37,68 @@ export default function MerchantTile({
           brandName={merchant.brand_name}
           discountBadge={
             firstProduct?.discount_percentage ? (
-              <div className="absolute top-2 left-2 bg-[hsl(var(--urgent-red))] text-white px-2.5 py-1.5 rounded-lg font-bold text-xs shadow-lg z-10 animate-pulse-badge">
+              <div className="absolute top-3 left-3 bg-white text-red-600 px-3 py-1.5 text-xs font-bold uppercase tracking-wide shadow-sm z-20">
                 {firstProduct.discount_percentage}% OFF
               </div>
             ) : firstProduct?.price ? (
-              <div className="absolute top-2 left-2 bg-[hsl(var(--wine))] text-white px-2.5 py-1.5 rounded-lg font-bold text-xs shadow-lg z-10">
+              <div className="absolute top-3 left-3 bg-white text-foreground px-3 py-1.5 text-xs font-bold uppercase tracking-wide shadow-sm z-20">
                 ${parseFloat(String(firstProduct.price)).toFixed(0)}
               </div>
             ) : undefined
           }
-          offerText={firstProduct?.offer_text}
         />
       </div>
 
       {/* Content */}
-      <div className="p-5 space-y-3 flex-1 flex flex-col">
-        <div className="space-y-1">
-          <h3
-            className="font-semibold text-lg cursor-pointer hover:text-wine transition-colors"
-            onClick={onClick}
-          >
-            {merchant.brand_name}
-          </h3>
-          {merchant.category && (
-            <Badge variant="secondary" className="text-xs">
-              {merchant.category}
-            </Badge>
-          )}
-        </div>
+      <div className="p-6 space-y-2 flex-1 flex flex-col bg-white">
+        <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
+          BY {merchant.brand_name}
+        </p>
 
         {firstProduct && (
-          <div className="space-y-1">
-            <div className="bg-wine/5 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-wine">
+          <>
+            <h3
+              className="text-base font-bold leading-tight text-foreground cursor-pointer hover:text-wine transition-colors"
+              onClick={onClick}
+            >
               {firstProduct.product_name}
-            </div>
-            {firstProduct.discount_percentage && firstProduct.original_price && (
-              <div className="flex items-center gap-2 text-xs">
-                <span className="line-through text-muted-foreground">
-                  ${parseFloat(String(firstProduct.original_price)).toFixed(2)}
-                </span>
-                <span className="font-bold text-[hsl(var(--urgent-red))]">
+            </h3>
+
+            {firstProduct.discount_percentage && firstProduct.original_price ? (
+              <div className="flex items-baseline gap-2 text-sm pt-1">
+                <span className="text-lg font-bold">
                   ${(parseFloat(String(firstProduct.original_price)) * (1 - firstProduct.discount_percentage / 100)).toFixed(2)}
                 </span>
+                <span className="line-through text-muted-foreground text-sm">
+                  ${parseFloat(String(firstProduct.original_price)).toFixed(2)}
+                </span>
+                <span className="text-red-600 font-bold text-sm">
+                  {firstProduct.discount_percentage}% Off
+                </span>
               </div>
-            )}
-          </div>
+            ) : firstProduct.price ? (
+              <div className="flex items-baseline gap-2 text-sm pt-1">
+                <span className="font-semibold text-muted-foreground">Starting at</span>
+                <span className="text-lg font-bold">
+                  ${parseFloat(String(firstProduct.price)).toFixed(2)}
+                </span>
+              </div>
+            ) : null}
+          </>
+        )}
+
+        {merchant.category && (
+          <Badge variant="secondary" className="text-xs w-fit">
+            {merchant.category}
+          </Badge>
         )}
 
         {/* Actions */}
-        <div className="flex gap-2 pt-3 mt-auto">
+        <div className="flex gap-2 pt-4 mt-auto">
           {merchant.website_url && (
             <Button
               size="sm"
-              className="flex-1 bg-[hsl(var(--wine))] hover:bg-[hsl(var(--wine-light))] text-white"
+              className="flex-1 bg-foreground hover:bg-foreground/90 text-background"
               onClick={(e) => {
                 e.stopPropagation();
                 if (merchant.website_url) {
@@ -100,7 +109,7 @@ export default function MerchantTile({
               }}
             >
               <ExternalLink className="h-4 w-4 mr-1" />
-              {merchant.website_url ? "Visit" : "View"}
+              {merchant.website_url ? "Visit Store" : "View"}
             </Button>
           )}
           <Button
@@ -112,8 +121,8 @@ export default function MerchantTile({
             }}
             className={
               isSaved
-                ? "bg-[hsl(var(--wine))] hover:bg-[hsl(var(--wine-light))] text-white"
-                : ""
+                ? "bg-foreground hover:bg-foreground/90 text-background"
+                : "hover:bg-muted"
             }
           >
             <Heart className={`h-4 w-4 ${isSaved ? "fill-current" : ""}`} />

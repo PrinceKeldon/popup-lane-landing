@@ -65,21 +65,26 @@ export default function TrendingSection({ onMerchantClick }: TrendingSectionProp
                       brandName={merchant.brand_name}
                       discountBadge={
                         firstProduct?.discount_percentage && (
-                          <div className="absolute top-2 right-2 bg-[hsl(var(--urgent-red))] text-white px-2 py-1 rounded-md font-bold text-xs animate-pulse-badge">
-                            -{firstProduct.discount_percentage}%
+                          <div className="absolute top-3 right-3 bg-white text-red-600 px-3 py-1.5 text-xs font-bold uppercase tracking-wide shadow-sm z-20">
+                            {firstProduct.discount_percentage}% OFF
                           </div>
                         )
                       }
                     />
                   </div>
-                  <div className="p-4 pt-3 flex-1 flex flex-col bg-card/95 border-t border-border/5">
-                    <h4 className="font-semibold text-sm mb-1">
-                      {merchant.brand_name}
-                    </h4>
-                    <div className="flex items-center gap-2 mt-auto">
+                  <div className="p-5 space-y-2 flex-1 flex flex-col bg-white">
+                    <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
+                      BY {merchant.brand_name}
+                    </p>
+                    {firstProduct && (
+                      <h4 className="text-sm font-bold leading-tight text-foreground">
+                        {firstProduct.product_name}
+                      </h4>
+                    )}
+                    <div className="flex items-center gap-2 mt-auto pt-2">
                       <Badge
                         variant="secondary"
-                        className="text-xs bg-[hsl(var(--urgent-red))]/10 text-[hsl(var(--urgent-red))]"
+                        className="text-xs bg-red-50 text-red-600"
                       >
                         <TrendingUp className="h-3 w-3 mr-1" />
                         Trending

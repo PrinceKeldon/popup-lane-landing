@@ -90,9 +90,9 @@ export default function LanePreview() {
                 const mainProduct = merchant.merchant_products?.[0];
                 const images = mainProduct ? getProductImages(mainProduct) : [];
                 return (
-                <Card 
+                <div 
                   key={merchant.id} 
-                  className="flex flex-col overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 cursor-pointer border-2 border-transparent hover:border-wine/20 min-h-[420px]"
+                  className="group relative bg-card border rounded-xl overflow-hidden shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-hover)] transition-all duration-300 hover:-translate-y-1 cursor-pointer flex flex-col min-h-[420px]"
                   onClick={() => setSelectedMerchantId(merchant.id)}
                 >
                   <div className="flex-shrink-0">
@@ -101,32 +101,60 @@ export default function LanePreview() {
                       brandName={merchant.brand_name}
                       discountBadge={
                         mainProduct?.discount_percentage && (
-                          <Badge className="absolute top-3 left-3 bg-red-500 hover:bg-red-600 text-white font-bold animate-pulse shadow-lg">
+                          <div className="absolute top-3 left-3 bg-white text-red-600 px-3 py-1.5 text-xs font-bold uppercase tracking-wide shadow-sm z-20">
                             {mainProduct.discount_percentage}% OFF
-                          </Badge>
+                          </div>
                         )
                       }
                     />
                   </div>
-                  <CardContent className="p-5 pt-4 flex-1 flex flex-col bg-card/95 border-t border-border/5">
-                    <h4 className="font-bold text-lg mb-2">{merchant.brand_name}</h4>
-                    <p className="text-sm text-muted-foreground mb-3">{merchant.category || "Curated"}</p>
-                    {mainProduct?.offer_text && (
-                      <div className="bg-wine/5 text-wine font-semibold text-sm p-2 rounded-lg mb-3">
-                        {mainProduct.offer_text}
-                      </div>
+                  <div className="p-6 space-y-2 flex-1 flex flex-col bg-white">
+                    <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
+                      BY {merchant.brand_name}
+                    </p>
+                    {mainProduct && (
+                      <>
+                        <h4 className="text-base font-bold leading-tight text-foreground">
+                          {mainProduct.product_name}
+                        </h4>
+                        {mainProduct.discount_percentage && mainProduct.original_price ? (
+                          <div className="flex items-baseline gap-2 text-sm pt-1">
+                            <span className="text-lg font-bold">
+                              ${(parseFloat(String(mainProduct.original_price)) * (1 - mainProduct.discount_percentage / 100)).toFixed(2)}
+                            </span>
+                            <span className="line-through text-muted-foreground text-sm">
+                              ${parseFloat(String(mainProduct.original_price)).toFixed(2)}
+                            </span>
+                            <span className="text-red-600 font-bold text-sm">
+                              {mainProduct.discount_percentage}% Off
+                            </span>
+                          </div>
+                        ) : mainProduct.price ? (
+                          <div className="flex items-baseline gap-2 text-sm pt-1">
+                            <span className="font-semibold text-muted-foreground">Starting at</span>
+                            <span className="text-lg font-bold">
+                              ${parseFloat(String(mainProduct.price)).toFixed(2)}
+                            </span>
+                          </div>
+                        ) : null}
+                      </>
                     )}
-                    <div className="flex gap-2 mt-auto">
-                      <Button size="sm" className="flex-1 bg-wine hover:bg-wine-light">
+                    {merchant.category && (
+                      <Badge variant="secondary" className="text-xs w-fit">
+                        {merchant.category}
+                      </Badge>
+                    )}
+                    <div className="flex gap-2 pt-4 mt-auto">
+                      <Button size="sm" className="flex-1 bg-foreground hover:bg-foreground/90 text-background">
                         <Store className="h-4 w-4 mr-1" />
-                        Visit
+                        Visit Store
                       </Button>
-                      <Button size="sm" variant="outline">
+                      <Button size="sm" variant="outline" className="hover:bg-muted">
                         <Bookmark className="h-4 w-4" />
                       </Button>
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
                 );
               })}
             </div>
@@ -145,25 +173,43 @@ export default function LanePreview() {
                 const mainProduct = merchant.merchant_products?.[0];
                 const images = mainProduct ? getProductImages(mainProduct) : [];
                 return (
-                <Card 
+                <div 
                   key={merchant.id} 
-                  className="flex flex-col overflow-hidden hover:shadow-xl transition-all cursor-pointer min-h-[340px]"
+                  className="group relative bg-card border rounded-xl overflow-hidden shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-hover)] transition-all duration-300 hover:-translate-y-1 cursor-pointer flex flex-col min-h-[340px]"
                   onClick={() => setSelectedMerchantId(merchant.id)}
                 >
                   <div className="flex-shrink-0">
                     <ProductImageCarousel
                       images={images}
                       brandName={merchant.brand_name}
+                      discountBadge={
+                        mainProduct?.discount_percentage && (
+                          <div className="absolute top-3 right-3 bg-white text-red-600 px-3 py-1.5 text-xs font-bold uppercase tracking-wide shadow-sm z-20">
+                            {mainProduct.discount_percentage}% OFF
+                          </div>
+                        )
+                      }
                     />
                   </div>
-                  <CardContent className="p-4 pt-3 flex-1 flex flex-col bg-card/95 border-t border-border/5">
-                    <Badge className="mb-2 bg-red-50 text-red-700 hover:bg-red-100 self-start">
-                      {merchant.click_count || 0} views
-                    </Badge>
-                    <h4 className="font-bold">{merchant.brand_name}</h4>
-                    <p className="text-xs text-muted-foreground">{merchant.category}</p>
-                  </CardContent>
-                </Card>
+                  <div className="p-5 space-y-2 flex-1 flex flex-col bg-white">
+                    <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
+                      BY {merchant.brand_name}
+                    </p>
+                    {mainProduct && (
+                      <h4 className="text-sm font-bold leading-tight text-foreground">
+                        {mainProduct.product_name}
+                      </h4>
+                    )}
+                    <div className="flex items-center gap-2 mt-auto pt-2">
+                      <Badge variant="secondary" className="text-xs bg-red-50 text-red-600">
+                        {merchant.click_count || 0} views
+                      </Badge>
+                      {merchant.category && (
+                        <span className="text-xs text-muted-foreground">{merchant.category}</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
                 );
               })}
             </div>
@@ -189,27 +235,55 @@ export default function LanePreview() {
                       brandName={merchant.brand_name}
                       discountBadge={
                         mainProduct?.discount_percentage && (
-                          <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600 text-white font-bold animate-pulse shadow-lg ring-1 ring-white/20 z-20">
+                          <div className="absolute top-3 left-3 bg-white text-red-600 px-3 py-1.5 text-xs font-bold uppercase tracking-wide shadow-sm z-20">
                             {mainProduct.discount_percentage}% OFF
-                          </Badge>
+                          </div>
                         )
                       }
                     />
                   </div>
-                  <div className="p-5 pt-4 space-y-3 flex-1 flex flex-col bg-card/95 border-t border-border/5">
-                    <h4 className="font-bold mb-1">{merchant.brand_name}</h4>
-                    <p className="text-sm text-muted-foreground mb-2">{merchant.category}</p>
-                    {mainProduct?.offer_text && (
-                      <div className="bg-gradient-to-r from-wine/5 to-wine-light/5 text-wine font-semibold text-xs p-2 rounded-lg mb-3">
-                        {mainProduct.offer_text}
-                      </div>
+                  <div className="p-6 space-y-2 flex-1 flex flex-col bg-white">
+                    <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
+                      BY {merchant.brand_name}
+                    </p>
+                    {mainProduct && (
+                      <>
+                        <h4 className="text-base font-bold leading-tight text-foreground">
+                          {mainProduct.product_name}
+                        </h4>
+                        {mainProduct.discount_percentage && mainProduct.original_price ? (
+                          <div className="flex items-baseline gap-2 text-sm pt-1">
+                            <span className="text-lg font-bold">
+                              ${(parseFloat(String(mainProduct.original_price)) * (1 - mainProduct.discount_percentage / 100)).toFixed(2)}
+                            </span>
+                            <span className="line-through text-muted-foreground text-sm">
+                              ${parseFloat(String(mainProduct.original_price)).toFixed(2)}
+                            </span>
+                            <span className="text-red-600 font-bold text-sm">
+                              {mainProduct.discount_percentage}% Off
+                            </span>
+                          </div>
+                        ) : mainProduct.price ? (
+                          <div className="flex items-baseline gap-2 text-sm pt-1">
+                            <span className="font-semibold text-muted-foreground">Starting at</span>
+                            <span className="text-lg font-bold">
+                              ${parseFloat(String(mainProduct.price)).toFixed(2)}
+                            </span>
+                          </div>
+                        ) : null}
+                      </>
                     )}
-                    <div className="flex gap-2 mt-auto">
-                      <Button size="sm" variant="outline" className="flex-1">
+                    {merchant.category && (
+                      <Badge variant="secondary" className="text-xs w-fit">
+                        {merchant.category}
+                      </Badge>
+                    )}
+                    <div className="flex gap-2 pt-4 mt-auto">
+                      <Button size="sm" variant="default" className="flex-1 bg-foreground hover:bg-foreground/90 text-background">
                         <ExternalLink className="h-3 w-3 mr-1" />
-                        Visit
+                        Visit Store
                       </Button>
-                      <Button size="sm" variant="outline">
+                      <Button size="sm" variant="outline" className="hover:bg-muted">
                         <Heart className="h-3 w-3" />
                       </Button>
                     </div>
