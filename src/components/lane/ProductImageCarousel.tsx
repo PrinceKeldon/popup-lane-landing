@@ -38,7 +38,7 @@ export default function ProductImageCarousel({
   if (!images || images.length === 0) {
     return (
       <div
-        className={`relative ${className} bg-gradient-to-br from-wine/5 via-wine/10 to-wine/5 flex items-center justify-center`}
+        className="relative aspect-[4/3] bg-gradient-to-br from-wine/5 via-wine/10 to-wine/5 flex items-center justify-center"
       >
         <div className="w-20 h-20 rounded-full bg-wine/20 flex items-center justify-center">
           <span className="text-3xl font-bold text-wine">
@@ -58,11 +58,12 @@ export default function ProductImageCarousel({
   // Single image - no carousel needed
   if (images.length === 1) {
     return (
-      <div className={`relative ${className} overflow-hidden`}>
+      <div className="relative aspect-[4/3] overflow-hidden">
         <img
           src={images[0]}
           alt={brandName}
           className="w-full h-full object-cover"
+          loading="lazy"
         />
         {discountBadge}
         {offerText && (
@@ -76,7 +77,7 @@ export default function ProductImageCarousel({
 
   // Multiple images - show carousel
   return (
-    <div className={`relative ${className} group`}>
+    <div className="relative aspect-[4/3] group">
       <Carousel
         className="w-full h-full"
         opts={{ loop: true }}
@@ -90,6 +91,7 @@ export default function ProductImageCarousel({
                   src={image}
                   alt={`${brandName} - Image ${index + 1}`}
                   className="w-full h-full object-cover"
+                  loading="lazy"
                 />
               </div>
             </CarouselItem>

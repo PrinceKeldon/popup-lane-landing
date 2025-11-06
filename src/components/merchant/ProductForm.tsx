@@ -19,6 +19,7 @@ import { useState, useEffect } from "react";
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { SortableImage } from './SortableImage';
+import imageCompression from 'browser-image-compression';
 
 const productSchema = z.object({
   product_name: z.string().min(1, "Product name is required").max(100),
@@ -43,6 +44,7 @@ export const ProductForm = ({ merchantId, onSuccess, productId, initialData }: P
   const { toast } = useToast();
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [existingImages, setExistingImages] = useState<string[]>([]);
+  const [isCompressing, setIsCompressing] = useState(false);
   const isEditMode = !!productId;
 
   const sensors = useSensors(
@@ -102,20 +104,45 @@ export const ProductForm = ({ merchantId, onSuccess, productId, initialData }: P
     setExistingImages(prev => prev.filter((_, i) => i !== index));
   };
 
+  const compressImage = async (file: File): Promise<File> => {
+    const options = {
+      maxSizeMB: 0.8,
+      maxWidthOrHeight: 1200,
+      useWebWorker: true,
+      fileType: 'image/webp' as const,
+      initialQuality: 0.85,
+    };
+    
+    try {
+      const compressedFile = await imageCompression(file, options);
+      return compressedFile;
+    } catch (error) {
+      console.error('Compression error:', error);
+      return file;
+    }
+  };
+
   const onSubmit = async (values: z.infer<typeof productSchema>) => {
     try {
       const imageUrls: string[] = [...existingImages];
 
       // Upload multiple images if provided
       if (values.images && values.images.length > 0) {
+        setIsCompressing(true);
+        toast({
+          title: "Optimizing images...",
+          description: "Compressing images for faster loading",
+        });
+
         for (const image of values.images) {
-          const fileExt = image.name.split('.').pop();
+          const compressedImage = await compressImage(image);
+          const fileExt = 'webp';
           const fileName = `${merchantId}-${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
           const filePath = `${fileName}`;
 
           const { error: uploadError } = await supabase.storage
             .from('product-images')
-            .upload(filePath, image, {
+            .upload(filePath, compressedImage, {
               cacheControl: '3600',
               upsert: false
             });
@@ -129,6 +156,7 @@ export const ProductForm = ({ merchantId, onSuccess, productId, initialData }: P
 
           imageUrls.push(publicUrl);
         }
+        setIsCompressing(false);
       }
 
       const productData = {
@@ -405,9 +433,9 @@ export const ProductForm = ({ merchantId, onSuccess, productId, initialData }: P
           )}
         />
 
-        <Button type="submit" disabled={form.formState.isSubmitting}>
-          {form.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {isEditMode ? "Update Product" : "Add Product"}
+        <Button type="submit" disabled={form.formState.isSubmitting || isCompressing}>
+          {(form.formState.isSubmitting || isCompressing) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          {isCompressing ? "Optimizing images..." : isEditMode ? "Update Product" : "Add Product"}
         </Button>
       </form>
     </Form>
