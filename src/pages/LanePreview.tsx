@@ -197,7 +197,7 @@ export default function LanePreview() {
                           {merchant.category}
                         </Badge>}
                     </div>
-                    {mainProduct && <h4 className="leading-tight text-foreground text-sm font-medium">
+                    {mainProduct && <h4 className="leading-tight text-sm font-medium text-slate-50">
                         {mainProduct.product_name}
                       </h4>}
                     <div className="flex gap-2 pt-4 mt-auto">
