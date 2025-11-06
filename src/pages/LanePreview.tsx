@@ -98,7 +98,6 @@ export default function LanePreview() {
                     <ProductImageCarousel
                       images={images}
                       brandName={merchant.brand_name}
-                      className="h-48"
                       discountBadge={
                         mainProduct?.discount_percentage && (
                           <Badge className="absolute top-3 left-3 bg-red-500 hover:bg-red-600 text-white font-bold animate-pulse shadow-lg">
@@ -152,7 +151,6 @@ export default function LanePreview() {
                     <ProductImageCarousel
                       images={images}
                       brandName={merchant.brand_name}
-                      className="h-28"
                     />
                     <CardContent className="p-3">
                       <Badge className="mb-2 bg-red-50 text-red-700 hover:bg-red-100">
@@ -184,7 +182,6 @@ export default function LanePreview() {
                   <ProductImageCarousel
                     images={images}
                     brandName={merchant.brand_name}
-                    className="h-40"
                     discountBadge={
                       mainProduct?.discount_percentage && (
                         <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600 text-white font-bold animate-pulse">

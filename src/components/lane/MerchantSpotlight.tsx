@@ -126,7 +126,6 @@ export default function MerchantSpotlight({
                         <ProductImageCarousel
                           images={images}
                           brandName={merchant.brand_name}
-                          className="h-48"
                         />
                       <div className="p-4 space-y-2">
                         <h4 className="font-semibold">{product.product_name}</h4>

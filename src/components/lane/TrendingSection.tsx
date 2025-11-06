@@ -62,7 +62,6 @@ export default function TrendingSection({ onMerchantClick }: TrendingSectionProp
                   <ProductImageCarousel
                     images={images}
                     brandName={merchant.brand_name}
-                    className="h-28 rounded-lg"
                     discountBadge={
                       firstProduct?.discount_percentage && (
                         <div className="absolute top-2 right-2 bg-[hsl(var(--urgent-red))] text-white px-2 py-1 rounded-md font-bold text-xs animate-pulse-badge">

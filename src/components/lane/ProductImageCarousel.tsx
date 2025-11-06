@@ -13,7 +13,6 @@ interface ProductImageCarouselProps {
   brandName: string;
   discountBadge?: React.ReactNode;
   offerText?: string;
-  className?: string;
 }
 
 export default function ProductImageCarousel({
@@ -21,7 +20,6 @@ export default function ProductImageCarousel({
   brandName,
   discountBadge,
   offerText,
-  className = "h-40",
 }: ProductImageCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [api, setApi] = useState<CarouselApi>();
@@ -37,9 +35,7 @@ export default function ProductImageCarousel({
   // Fallback to brand initial if no images
   if (!images || images.length === 0) {
     return (
-      <div
-        className="relative aspect-[4/3] bg-gradient-to-br from-wine/5 via-wine/10 to-wine/5 flex items-center justify-center"
-      >
+      <div className="relative h-48 bg-gradient-to-br from-wine/5 via-wine/10 to-wine/5 flex items-center justify-center">
         <div className="w-20 h-20 rounded-full bg-wine/20 flex items-center justify-center">
           <span className="text-3xl font-bold text-wine">
             {brandName.charAt(0).toUpperCase()}
@@ -58,7 +54,7 @@ export default function ProductImageCarousel({
   // Single image - no carousel needed
   if (images.length === 1) {
     return (
-      <div className="relative aspect-[4/3] overflow-hidden">
+      <div className="relative h-48 overflow-hidden">
         <img
           src={images[0]}
           alt={brandName}
@@ -77,7 +73,7 @@ export default function ProductImageCarousel({
 
   // Multiple images - show carousel
   return (
-    <div className="relative aspect-[4/3] group">
+    <div className="relative h-48 group">
       <Carousel
         className="w-full h-full"
         opts={{ loop: true }}

@@ -64,7 +64,6 @@ export default function FeaturedSection({
                     <ProductImageCarousel
                       images={images}
                       brandName={merchant.brand_name}
-                      className="h-48"
                       discountBadge={
                         firstProduct?.discount_percentage && (
                           <div className="absolute top-3 left-3 bg-[hsl(var(--urgent-red))] text-white px-3 py-2 rounded-lg font-bold text-sm shadow-lg z-10 animate-pulse-badge">

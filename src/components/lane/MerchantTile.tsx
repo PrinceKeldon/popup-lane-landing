@@ -29,9 +29,9 @@ export default function MerchantTile({
   const images = firstProduct ? getProductImages(firstProduct) : [];
 
   return (
-    <div className="group relative bg-card border rounded-xl overflow-hidden shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-hover)] transition-all duration-300 hover:-translate-y-2 flex flex-col">
+    <div className="group relative bg-card border rounded-xl overflow-hidden shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-hover)] transition-all duration-300 hover:-translate-y-2 flex flex-col h-full">
       {/* Product Image Carousel */}
-      <div className="cursor-pointer flex-shrink-0" onClick={onClick}>
+      <div className="cursor-pointer" onClick={onClick}>
         <ProductImageCarousel
           images={images}
           brandName={merchant.brand_name}
@@ -51,7 +51,7 @@ export default function MerchantTile({
       </div>
 
       {/* Content */}
-      <div className="p-4 space-y-3 flex-1 flex flex-col">
+      <div className="p-5 space-y-3 flex-1 flex flex-col">
         <div className="space-y-1">
           <h3
             className="font-semibold text-lg cursor-pointer hover:text-wine transition-colors"
@@ -85,7 +85,7 @@ export default function MerchantTile({
         )}
 
         {/* Actions */}
-        <div className="flex gap-2 pt-2 mt-auto">
+        <div className="flex gap-2 pt-3 mt-auto">
           {merchant.website_url && (
             <Button
               size="sm"
