@@ -10,17 +10,19 @@ import { Bookmark, ExternalLink, Heart, Loader2, Share2, Store } from "lucide-re
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import ProductImageCarousel from "@/components/lane/ProductImageCarousel";
 import { getProductImages, getProductImagesFromMultiple } from "@/lib/image-utils";
-
 export default function LanePreview() {
   const [selectedMerchantId, setSelectedMerchantId] = useState<string | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-  const { data: merchants, isLoading } = useQuery({
+  const {
+    data: merchants,
+    isLoading
+  } = useQuery({
     queryKey: ["preview-merchants"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("merchants")
-        .select(`
+      const {
+        data,
+        error
+      } = await supabase.from("merchants").select(`
           id,
           brand_name,
           website_url,
@@ -34,44 +36,34 @@ export default function LanePreview() {
           spots_claimed,
           airtable_record_id,
           merchant_products (*)
-        `)
-        .eq("application_status", "Approved")
-        .order("click_count", { ascending: false });
-
+        `).eq("application_status", "Approved").order("click_count", {
+        ascending: false
+      });
       if (error) throw error;
       return data;
-    },
+    }
   });
-
   const featuredMerchants = merchants?.filter(m => m.tier === "featured").slice(0, 2) || [];
   const trendingMerchants = merchants?.filter(m => m.tier === "trending").slice(0, 3) || [];
   const selectedMerchant = merchants?.find(m => m.id === selectedMerchantId);
   const selectedProducts = selectedMerchant?.merchant_products || [];
-
   const carouselImages = getProductImagesFromMultiple(selectedProducts);
-
   const handleNext = () => {
     if (carouselImages.length > 0) {
-      setCurrentImageIndex((prev) => (prev + 1) % carouselImages.length);
+      setCurrentImageIndex(prev => (prev + 1) % carouselImages.length);
     }
   };
-
   const handlePrev = () => {
     if (carouselImages.length > 0) {
-      setCurrentImageIndex((prev) => (prev - 1 + carouselImages.length) % carouselImages.length);
+      setCurrentImageIndex(prev => (prev - 1 + carouselImages.length) % carouselImages.length);
     }
   };
-
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
+    return <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-wine" />
-      </div>
-    );
+      </div>;
   }
-
-  return (
-    <div className="min-h-screen bg-background">
+  return <div className="min-h-screen bg-background">
       <Navigation />
       
       <main className="container mx-auto px-4 py-8 max-w-7xl">
@@ -93,43 +85,27 @@ export default function LanePreview() {
         </section>
 
         {/* Featured Brands */}
-        {featuredMerchants.length > 0 && (
-          <section className="mb-12">
+        {featuredMerchants.length > 0 && <section className="mb-12">
             <h3 className="text-2xl font-bold mb-4">Featured Brands</h3>
             <div className="grid md:grid-cols-2 gap-6">
-              {featuredMerchants.map((merchant) => {
-                const mainProduct = merchant.merchant_products?.[0];
-                const images = mainProduct ? getProductImages(mainProduct) : [];
-                return (
-                <div 
-                  key={merchant.id} 
-                  className="group relative bg-card border rounded-xl overflow-hidden shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-hover)] transition-all duration-300 hover:-translate-y-1 cursor-pointer flex flex-col min-h-[420px]"
-                  onClick={() => setSelectedMerchantId(merchant.id)}
-                >
+              {featuredMerchants.map(merchant => {
+            const mainProduct = merchant.merchant_products?.[0];
+            const images = mainProduct ? getProductImages(mainProduct) : [];
+            return <div key={merchant.id} className="group relative bg-card border rounded-xl overflow-hidden shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-hover)] transition-all duration-300 hover:-translate-y-1 cursor-pointer flex flex-col min-h-[420px]" onClick={() => setSelectedMerchantId(merchant.id)}>
                   <div className="flex-shrink-0">
-                    <ProductImageCarousel
-                      images={images}
-                      brandName={merchant.brand_name}
-                      discountBadge={
-                        mainProduct?.discount_percentage && (
-                          <div className="absolute top-3 left-3 bg-white text-red-600 px-3 py-1.5 text-xs font-bold uppercase tracking-wide shadow-sm z-20">
+                    <ProductImageCarousel images={images} brandName={merchant.brand_name} discountBadge={mainProduct?.discount_percentage && <div className="absolute top-3 left-3 bg-white text-red-600 px-3 py-1.5 text-xs font-bold uppercase tracking-wide shadow-sm z-20">
                             {mainProduct.discount_percentage}% OFF
-                          </div>
-                        )
-                      }
-                    />
+                          </div>} />
                   </div>
                   <div className="p-6 space-y-2 flex-1 flex flex-col bg-white">
                     <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
                       BY {merchant.brand_name}
                     </p>
-                    {mainProduct && (
-                      <>
+                    {mainProduct && <>
                         <h4 className="text-base font-bold leading-tight text-foreground">
                           {mainProduct.product_name}
                         </h4>
-                        {mainProduct.discount_percentage && mainProduct.original_price ? (
-                          <div className="flex items-baseline gap-2 text-sm pt-1">
+                        {mainProduct.discount_percentage && mainProduct.original_price ? <div className="flex items-baseline gap-2 text-sm pt-1">
                             <span className="text-lg font-bold">
                               ${(parseFloat(String(mainProduct.original_price)) * (1 - mainProduct.discount_percentage / 100)).toFixed(2)}
                             </span>
@@ -139,22 +115,16 @@ export default function LanePreview() {
                             <span className="text-red-600 font-bold text-sm">
                               {mainProduct.discount_percentage}% Off
                             </span>
-                          </div>
-                        ) : mainProduct.price ? (
-                          <div className="flex items-baseline gap-2 text-sm pt-1">
+                          </div> : mainProduct.price ? <div className="flex items-baseline gap-2 text-sm pt-1">
                             <span className="font-semibold text-muted-foreground">Starting at</span>
                             <span className="text-lg font-bold">
                               ${parseFloat(String(mainProduct.price)).toFixed(2)}
                             </span>
-                          </div>
-                        ) : null}
-                      </>
-                    )}
-                    {merchant.category && (
-                      <Badge variant="secondary" className="text-xs w-fit">
+                          </div> : null}
+                      </>}
+                    {merchant.category && <Badge variant="secondary" className="text-xs w-fit">
                         {merchant.category}
-                      </Badge>
-                    )}
+                      </Badge>}
                     <div className="flex gap-2 pt-4 mt-auto">
                       <Button size="sm" className="flex-1 bg-foreground hover:bg-foreground/90 text-background">
                         <Store className="h-4 w-4 mr-1" />
@@ -165,110 +135,71 @@ export default function LanePreview() {
                       </Button>
                     </div>
                   </div>
-                </div>
-                );
-              })}
+                </div>;
+          })}
             </div>
-          </section>
-        )}
+          </section>}
 
         {/* Trending Now */}
-        {trendingMerchants.length > 0 && (
-          <section className="mb-12">
+        {trendingMerchants.length > 0 && <section className="mb-12">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-2xl font-bold">🔥 Trending Now</h3>
               <p className="text-sm text-muted-foreground">What shoppers are saving most</p>
             </div>
             <div className="grid md:grid-cols-3 gap-4">
-              {trendingMerchants.map((merchant) => {
-                const mainProduct = merchant.merchant_products?.[0];
-                const images = mainProduct ? getProductImages(mainProduct) : [];
-                return (
-                <div 
-                  key={merchant.id} 
-                  className="group relative bg-card border rounded-xl overflow-hidden shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-hover)] transition-all duration-300 hover:-translate-y-1 cursor-pointer flex flex-col min-h-[340px]"
-                  onClick={() => setSelectedMerchantId(merchant.id)}
-                >
+              {trendingMerchants.map(merchant => {
+            const mainProduct = merchant.merchant_products?.[0];
+            const images = mainProduct ? getProductImages(mainProduct) : [];
+            return <div key={merchant.id} className="group relative bg-card border rounded-xl overflow-hidden shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-hover)] transition-all duration-300 hover:-translate-y-1 cursor-pointer flex flex-col min-h-[340px]" onClick={() => setSelectedMerchantId(merchant.id)}>
                   <div className="flex-shrink-0">
-                    <ProductImageCarousel
-                      images={images}
-                      brandName={merchant.brand_name}
-                      discountBadge={
-                        mainProduct?.discount_percentage && (
-                          <div className="absolute top-3 right-3 bg-white text-red-600 px-3 py-1.5 text-xs font-bold uppercase tracking-wide shadow-sm z-20">
+                    <ProductImageCarousel images={images} brandName={merchant.brand_name} discountBadge={mainProduct?.discount_percentage && <div className="absolute top-3 right-3 bg-white text-red-600 px-3 py-1.5 text-xs font-bold uppercase tracking-wide shadow-sm z-20">
                             {mainProduct.discount_percentage}% OFF
-                          </div>
-                        )
-                      }
-                    />
+                          </div>} />
                   </div>
                   <div className="p-5 space-y-2 flex-1 flex flex-col bg-white">
                     <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
                       BY {merchant.brand_name}
                     </p>
-                    {mainProduct && (
-                      <h4 className="text-sm font-bold leading-tight text-foreground">
+                    {mainProduct && <h4 className="text-sm font-bold leading-tight text-foreground">
                         {mainProduct.product_name}
-                      </h4>
-                    )}
+                      </h4>}
                     <div className="flex items-center gap-2 mt-auto pt-2">
                       <Badge variant="secondary" className="text-xs bg-red-50 text-red-600">
                         {merchant.click_count || 0} views
                       </Badge>
-                      {merchant.category && (
-                        <span className="text-xs text-muted-foreground">{merchant.category}</span>
-                      )}
+                      {merchant.category && <span className="text-xs text-muted-foreground">{merchant.category}</span>}
                     </div>
                   </div>
-                </div>
-                );
-              })}
+                </div>;
+          })}
             </div>
-          </section>
-        )}
+          </section>}
 
         {/* Main Feed */}
         <section>
           <h3 className="text-2xl font-bold mb-6">All Brands in The Lane</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {merchants?.map((merchant) => {
-              const mainProduct = merchant.merchant_products?.[0];
-              const images = mainProduct ? getProductImages(mainProduct) : [];
-              return (
-                <div 
-                  key={merchant.id} 
-                  className="group relative bg-card border rounded-xl overflow-hidden shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-hover)] transition-all duration-300 hover:-translate-y-1 cursor-pointer flex flex-col min-h-[380px]"
-                  onClick={() => setSelectedMerchantId(merchant.id)}
-                >
+            {merchants?.map(merchant => {
+            const mainProduct = merchant.merchant_products?.[0];
+            const images = mainProduct ? getProductImages(mainProduct) : [];
+            return <div key={merchant.id} className="group relative bg-card border rounded-xl overflow-hidden shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-hover)] transition-all duration-300 hover:-translate-y-1 cursor-pointer flex flex-col min-h-[380px]" onClick={() => setSelectedMerchantId(merchant.id)}>
                   <div className="flex-shrink-0">
-                    <ProductImageCarousel
-                      images={images}
-                      brandName={merchant.brand_name}
-                      discountBadge={
-                        mainProduct?.discount_percentage && (
-                          <div className="absolute top-3 left-3 bg-white text-red-600 px-3 py-1.5 text-xs font-bold uppercase tracking-wide shadow-sm z-20">
+                    <ProductImageCarousel images={images} brandName={merchant.brand_name} discountBadge={mainProduct?.discount_percentage && <div className="absolute top-3 left-3 bg-white text-red-600 px-3 py-1.5 text-xs font-bold uppercase tracking-wide shadow-sm z-20">
                             {mainProduct.discount_percentage}% OFF
-                          </div>
-                        )
-                      }
-                    />
+                          </div>} />
                   </div>
                   <div className="p-6 space-y-2 flex-1 flex flex-col bg-white">
                     <div className="flex items-center justify-between">
                       <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
                         BY {merchant.brand_name}
                       </p>
-                      {merchant.category && (
-                        <Badge variant="secondary" className="text-xs">
+                      {merchant.category && <Badge variant="secondary" className="text-xs">
                           {merchant.category}
-                        </Badge>
-                      )}
+                        </Badge>}
                     </div>
-                    {mainProduct && (
-                      <h4 className="text-base font-bold leading-tight text-foreground">
+                    {mainProduct && <h4 className="leading-tight text-foreground text-sm font-medium">
                         {mainProduct.product_name}
-                      </h4>
-                    )}
+                      </h4>}
                     <div className="flex gap-2 pt-4 mt-auto">
                       <Button size="sm" variant="default" className="flex-1 bg-foreground hover:bg-foreground/90 text-background">
                         <ExternalLink className="h-3 w-3 mr-1" />
@@ -279,9 +210,8 @@ export default function LanePreview() {
                       </Button>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                </div>;
+          })}
           </div>
         </section>
 
@@ -298,36 +228,19 @@ export default function LanePreview() {
       {/* Modal / Spotlight */}
       <Dialog open={!!selectedMerchantId} onOpenChange={() => setSelectedMerchantId(null)}>
         <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
-          {selectedMerchant && (
-            <div className="grid md:grid-cols-2 gap-6">
+          {selectedMerchant && <div className="grid md:grid-cols-2 gap-6">
               {/* Left: Carousel */}
               <div>
                 <div className="relative rounded-xl overflow-hidden bg-muted">
-                  <img 
-                    src={carouselImages[currentImageIndex]}
-                    alt={selectedMerchant.brand_name}
-                    className="w-full h-96 object-cover"
-                  />
-                  {carouselImages.length > 1 && (
-                    <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-between px-4">
-                      <Button 
-                        size="icon" 
-                        variant="secondary" 
-                        onClick={handlePrev}
-                        className="rounded-full"
-                      >
+                  <img src={carouselImages[currentImageIndex]} alt={selectedMerchant.brand_name} className="w-full h-96 object-cover" />
+                  {carouselImages.length > 1 && <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-between px-4">
+                      <Button size="icon" variant="secondary" onClick={handlePrev} className="rounded-full">
                         ←
                       </Button>
-                      <Button 
-                        size="icon" 
-                        variant="secondary" 
-                        onClick={handleNext}
-                        className="rounded-full"
-                      >
+                      <Button size="icon" variant="secondary" onClick={handleNext} className="rounded-full">
                         →
                       </Button>
-                    </div>
-                  )}
+                    </div>}
                 </div>
                 <p className="text-center text-sm text-muted-foreground mt-2">
                   {currentImageIndex + 1} / {carouselImages.length}
@@ -341,33 +254,22 @@ export default function LanePreview() {
                   <p className="text-sm text-muted-foreground">{selectedMerchant.category}</p>
                 </DialogHeader>
 
-                {selectedProducts.length > 0 && (
-                  <div className="space-y-3">
+                {selectedProducts.length > 0 && <div className="space-y-3">
                     <h4 className="font-semibold">Products & Offers:</h4>
-                    {selectedProducts.map((product: any) => (
-                      <div key={product.id} className="bg-muted/50 p-3 rounded-lg">
+                    {selectedProducts.map((product: any) => <div key={product.id} className="bg-muted/50 p-3 rounded-lg">
                         <div className="flex justify-between items-start mb-2">
                           <h5 className="font-semibold">{product.product_name}</h5>
-                          {product.discount_percentage && (
-                            <Badge className="bg-red-500 text-white">
+                          {product.discount_percentage && <Badge className="bg-red-500 text-white">
                               {product.discount_percentage}% OFF
-                            </Badge>
-                          )}
+                            </Badge>}
                         </div>
                         <p className="text-sm text-muted-foreground mb-2">{product.product_description}</p>
-                        {product.offer_text && (
-                          <p className="text-sm font-semibold text-wine">{product.offer_text}</p>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                )}
+                        {product.offer_text && <p className="text-sm font-semibold text-wine">{product.offer_text}</p>}
+                      </div>)}
+                  </div>}
 
                 <div className="flex gap-2">
-                  <Button 
-                    className="flex-1 bg-wine hover:bg-wine-light"
-                    onClick={() => window.open(selectedMerchant.website_url || "#", "_blank")}
-                  >
+                  <Button className="flex-1 bg-wine hover:bg-wine-light" onClick={() => window.open(selectedMerchant.website_url || "#", "_blank")}>
                     <Store className="h-4 w-4 mr-2" />
                     Visit Store
                   </Button>
@@ -380,12 +282,10 @@ export default function LanePreview() {
                   </Button>
                 </div>
               </div>
-            </div>
-          )}
+            </div>}
         </DialogContent>
       </Dialog>
 
       <Footer />
-    </div>
-  );
+    </div>;
 }
