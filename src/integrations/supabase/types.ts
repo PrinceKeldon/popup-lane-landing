@@ -74,6 +74,52 @@ export type Database = {
         }
         Relationships: []
       }
+      merchant_analytics: {
+        Row: {
+          created_at: string | null
+          event_type: string
+          id: string
+          merchant_id: string
+          metadata: Json | null
+        }
+        Insert: {
+          created_at?: string | null
+          event_type: string
+          id?: string
+          merchant_id: string
+          metadata?: Json | null
+        }
+        Update: {
+          created_at?: string | null
+          event_type?: string
+          id?: string
+          merchant_id?: string
+          metadata?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "merchant_analytics_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "merchant_trending_stats"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "merchant_analytics_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "merchant_analytics_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "public_merchants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       merchant_products: {
         Row: {
           created_at: string
@@ -134,6 +180,13 @@ export type Database = {
             foreignKeyName: "merchant_products_merchant_id_fkey"
             columns: ["merchant_id"]
             isOneToOne: false
+            referencedRelation: "merchant_trending_stats"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "merchant_products_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
             referencedRelation: "merchants"
             referencedColumns: ["id"]
           },
@@ -156,6 +209,7 @@ export type Database = {
           created_at: string
           email: string
           id: string
+          last_trending_update: string | null
           social_media: string | null
           spots_claimed: number
           status: string | null
@@ -173,6 +227,7 @@ export type Database = {
           created_at?: string
           email: string
           id?: string
+          last_trending_update?: string | null
           social_media?: string | null
           spots_claimed?: number
           status?: string | null
@@ -190,6 +245,7 @@ export type Database = {
           created_at?: string
           email?: string
           id?: string
+          last_trending_update?: string | null
           social_media?: string | null
           spots_claimed?: number
           status?: string | null
@@ -223,6 +279,20 @@ export type Database = {
       }
     }
     Views: {
+      merchant_trending_stats: {
+        Row: {
+          brand_name: string | null
+          clicks_24h: number | null
+          clicks_7d: number | null
+          id: string | null
+          last_trending_update: string | null
+          tier: string | null
+          total_clicks: number | null
+          views_24h: number | null
+          views_7d: number | null
+        }
+        Relationships: []
+      }
       public_merchants: {
         Row: {
           application_status: string | null

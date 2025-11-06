@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { ExternalLink, Heart } from "lucide-react";
 import ProductImageCarousel from "./ProductImageCarousel";
 import { getProductImages } from "@/lib/image-utils";
+import { useTrackMerchantAnalytics } from "@/hooks/useTrackMerchantAnalytics";
 
 interface MerchantTileProps {
   merchant: any;
@@ -17,7 +18,13 @@ export default function MerchantTile({
   onSave,
   isSaved,
 }: MerchantTileProps) {
+  const { trackMerchantClick } = useTrackMerchantAnalytics();
   const productCount = merchant.merchant_products?.length || 0;
+
+  const handleClick = () => {
+    trackMerchantClick(merchant.id);
+    onClick();
+  };
 
   // Priority: 1) Featured product, 2) First product with images, 3) Any first product
   const firstProduct = merchant.merchant_products?.find(p => p.is_featured) ||
@@ -31,7 +38,7 @@ export default function MerchantTile({
   return (
     <div className="group relative bg-card border rounded-xl overflow-hidden shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-hover)] transition-all duration-300 hover:-translate-y-2 flex flex-col h-full">
       {/* Product Image Carousel */}
-      <div className="cursor-pointer" onClick={onClick}>
+      <div className="cursor-pointer" onClick={handleClick}>
         <ProductImageCarousel
           images={images}
           brandName={merchant.brand_name}
@@ -59,7 +66,7 @@ export default function MerchantTile({
           <>
             <h3
               className="text-base font-bold leading-tight text-foreground cursor-pointer hover:text-wine transition-colors"
-              onClick={onClick}
+              onClick={handleClick}
             >
               {firstProduct.product_name}
             </h3>
@@ -102,9 +109,10 @@ export default function MerchantTile({
               onClick={(e) => {
                 e.stopPropagation();
                 if (merchant.website_url) {
+                  trackMerchantClick(merchant.id);
                   window.open(merchant.website_url, "_blank");
                 } else {
-                  onClick();
+                  handleClick();
                 }
               }}
             >

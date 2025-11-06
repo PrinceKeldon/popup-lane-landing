@@ -6,6 +6,7 @@ import { MerchantTable } from "@/components/admin/MerchantTable";
 import { ShopperTable } from "@/components/admin/ShopperTable";
 import { LaneSettings } from "@/components/admin/LaneSettings";
 import { TierManagement } from "@/components/admin/TierManagement";
+import { TrendingUpdater } from "@/components/admin/TrendingUpdater";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { LogOut } from "lucide-react";
@@ -146,6 +147,8 @@ export default function AdminDashboard() {
         />
 
         <div className="space-y-6">
+          <TrendingUpdater />
+          
           <TierManagement />
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

@@ -45,10 +45,16 @@ import { useToast } from "@/hooks/use-toast";
 import { RefreshCw, Star, TrendingUp, MoreVertical, Check, X, Mail } from "lucide-react";
 import { MerchantEmailComposer } from "./MerchantEmailComposer";
 
-const TIERS = [
+// Tier definitions - trending is now automatic, only standard and featured are admin-controlled
+const ADMIN_TIERS = [
   { value: "standard", label: "Standard", icon: null },
   { value: "featured", label: "Featured", icon: Star },
-  { value: "trending", label: "Trending", icon: TrendingUp },
+];
+
+const ALL_TIERS = [
+  { value: "standard", label: "Standard", icon: null },
+  { value: "featured", label: "Featured", icon: Star },
+  { value: "trending", label: "Trending (Auto)", icon: TrendingUp },
 ];
 
 export function TierManagement() {
@@ -185,7 +191,7 @@ export function TierManagement() {
   });
 
   const getTierBadge = (tier: string | null) => {
-    const tierInfo = TIERS.find((t) => t.value === (tier || "standard"));
+    const tierInfo = ALL_TIERS.find((t) => t.value === (tier || "standard"));
     const Icon = tierInfo?.icon;
 
     return (
@@ -205,7 +211,7 @@ export function TierManagement() {
         <div>
           <h2 className="text-2xl font-bold text-primary">Tier Management</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Manage featured and trending brand visibility
+            Featured tier is admin-controlled. Trending tier is automatically assigned by AI based on engagement analytics.
           </p>
         </div>
         <Button onClick={() => refetch()} variant="outline" size="sm" disabled={isLoading}>
@@ -274,44 +280,53 @@ export function TierManagement() {
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          <Select
-                            value={getDisplayedTier(merchant)}
-                            onValueChange={(value) => handleTierChange(merchant.id, value)}
-                            disabled={isDeleted || isSuspended}
-                          >
-                            <SelectTrigger className="w-[140px]">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {TIERS.map((tier) => (
-                                <SelectItem key={tier.value} value={tier.value}>
-                                  <div className="flex items-center gap-2">
-                                    {tier.icon && <tier.icon className="h-3 w-3" />}
-                                    {tier.label}
-                                  </div>
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          {hasPendingChange && (
-                            <div className="flex gap-1">
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                className="h-8 w-8 p-0"
-                                onClick={() => confirmTierChange(merchant.id)}
-                              >
-                                <Check className="h-4 w-4 text-green-600" />
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                className="h-8 w-8 p-0"
-                                onClick={() => cancelTierChange(merchant.id)}
-                              >
-                                <X className="h-4 w-4 text-red-600" />
-                              </Button>
+                          {merchant.tier === 'trending' ? (
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <TrendingUp className="h-3 w-3" />
+                              <span>Auto-assigned by AI</span>
                             </div>
+                          ) : (
+                            <>
+                              <Select
+                                value={getDisplayedTier(merchant)}
+                                onValueChange={(value) => handleTierChange(merchant.id, value)}
+                                disabled={isDeleted || isSuspended}
+                              >
+                                <SelectTrigger className="w-[140px]">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {ADMIN_TIERS.map((tier) => (
+                                    <SelectItem key={tier.value} value={tier.value}>
+                                      <div className="flex items-center gap-2">
+                                        {tier.icon && <tier.icon className="h-3 w-3" />}
+                                        {tier.label}
+                                      </div>
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              {hasPendingChange && (
+                                <div className="flex gap-1">
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="h-8 w-8 p-0"
+                                    onClick={() => confirmTierChange(merchant.id)}
+                                  >
+                                    <Check className="h-4 w-4 text-green-600" />
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="h-8 w-8 p-0"
+                                    onClick={() => cancelTierChange(merchant.id)}
+                                  >
+                                    <X className="h-4 w-4 text-red-600" />
+                                  </Button>
+                                </div>
+                              )}
+                            </>
                           )}
                         </div>
                       </TableCell>
