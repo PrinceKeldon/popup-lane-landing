@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useCountdown } from "@/hooks/useCountdown";
 
 export const LaneSettings = () => {
   const [earlyAccessDate, setEarlyAccessDate] = useState("");
@@ -19,6 +20,10 @@ export const LaneSettings = () => {
   const [spotsLimit, setSpotsLimit] = useState(50);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+
+  const countdown = useCountdown(
+    earlyAccessDate ? new Date(earlyAccessDate) : new Date()
+  );
 
   useEffect(() => {
     loadSettings();
@@ -105,6 +110,44 @@ export const LaneSettings = () => {
             onChange={(e) => setEarlyAccessDate(e.target.value)}
           />
         </div>
+
+        {/* Countdown Display */}
+        {earlyAccessDate && (
+          <Card className="p-4 bg-muted/50">
+            <Label className="text-sm font-medium mb-2 block">
+              Countdown Preview
+            </Label>
+            {countdown.isExpired ? (
+              <div className="text-center">
+                <p className="text-2xl font-bold text-green-500">
+                  🎉 Lane is Live!
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-4 gap-2 text-center">
+                <div className="bg-background rounded p-2">
+                  <p className="text-2xl font-bold">{countdown.days}</p>
+                  <p className="text-xs text-muted-foreground">Days</p>
+                </div>
+                <div className="bg-background rounded p-2">
+                  <p className="text-2xl font-bold">{countdown.hours}</p>
+                  <p className="text-xs text-muted-foreground">Hours</p>
+                </div>
+                <div className="bg-background rounded p-2">
+                  <p className="text-2xl font-bold">{countdown.minutes}</p>
+                  <p className="text-xs text-muted-foreground">Minutes</p>
+                </div>
+                <div className="bg-background rounded p-2">
+                  <p className="text-2xl font-bold">{countdown.seconds}</p>
+                  <p className="text-xs text-muted-foreground">Seconds</p>
+                </div>
+              </div>
+            )}
+            <p className="text-xs text-muted-foreground mt-2 text-center">
+              This is what merchants and shoppers see
+            </p>
+          </Card>
+        )}
 
         <div className="space-y-2">
           <Label htmlFor="laneStatus">Lane Status</Label>

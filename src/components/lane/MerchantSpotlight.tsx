@@ -1,11 +1,11 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { X, ExternalLink, Heart, Globe, Instagram, Facebook } from "lucide-react";
-import { Loader2 } from "lucide-react";
-import ProductImageCarousel from "./ProductImageCarousel";
-import { getProductImages } from "@/lib/image-utils";
+import { Store, Heart, Share2, Loader2 } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { getProductImagesFromMultiple } from "@/lib/image-utils";
 
 interface MerchantSpotlightProps {
   merchantId: string;
@@ -20,6 +20,8 @@ export default function MerchantSpotlight({
   onSave,
   isSaved,
 }: MerchantSpotlightProps) {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
   const { data: merchant, isLoading } = useQuery({
     queryKey: ["merchant", merchantId],
     queryFn: async () => {
@@ -47,127 +49,130 @@ export default function MerchantSpotlight({
     },
   });
 
-  if (isLoading || !merchant) {
-    return (
-      <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-[hsl(var(--wine))]" />
-      </div>
-    );
-  }
+  const products = merchant?.merchant_products || [];
+  const carouselImages = getProductImagesFromMultiple(products);
+
+  const handleNext = () => {
+    if (carouselImages.length > 0) {
+      setCurrentImageIndex((prev) => (prev + 1) % carouselImages.length);
+    }
+  };
+
+  const handlePrev = () => {
+    if (carouselImages.length > 0) {
+      setCurrentImageIndex((prev) => (prev - 1 + carouselImages.length) % carouselImages.length);
+    }
+  };
 
   return (
-    <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 overflow-y-auto animate-in fade-in duration-200">
-      <div className="min-h-screen py-8 px-4">
-        <div className="max-w-4xl mx-auto bg-card rounded-2xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
-          {/* Header */}
-          <div className="relative h-64 bg-gradient-to-br from-wine/10 via-wine/20 to-wine/10 flex items-center justify-center">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onClose}
-              className="absolute top-4 right-4 bg-background/80 hover:bg-background"
-            >
-              <X className="h-5 w-5" />
-            </Button>
-            <div className="w-32 h-32 rounded-full bg-wine/20 flex items-center justify-center">
-              <span className="text-6xl font-bold text-wine">
-                {merchant.brand_name.charAt(0).toUpperCase()}
-              </span>
-            </div>
+    <Dialog open={true} onOpenChange={onClose}>
+      <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
+        {isLoading || !merchant ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="h-8 w-8 animate-spin text-wine" />
           </div>
-
-          {/* Content */}
-          <div className="p-8 space-y-6">
-            <div className="flex items-start justify-between">
-              <div className="space-y-2">
-                <h2 className="text-3xl font-bold">{merchant.brand_name}</h2>
-                {merchant.category && (
-                  <Badge variant="secondary">{merchant.category}</Badge>
+        ) : (
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Left: Image Carousel */}
+            <div>
+              <div className="relative rounded-xl overflow-hidden bg-muted">
+                {carouselImages.length > 0 ? (
+                  <>
+                    <img
+                      src={carouselImages[currentImageIndex]}
+                      alt={merchant.brand_name}
+                      className="w-full h-96 object-cover"
+                    />
+                    {carouselImages.length > 1 && (
+                      <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-between px-4">
+                        <Button
+                          size="icon"
+                          variant="secondary"
+                          onClick={handlePrev}
+                          className="rounded-full"
+                        >
+                          ←
+                        </Button>
+                        <Button
+                          size="icon"
+                          variant="secondary"
+                          onClick={handleNext}
+                          className="rounded-full"
+                        >
+                          →
+                        </Button>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div className="w-full h-96 flex items-center justify-center bg-muted">
+                    <span className="text-6xl font-bold text-muted-foreground">
+                      {merchant.brand_name.charAt(0).toUpperCase()}
+                    </span>
+                  </div>
                 )}
               </div>
+              <p className="text-center text-sm text-muted-foreground mt-2">
+                {carouselImages.length > 0 ? `${currentImageIndex + 1} / ${carouselImages.length}` : "No images"}
+              </p>
+            </div>
+
+            {/* Right: Details */}
+            <div className="space-y-4">
+              <DialogHeader>
+                <DialogTitle className="text-2xl">{merchant.brand_name}</DialogTitle>
+                <p className="text-sm text-muted-foreground">{merchant.category}</p>
+              </DialogHeader>
+
+              {products.length > 0 && (
+                <div className="space-y-3">
+                  <h4 className="font-semibold">Products & Offers:</h4>
+                  {products.map((product: any) => (
+                    <div key={product.id} className="bg-muted/50 p-3 rounded-lg">
+                      <div className="flex justify-between items-start mb-2">
+                        <h5 className="font-semibold">{product.product_name}</h5>
+                        {product.discount_percentage && (
+                          <Badge className="bg-red-500 text-white">
+                            {product.discount_percentage}% OFF
+                          </Badge>
+                        )}
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-2">
+                        {product.product_description}
+                      </p>
+                      {product.offer_text && (
+                        <p className="text-sm font-semibold text-wine">
+                          {product.offer_text}
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+
               <div className="flex gap-2">
-                {merchant.website_url && (
-                  <Button
-                    onClick={() => window.open(merchant.website_url, "_blank")}
-                    className="bg-[hsl(var(--wine))] hover:bg-[hsl(var(--wine-light))] text-white"
-                  >
-                    <ExternalLink className="h-4 w-4 mr-2" />
-                    Visit Store
-                  </Button>
-                )}
+                <Button
+                  className="flex-1 bg-wine hover:bg-wine-light"
+                  onClick={() => window.open(merchant.website_url || "#", "_blank")}
+                >
+                  <Store className="h-4 w-4 mr-2" />
+                  Visit Store
+                </Button>
                 <Button
                   variant={isSaved ? "default" : "outline"}
                   onClick={() => onSave(merchantId)}
-                  className={
-                    isSaved
-                      ? "bg-[hsl(var(--wine))] hover:bg-[hsl(var(--wine-light))] text-white"
-                      : ""
-                  }
+                  className={isSaved ? "bg-wine hover:bg-wine-light" : ""}
                 >
                   <Heart className={`h-4 w-4 ${isSaved ? "fill-current" : ""}`} />
                 </Button>
+                <Button variant="outline" size="icon">
+                  <Share2 className="h-4 w-4" />
+                </Button>
               </div>
             </div>
-
-            {/* Social Links */}
-            {merchant.social_media && (
-              <div className="flex gap-3">
-                <Button variant="outline" size="sm">
-                  <Instagram className="h-4 w-4" />
-                </Button>
-                <Button variant="outline" size="sm">
-                  <Facebook className="h-4 w-4" />
-                </Button>
-              </div>
-            )}
-
-            {/* Products */}
-            {merchant.merchant_products && merchant.merchant_products.length > 0 && (
-              <div className="space-y-4">
-                <h3 className="text-xl font-semibold">Products</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {merchant.merchant_products.map((product: any) => {
-                    const images = getProductImages(product);
-                    return (
-                      <div
-                        key={product.id}
-                        className="border rounded-lg overflow-hidden space-y-2 hover:shadow-md transition-shadow"
-                      >
-                        <ProductImageCarousel
-                          images={images}
-                          brandName={merchant.brand_name}
-                        />
-                      <div className="p-4 space-y-2">
-                        <h4 className="font-semibold">{product.product_name}</h4>
-                        <p className="text-sm text-muted-foreground line-clamp-2">
-                          {product.product_description}
-                        </p>
-                        {product.price && (
-                          <p className="text-lg font-bold text-[hsl(var(--wine))]">
-                            ${parseFloat(product.price).toFixed(2)}
-                          </p>
-                        )}
-                        {product.website_url && (
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="w-full"
-                            onClick={() => window.open(product.website_url, "_blank")}
-                          >
-                            <Globe className="h-3 w-3 mr-2" />
-                            View Product
-                          </Button>
-                        )}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
           </div>
-        </div>
-      </div>
-    </div>
+        )}
+      </DialogContent>
+    </Dialog>
   );
 }
