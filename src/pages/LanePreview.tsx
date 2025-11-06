@@ -254,18 +254,20 @@ export default function LanePreview() {
                     />
                   </div>
                   <div className="p-6 space-y-2 flex-1 flex flex-col bg-white">
-                    <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
-                      BY {merchant.brand_name}
-                    </p>
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
+                        BY {merchant.brand_name}
+                      </p>
+                      {merchant.category && (
+                        <Badge variant="secondary" className="text-xs">
+                          {merchant.category}
+                        </Badge>
+                      )}
+                    </div>
                     {mainProduct && (
                       <h4 className="text-base font-bold leading-tight text-foreground">
                         {mainProduct.product_name}
                       </h4>
-                    )}
-                    {merchant.category && (
-                      <Badge variant="secondary" className="text-xs w-fit">
-                        {merchant.category}
-                      </Badge>
                     )}
                     <div className="flex gap-2 pt-4 mt-auto">
                       <Button size="sm" variant="default" className="flex-1 bg-foreground hover:bg-foreground/90 text-background">
