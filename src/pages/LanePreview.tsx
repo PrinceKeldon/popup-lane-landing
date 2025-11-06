@@ -8,11 +8,17 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Heart, ExternalLink, Loader2, Share2, Store } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { CountdownTimer } from "@/components/CountdownTimer";
 import ProductImageCarousel from "@/components/lane/ProductImageCarousel";
 import { getProductImages, getProductImagesFromMultiple } from "@/lib/image-utils";
+import { useLaneSettings } from "@/hooks/useLaneSettings";
 export default function LanePreview() {
   const [selectedMerchantId, setSelectedMerchantId] = useState<string | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  
+  const { earlyAccessDate, laneStatus } = useLaneSettings();
+  const isOpen = laneStatus === "open";
+  
   const {
     data: merchants,
     isLoading
@@ -69,16 +75,41 @@ export default function LanePreview() {
         {/* Hero */}
         <section className="text-center py-12 px-4 rounded-2xl mb-8 bg-gradient-to-b from-wine/5 to-background/50 border border-wine/10 relative overflow-hidden">
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-wine to-wine-light" />
-          <p className="text-sm text-muted-foreground uppercase tracking-widest mb-3">Black Friday Preview</p>
+          
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <p className="text-sm text-muted-foreground uppercase tracking-widest">Black Friday Preview</p>
+            {isOpen && (
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-wine/10 border border-wine/20">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-wine opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-wine"></span>
+                </span>
+                <span className="text-xs font-semibold text-wine">LIVE NOW</span>
+              </span>
+            )}
+          </div>
+          
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             Discover Small Brands with Big Energy
           </h1>
           <p className="text-muted-foreground max-w-3xl mx-auto mb-6">
-            A living preview of PopUp Lane — featured brands, trending names, and the full multi-row Lane. 
-            Each tile shows sale products, discounts, and offers.
+            {isOpen 
+              ? "A living preview of PopUp Lane — featured brands, trending names, and the full multi-row Lane. Each tile shows sale products, discounts, and offers."
+              : "The Lane is currently closed. Check back soon for our next pop-up event!"
+            }
           </p>
+          
+          <div className="pt-4 mb-6">
+            <CountdownTimer
+              targetDate={earlyAccessDate.toISOString()}
+              isOpen={isOpen}
+            />
+          </div>
+          
           <div className="flex gap-4 justify-center flex-wrap">
-            <Button className="bg-wine hover:bg-wine-light">Explore the Lane</Button>
+            <Button className="bg-wine hover:bg-wine-light">
+              {isOpen ? "Explore the Lane" : "Join Waitlist"}
+            </Button>
             <Button variant="outline">Get Notified</Button>
           </div>
         </section>
