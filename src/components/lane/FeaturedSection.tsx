@@ -85,7 +85,7 @@ export default function FeaturedSection({
                   </div>
 
                   {/* Content */}
-                  <div className="p-6 space-y-2 flex-1 flex flex-col bg-white">
+                  <div className="p-6 space-y-2 flex-1 flex flex-col bg-white z-10 relative">
                     <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
                       BY {merchant.brand_name}
                     </p>
