@@ -30,7 +30,7 @@ export const Hero = () => {
         </p>
 
         {/* Live Pill */}
-        {isOpen && <div className="inline-block mt-3.5 px-3.5 py-2 rounded-full bg-[linear-gradient(90deg,hsl(var(--gradient-live)))] text-foreground font-semibold text-[13px] shadow-[0_8px_30px_hsl(220_15%_8%/0.04)] animate-in fade-in slide-in-from-top-2 duration-450" aria-hidden="true">
+        {isOpen && <div aria-hidden="true" className="inline-block mt-3.5 px-3.5 py-2 bg-[linear-gradient(90deg,hsl(var(--gradient-live)))] text-foreground font-semibold text-[13px] shadow-[0_8px_30px_hsl(220_15%_8%/0.04)] animate-in fade-in slide-in-from-top-2 duration-450 bg-[#f93b07]/[0.27] rounded">
             
             We're Live!
           </div>}
