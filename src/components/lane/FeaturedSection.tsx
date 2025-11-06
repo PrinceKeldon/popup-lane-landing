@@ -44,7 +44,12 @@ export default function FeaturedSection({
         <h3 className="text-2xl font-bold mb-6">Featured Brands</h3>
         <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
           {merchants.map((merchant) => {
-            const firstProduct = merchant.merchant_products?.[0];
+            // Priority: 1) Featured product, 2) First product with images, 3) Any first product
+            const firstProduct = merchant.merchant_products?.find(p => p.is_featured) ||
+              merchant.merchant_products?.find(p => {
+                const imgs = getProductImages(p);
+                return imgs.length > 0;
+              }) || merchant.merchant_products?.[0];
             const isSaved = savedMerchantIds.includes(merchant.id);
             const images = firstProduct ? getProductImages(firstProduct) : [];
 

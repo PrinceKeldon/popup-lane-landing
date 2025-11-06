@@ -19,11 +19,12 @@ export default function MerchantTile({
 }: MerchantTileProps) {
   const productCount = merchant.merchant_products?.length || 0;
 
-  // Prioritize products with images for better visual display
-  const firstProduct = merchant.merchant_products?.find(p => {
-    const imgs = getProductImages(p);
-    return imgs.length > 0;
-  }) || merchant.merchant_products?.[0];
+  // Priority: 1) Featured product, 2) First product with images, 3) Any first product
+  const firstProduct = merchant.merchant_products?.find(p => p.is_featured) ||
+    merchant.merchant_products?.find(p => {
+      const imgs = getProductImages(p);
+      return imgs.length > 0;
+    }) || merchant.merchant_products?.[0];
 
   const images = firstProduct ? getProductImages(firstProduct) : [];
 

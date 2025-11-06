@@ -45,7 +45,12 @@ export default function TrendingSection({ onMerchantClick }: TrendingSectionProp
         </div>
         <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide">
           {merchants.map((merchant) => {
-            const firstProduct = merchant.merchant_products?.[0];
+            // Priority: 1) Featured product, 2) First product with images, 3) Any first product
+            const firstProduct = merchant.merchant_products?.find(p => p.is_featured) ||
+              merchant.merchant_products?.find(p => {
+                const imgs = getProductImages(p);
+                return imgs.length > 0;
+              }) || merchant.merchant_products?.[0];
             const images = firstProduct ? getProductImages(firstProduct) : [];
             return (
               <div

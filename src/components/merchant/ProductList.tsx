@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Trash2, Loader2, Edit } from "lucide-react";
+import { Trash2, Loader2, Edit, Star } from "lucide-react";
 import { useState } from "react";
 import { ProductForm } from "./ProductForm";
 
@@ -58,6 +58,41 @@ export const ProductList = ({ merchantId }: ProductListProps) => {
     }
   };
 
+  const handleToggleFeatured = async (productId: string, currentStatus: boolean) => {
+    try {
+      // If setting as featured, first unset all other featured products for this merchant
+      if (!currentStatus) {
+        await supabase
+          .from("merchant_products")
+          .update({ is_featured: false })
+          .eq("merchant_id", merchantId);
+      }
+
+      // Toggle the featured status
+      const { error } = await supabase
+        .from("merchant_products")
+        .update({ is_featured: !currentStatus })
+        .eq("id", productId);
+
+      if (error) throw error;
+
+      toast({
+        title: currentStatus ? "Removed from featured" : "Set as featured",
+        description: currentStatus 
+          ? "This product is no longer featured on your lane card."
+          : "This product will now display on your lane card.",
+      });
+
+      queryClient.invalidateQueries({ queryKey: ["merchant-products", merchantId] });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center py-8">
@@ -100,10 +135,29 @@ export const ProductList = ({ merchantId }: ProductListProps) => {
   return (
     <div className="grid gap-4 md:grid-cols-2">
       {products.map((product) => (
-        <Card key={product.id}>
+        <Card key={product.id} className={product.is_featured ? "ring-2 ring-wine" : ""}>
           <CardHeader className="flex flex-row items-start justify-between space-y-0">
-            <CardTitle className="text-lg">{product.product_name}</CardTitle>
+            <div className="space-y-1">
+              <CardTitle className="text-lg flex items-center gap-2">
+                {product.product_name}
+                {product.is_featured && (
+                  <Star className="h-4 w-4 fill-wine text-wine" />
+                )}
+              </CardTitle>
+              {product.is_featured && (
+                <p className="text-xs text-wine font-semibold">Featured Product</p>
+              )}
+            </div>
             <div className="flex gap-2">
+              <Button
+                variant={product.is_featured ? "default" : "ghost"}
+                size="icon"
+                onClick={() => handleToggleFeatured(product.id, product.is_featured)}
+                title={product.is_featured ? "Remove from featured" : "Set as featured"}
+                className={product.is_featured ? "bg-wine hover:bg-wine-light" : ""}
+              >
+                <Star className={`h-4 w-4 ${product.is_featured ? "fill-current" : ""}`} />
+              </Button>
               <Button
                 variant="ghost"
                 size="icon"

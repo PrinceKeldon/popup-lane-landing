@@ -14,8 +14,11 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, Upload, X } from "lucide-react";
+import { Loader2, Upload } from "lucide-react";
 import { useState, useEffect } from "react";
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { SortableImage } from './SortableImage';
 
 const productSchema = z.object({
   product_name: z.string().min(1, "Product name is required").max(100),
@@ -41,6 +44,25 @@ export const ProductForm = ({ merchantId, onSuccess, productId, initialData }: P
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [existingImages, setExistingImages] = useState<string[]>([]);
   const isEditMode = !!productId;
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      setExistingImages((items) => {
+        const oldIndex = items.findIndex((_, idx) => `image-${idx}` === active.id);
+        const newIndex = items.findIndex((_, idx) => `image-${idx}` === over.id);
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  };
 
   const form = useForm<z.infer<typeof productSchema>>({
     resolver: zodResolver(productSchema),
@@ -292,27 +314,31 @@ export const ProductForm = ({ merchantId, onSuccess, productId, initialData }: P
                   {/* Existing Images */}
                   {existingImages.length > 0 && (
                     <div>
-                      <p className="text-sm text-muted-foreground mb-2">Existing Images</p>
-                      <div className="grid grid-cols-2 gap-4">
-                        {existingImages.map((url, idx) => (
-                          <div key={idx} className="relative w-full h-32 rounded-lg overflow-hidden border">
-                            <img
-                              src={url}
-                              alt={`Existing ${idx + 1}`}
-                              className="w-full h-full object-cover"
-                            />
-                            <Button
-                              type="button"
-                              variant="destructive"
-                              size="icon"
-                              className="absolute top-2 right-2 h-6 w-6"
-                              onClick={() => handleRemoveExistingImage(idx)}
-                            >
-                              <X className="h-4 w-4" />
-                            </Button>
+                      <p className="text-sm text-muted-foreground mb-2">
+                        Existing Images (drag to reorder)
+                      </p>
+                      <DndContext
+                        sensors={sensors}
+                        collisionDetection={closestCenter}
+                        onDragEnd={handleDragEnd}
+                      >
+                        <SortableContext
+                          items={existingImages.map((_, idx) => `image-${idx}`)}
+                          strategy={verticalListSortingStrategy}
+                        >
+                          <div className="grid grid-cols-2 gap-4">
+                            {existingImages.map((url, idx) => (
+                              <SortableImage
+                                key={`image-${idx}`}
+                                id={`image-${idx}`}
+                                url={url}
+                                index={idx}
+                                onRemove={handleRemoveExistingImage}
+                              />
+                            ))}
                           </div>
-                        ))}
-                      </div>
+                        </SortableContext>
+                      </DndContext>
                     </div>
                   )}
                   
