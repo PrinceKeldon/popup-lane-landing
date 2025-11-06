@@ -5,6 +5,7 @@ import { OverviewStats } from "@/components/admin/OverviewStats";
 import { MerchantTable } from "@/components/admin/MerchantTable";
 import { ShopperTable } from "@/components/admin/ShopperTable";
 import { LaneSettings } from "@/components/admin/LaneSettings";
+import { TierManagement } from "@/components/admin/TierManagement";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { LogOut } from "lucide-react";
@@ -144,34 +145,38 @@ export default function AdminDashboard() {
           spotsRemaining={spotsRemaining}
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
-            <Card className="p-6">
-              <h2 className="text-2xl font-bold mb-4 text-primary">
-                Merchant Applications
-              </h2>
-              <MerchantTable
-                merchants={merchants}
-                onApprove={handleApprove}
-                onReject={handleReject}
-                onRefresh={loadData}
-                loading={airtableLoading}
-              />
-            </Card>
-          </div>
+        <div className="space-y-6">
+          <TierManagement />
 
-          <div className="space-y-6">
-            <LaneSettings />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2">
+              <Card className="p-6">
+                <h2 className="text-2xl font-bold mb-4 text-primary">
+                  Merchant Applications
+                </h2>
+                <MerchantTable
+                  merchants={merchants}
+                  onApprove={handleApprove}
+                  onReject={handleReject}
+                  onRefresh={loadData}
+                  loading={airtableLoading}
+                />
+              </Card>
+            </div>
 
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold mb-4">Shoppers</h3>
-              <ShopperTable
-                shoppers={shoppers}
-                onRefresh={loadData}
-                onExport={handleExportShoppers}
-                loading={airtableLoading}
-              />
-            </Card>
+            <div className="space-y-6">
+              <LaneSettings />
+
+              <Card className="p-6">
+                <h3 className="text-lg font-semibold mb-4">Shoppers</h3>
+                <ShopperTable
+                  shoppers={shoppers}
+                  onRefresh={loadData}
+                  onExport={handleExportShoppers}
+                  loading={airtableLoading}
+                />
+              </Card>
+            </div>
           </div>
         </div>
       </main>

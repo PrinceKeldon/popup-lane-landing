@@ -26,7 +26,7 @@ const productSchema = z.object({
   offer_text: z.string().max(100).optional(),
   website_url: z.string().url("Invalid URL").optional().or(z.literal("")),
   social_media: z.string().max(200).optional(),
-  image: z.instanceof(File).optional(),
+  images: z.array(z.instanceof(File)).max(4, "Maximum 4 images allowed").optional(),
 });
 
 interface ProductFormProps {
@@ -36,7 +36,7 @@ interface ProductFormProps {
 
 export const ProductForm = ({ merchantId, onSuccess }: ProductFormProps) => {
   const { toast } = useToast();
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
   const form = useForm<z.infer<typeof productSchema>>({
     resolver: zodResolver(productSchema),
@@ -54,29 +54,31 @@ export const ProductForm = ({ merchantId, onSuccess }: ProductFormProps) => {
 
   const onSubmit = async (values: z.infer<typeof productSchema>) => {
     try {
-      let imageUrl = null;
+      const imageUrls: string[] = [];
 
-      // Upload image if provided
-      if (values.image) {
-        const fileExt = values.image.name.split('.').pop();
-        const fileName = `${merchantId}-${Date.now()}.${fileExt}`;
-        const filePath = `${fileName}`;
+      // Upload multiple images if provided
+      if (values.images && values.images.length > 0) {
+        for (const image of values.images) {
+          const fileExt = image.name.split('.').pop();
+          const fileName = `${merchantId}-${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+          const filePath = `${fileName}`;
 
-        const { error: uploadError, data } = await supabase.storage
-          .from('product-images')
-          .upload(filePath, values.image, {
-            cacheControl: '3600',
-            upsert: false
-          });
+          const { error: uploadError } = await supabase.storage
+            .from('product-images')
+            .upload(filePath, image, {
+              cacheControl: '3600',
+              upsert: false
+            });
 
-        if (uploadError) throw uploadError;
+          if (uploadError) throw uploadError;
 
-        // Get public URL
-        const { data: { publicUrl } } = supabase.storage
-          .from('product-images')
-          .getPublicUrl(filePath);
+          // Get public URL
+          const { data: { publicUrl } } = supabase.storage
+            .from('product-images')
+            .getPublicUrl(filePath);
 
-        imageUrl = publicUrl;
+          imageUrls.push(publicUrl);
+        }
       }
 
       const { error } = await supabase.from("merchant_products").insert({
@@ -89,7 +91,8 @@ export const ProductForm = ({ merchantId, onSuccess }: ProductFormProps) => {
         offer_text: values.offer_text || null,
         website_url: values.website_url || null,
         social_media: values.social_media || null,
-        image_url: imageUrl,
+        image_url: imageUrls[0] || null, // First image as primary
+        image_urls: imageUrls, // All images in jsonb array
       });
 
       if (error) throw error;
@@ -100,7 +103,7 @@ export const ProductForm = ({ merchantId, onSuccess }: ProductFormProps) => {
       });
 
       form.reset();
-      setImagePreview(null);
+      setImagePreviews([]);
       onSuccess();
     } catch (error: any) {
       toast({
@@ -235,38 +238,57 @@ export const ProductForm = ({ merchantId, onSuccess }: ProductFormProps) => {
 
         <FormField
           control={form.control}
-          name="image"
+          name="images"
           render={({ field: { value, onChange, ...field } }) => (
             <FormItem>
-              <FormLabel>Product Image</FormLabel>
+              <FormLabel>Product Images (Max 4)</FormLabel>
               <FormControl>
                 <div className="space-y-4">
                   <div className="flex items-center gap-4">
                     <Input
                       type="file"
                       accept="image/jpeg,image/png,image/webp,image/jpg"
+                      multiple
                       onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          onChange(file);
+                        const files = Array.from(e.target.files || []);
+                        if (files.length > 4) {
+                          toast({
+                            title: "Too many images",
+                            description: "Maximum 4 images allowed",
+                            variant: "destructive",
+                          });
+                          return;
+                        }
+                        onChange(files);
+                        
+                        // Generate previews
+                        const previews: string[] = [];
+                        files.forEach((file) => {
                           const reader = new FileReader();
                           reader.onloadend = () => {
-                            setImagePreview(reader.result as string);
+                            previews.push(reader.result as string);
+                            if (previews.length === files.length) {
+                              setImagePreviews(previews);
+                            }
                           };
                           reader.readAsDataURL(file);
-                        }
+                        });
                       }}
                       {...field}
                     />
                     <Upload className="h-4 w-4 text-muted-foreground" />
                   </div>
-                  {imagePreview && (
-                    <div className="relative w-full h-48 rounded-lg overflow-hidden border">
-                      <img
-                        src={imagePreview}
-                        alt="Preview"
-                        className="w-full h-full object-cover"
-                      />
+                  {imagePreviews.length > 0 && (
+                    <div className="grid grid-cols-2 gap-4">
+                      {imagePreviews.map((preview, idx) => (
+                        <div key={idx} className="relative w-full h-32 rounded-lg overflow-hidden border">
+                          <img
+                            src={preview}
+                            alt={`Preview ${idx + 1}`}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      ))}
                     </div>
                   )}
                 </div>
