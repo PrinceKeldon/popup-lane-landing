@@ -19,8 +19,31 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { RefreshCw, Star, TrendingUp } from "lucide-react";
+import { RefreshCw, Star, TrendingUp, MoreVertical, Check, X, Mail } from "lucide-react";
+import { MerchantEmailComposer } from "./MerchantEmailComposer";
 
 const TIERS = [
   { value: "standard", label: "Standard", icon: null },
@@ -32,6 +55,16 @@ export function TierManagement() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
+  const [pendingChanges, setPendingChanges] = useState<Map<string, string>>(new Map());
+  const [actionDialog, setActionDialog] = useState<{
+    open: boolean;
+    action: 'suspend' | 'delete' | 'restore' | null;
+    merchant: any;
+  }>({ open: false, action: null, merchant: null });
+  const [emailDialog, setEmailDialog] = useState<{
+    open: boolean;
+    merchantId: string | null;
+  }>({ open: false, merchantId: null });
 
   const { data: merchants, isLoading, refetch } = useQuery({
     queryKey: ["admin-merchants"],
@@ -47,6 +80,32 @@ export function TierManagement() {
     },
   });
 
+  const updateStatusMutation = useMutation({
+    mutationFn: async ({ merchantId, status }: { merchantId: string; status: string }) => {
+      const { error } = await supabase
+        .from("merchants")
+        .update({ status })
+        .eq("id", merchantId);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-merchants"] });
+      toast({
+        title: "Status updated",
+        description: "Merchant status has been updated successfully.",
+      });
+      setActionDialog({ open: false, action: null, merchant: null });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   const updateTierMutation = useMutation({
     mutationFn: async ({ merchantId, tier }: { merchantId: string; tier: string }) => {
       const { error } = await supabase
@@ -56,8 +115,13 @@ export function TierManagement() {
 
       if (error) throw error;
     },
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["admin-merchants"] });
+      setPendingChanges(prev => {
+        const newMap = new Map(prev);
+        newMap.delete(variables.merchantId);
+        return newMap;
+      });
       toast({
         title: "Tier updated",
         description: "Merchant tier has been updated successfully.",
@@ -71,6 +135,46 @@ export function TierManagement() {
       });
     },
   });
+
+  const handleTierChange = (merchantId: string, newTier: string) => {
+    setPendingChanges(prev => new Map(prev).set(merchantId, newTier));
+  };
+
+  const confirmTierChange = (merchantId: string) => {
+    const tier = pendingChanges.get(merchantId);
+    if (tier) {
+      updateTierMutation.mutate({ merchantId, tier });
+    }
+  };
+
+  const cancelTierChange = (merchantId: string) => {
+    setPendingChanges(prev => {
+      const newMap = new Map(prev);
+      newMap.delete(merchantId);
+      return newMap;
+    });
+  };
+
+  const handleStatusAction = (action: 'suspend' | 'delete' | 'restore', merchant: any) => {
+    setActionDialog({ open: true, action, merchant });
+  };
+
+  const confirmStatusAction = () => {
+    if (!actionDialog.merchant || !actionDialog.action) return;
+
+    let status = 'active';
+    if (actionDialog.action === 'suspend') status = 'suspended';
+    if (actionDialog.action === 'delete') status = 'deleted';
+
+    updateStatusMutation.mutate({
+      merchantId: actionDialog.merchant.id,
+      status,
+    });
+  };
+
+  const getDisplayedTier = (merchant: any) => {
+    return pendingChanges.get(merchant.id) || merchant.tier || "standard";
+  };
 
   const filteredMerchants = merchants?.filter((merchant) => {
     const query = searchQuery.toLowerCase();
@@ -125,54 +229,137 @@ export function TierManagement() {
                 <TableHead>Brand Name</TableHead>
                 <TableHead>Email</TableHead>
                 <TableHead>Category</TableHead>
+                <TableHead>Status</TableHead>
                 <TableHead>Current Tier</TableHead>
                 <TableHead>Set Tier</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center text-muted-foreground">
+                  <TableCell colSpan={7} className="text-center text-muted-foreground">
                     Loading merchants...
                   </TableCell>
                 </TableRow>
               ) : filteredMerchants && filteredMerchants.length > 0 ? (
-                filteredMerchants.map((merchant) => (
-                  <TableRow key={merchant.id}>
-                    <TableCell className="font-medium">{merchant.brand_name}</TableCell>
-                    <TableCell>{merchant.email}</TableCell>
-                    <TableCell>{merchant.category || "—"}</TableCell>
-                    <TableCell>{getTierBadge(merchant.tier)}</TableCell>
-                    <TableCell>
-                      <Select
-                        value={merchant.tier || "standard"}
-                        onValueChange={(value) => {
-                          updateTierMutation.mutate({
-                            merchantId: merchant.id,
-                            tier: value,
-                          });
-                        }}
-                      >
-                        <SelectTrigger className="w-[140px]">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {TIERS.map((tier) => (
-                            <SelectItem key={tier.value} value={tier.value}>
-                              <div className="flex items-center gap-2">
-                                {tier.icon && <tier.icon className="h-3 w-3" />}
-                                {tier.label}
-                              </div>
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </TableCell>
-                  </TableRow>
-                ))
+                filteredMerchants.map((merchant) => {
+                  const hasPendingChange = pendingChanges.has(merchant.id);
+                  const isDeleted = merchant.status === 'deleted';
+                  const isSuspended = merchant.status === 'suspended';
+
+                  return (
+                    <TableRow key={merchant.id} className={isDeleted || isSuspended ? "opacity-60" : ""}>
+                      <TableCell className="font-medium">{merchant.brand_name}</TableCell>
+                      <TableCell>{merchant.email}</TableCell>
+                      <TableCell>{merchant.category || "—"}</TableCell>
+                      <TableCell>
+                        {isDeleted ? (
+                          <Badge variant="destructive">Deleted</Badge>
+                        ) : isSuspended ? (
+                          <Badge variant="secondary">Suspended</Badge>
+                        ) : (
+                          <Badge variant="outline">Active</Badge>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {hasPendingChange ? (
+                          <Badge variant="secondary" className="gap-1">
+                            <RefreshCw className="h-3 w-3 animate-spin" />
+                            Pending
+                          </Badge>
+                        ) : (
+                          getTierBadge(merchant.tier)
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Select
+                            value={getDisplayedTier(merchant)}
+                            onValueChange={(value) => handleTierChange(merchant.id, value)}
+                            disabled={isDeleted || isSuspended}
+                          >
+                            <SelectTrigger className="w-[140px]">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {TIERS.map((tier) => (
+                                <SelectItem key={tier.value} value={tier.value}>
+                                  <div className="flex items-center gap-2">
+                                    {tier.icon && <tier.icon className="h-3 w-3" />}
+                                    {tier.label}
+                                  </div>
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          {hasPendingChange && (
+                            <div className="flex gap-1">
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="h-8 w-8 p-0"
+                                onClick={() => confirmTierChange(merchant.id)}
+                              >
+                                <Check className="h-4 w-4 text-green-600" />
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="h-8 w-8 p-0"
+                                onClick={() => cancelTierChange(merchant.id)}
+                              >
+                                <X className="h-4 w-4 text-red-600" />
+                              </Button>
+                            </div>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm">
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem
+                              onClick={() => setEmailDialog({ open: true, merchantId: merchant.id })}
+                            >
+                              <Mail className="mr-2 h-4 w-4" />
+                              Send Email
+                            </DropdownMenuItem>
+                            {!isDeleted && !isSuspended && (
+                              <DropdownMenuItem
+                                onClick={() => handleStatusAction('suspend', merchant)}
+                              >
+                                Suspend Merchant
+                              </DropdownMenuItem>
+                            )}
+                            {!isDeleted && (
+                              <DropdownMenuItem
+                                onClick={() => handleStatusAction('delete', merchant)}
+                                className="text-destructive"
+                              >
+                                Delete Merchant
+                              </DropdownMenuItem>
+                            )}
+                            {(isDeleted || isSuspended) && (
+                              <DropdownMenuItem
+                                onClick={() => handleStatusAction('restore', merchant)}
+                              >
+                                Restore Merchant
+                              </DropdownMenuItem>
+                            )}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
               ) : (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center text-muted-foreground">
+                  <TableCell colSpan={7} className="text-center text-muted-foreground">
                     No merchants found
                   </TableCell>
                 </TableRow>
@@ -181,6 +368,47 @@ export function TierManagement() {
           </Table>
         </div>
       </div>
+
+      <AlertDialog open={actionDialog.open} onOpenChange={(open) => !open && setActionDialog({ open: false, action: null, merchant: null })}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {actionDialog.action === 'suspend' && 'Suspend Merchant'}
+              {actionDialog.action === 'delete' && 'Delete Merchant'}
+              {actionDialog.action === 'restore' && 'Restore Merchant'}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {actionDialog.action === 'suspend' && (
+                <>Are you sure you want to suspend <strong>{actionDialog.merchant?.brand_name}</strong>? They will be hidden from the public lane but their data will be preserved.</>
+              )}
+              {actionDialog.action === 'delete' && (
+                <>Are you sure you want to delete <strong>{actionDialog.merchant?.brand_name}</strong>? This is a soft delete and can be restored later.</>
+              )}
+              {actionDialog.action === 'restore' && (
+                <>Are you sure you want to restore <strong>{actionDialog.merchant?.brand_name}</strong>? They will become active and visible on the public lane again.</>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmStatusAction}>
+              {actionDialog.action === 'delete' ? 'Delete' : actionDialog.action === 'suspend' ? 'Suspend' : 'Restore'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <Dialog open={emailDialog.open} onOpenChange={(open) => setEmailDialog({ open, merchantId: null })}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Send Email to Merchant</DialogTitle>
+          </DialogHeader>
+          <MerchantEmailComposer
+            preselectedMerchantId={emailDialog.merchantId || undefined}
+            onClose={() => setEmailDialog({ open: false, merchantId: null })}
+          />
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 }

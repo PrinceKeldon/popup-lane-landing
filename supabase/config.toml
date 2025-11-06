@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.send-my-finds]
 verify_jwt = false
+
+[functions.admin-send-merchant-email]
+verify_jwt = false

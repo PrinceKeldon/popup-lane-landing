@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_email_logs: {
+        Row: {
+          admin_id: string | null
+          id: string
+          merchant_ids: string[] | null
+          recipient_count: number
+          recipient_mode: string
+          sent_at: string | null
+          subject: string
+          success: boolean | null
+        }
+        Insert: {
+          admin_id?: string | null
+          id?: string
+          merchant_ids?: string[] | null
+          recipient_count: number
+          recipient_mode: string
+          sent_at?: string | null
+          subject: string
+          success?: boolean | null
+        }
+        Update: {
+          admin_id?: string | null
+          id?: string
+          merchant_ids?: string[] | null
+          recipient_count?: number
+          recipient_mode?: string
+          sent_at?: string | null
+          subject?: string
+          success?: boolean | null
+        }
+        Relationships: []
+      }
       lane_settings: {
         Row: {
           early_access_date: string
@@ -125,6 +158,7 @@ export type Database = {
           id: string
           social_media: string | null
           spots_claimed: number
+          status: string | null
           tier: string | null
           updated_at: string
           user_id: string | null
@@ -141,6 +175,7 @@ export type Database = {
           id?: string
           social_media?: string | null
           spots_claimed?: number
+          status?: string | null
           tier?: string | null
           updated_at?: string
           user_id?: string | null
@@ -157,6 +192,7 @@ export type Database = {
           id?: string
           social_media?: string | null
           spots_claimed?: number
+          status?: string | null
           tier?: string | null
           updated_at?: string
           user_id?: string | null
