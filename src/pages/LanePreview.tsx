@@ -182,7 +182,7 @@ export default function LanePreview() {
             {merchants?.map(merchant => {
             const mainProduct = merchant.merchant_products?.[0];
             const images = mainProduct ? getProductImages(mainProduct) : [];
-            return <div key={merchant.id} className="group relative bg-card border rounded-xl overflow-hidden shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-hover)] transition-all duration-300 hover:-translate-y-1 cursor-pointer flex flex-col min-h-[380px]" onClick={() => setSelectedMerchantId(merchant.id)}>
+            return <div key={merchant.id} className="group relative bg-card border rounded-lg overflow-hidden shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-hover)] transition-all duration-300 hover:-translate-y-1 cursor-pointer flex flex-col min-h-[380px]" onClick={() => setSelectedMerchantId(merchant.id)}>
                   <div className="flex-shrink-0">
                     <ProductImageCarousel images={images} brandName={merchant.brand_name} discountBadge={mainProduct?.discount_percentage && <div className="absolute top-3 left-3 bg-white text-red-600 px-3 py-1.5 text-xs font-bold uppercase tracking-wide shadow-sm z-20">
                             {mainProduct.discount_percentage}% OFF
