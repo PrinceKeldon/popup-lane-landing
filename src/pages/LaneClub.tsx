@@ -99,14 +99,23 @@ const LaneClub = () => {
         formData.append('logo', logoFile);
       }
 
-      const { data: functionData, error } = await supabase.functions.invoke(
-        'submit-lane-club-feedback',
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/submit-lane-club-feedback`,
         {
+          method: 'POST',
+          headers: {
+            'apikey': import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+          },
           body: formData,
         }
       );
 
-      if (error) throw error;
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Submission failed');
+      }
+
+      const result = await response.json();
 
       setShowSuccessModal(true);
       reset();
