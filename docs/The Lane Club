@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>The Lane Club — Merchant Onboarding & Feedback</title>
+<meta name="description" content="Join The Lane Club Beta — early access & mandatory first-impression feedback for PopUp Lane merchants.">
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#FAF9F8;
+    --card:#ffffff;
+    --text:#141214;
+    --muted:#6b6f76;
+    --wine:#A23E48;
+    --wine-2:#C05A61;
+    --shadow: 0 18px 50px rgba(17,18,23,0.06);
+    --maxw:980px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.45;
+    padding:24px;
+  }
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:18px}
+
+  /* Header */
+  .hero{background:linear-gradient(180deg, rgba(162,62,72,0.03), rgba(255,255,255,0.95)); padding:22px;border-radius:12px;border:1px solid rgba(162,62,72,0.06);margin-bottom:18px}
+  .eyebrow{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1.6px;margin-bottom:6px}
+  .title{font-family:"Playfair Display",serif;font-size:20px;margin:0 0 6px}
+  .subtitle{color:var(--muted);margin:0;font-size:14px}
+
+  /* Card */
+  .card{background:var(--card);border-radius:12px;padding:18px;margin-top:18px;border:1px solid rgba(17,18,23,0.04);box-shadow:var(--shadow)}
+  .card h3{margin:0 0 8px;font-family:"Playfair Display",serif}
+  .muted{color:var(--muted)}
+  .small{font-size:13px;color:var(--muted)}
+
+  /* Form */
+  form{margin-top:12px}
+  .grid{display:grid;gap:12px;grid-template-columns:1fr 1fr}
+  @media (max-width:720px){ .grid{grid-template-columns:1fr} }
+  label{display:block;font-size:13px;margin-bottom:6px;color:var(--muted)}
+  input[type="text"], input[type="email"], input[type="url"], textarea, select{
+    width:100%; padding:10px 12px;border-radius:10px;border:1px solid rgba(17,18,23,0.06);font-size:14px;background:#fff;
+  }
+  textarea{min-height:120px;resize:vertical}
+  .row{display:flex;gap:8px;align-items:center}
+
+  /* Rating */
+  .rating{display:flex;gap:8px;align-items:center}
+  .rating input{display:none}
+  .star{padding:8px 10px;border-radius:8px;border:1px solid rgba(17,18,23,0.06);cursor:pointer;background:#fff}
+  .star.selected{background:var(--wine);color:#fff;border-color:transparent;box-shadow:0 8px 20px rgba(162,62,72,0.08)}
+
+  /* consent toggle */
+  .toggle{display:inline-flex;border-radius:999px;overflow:hidden;border:1px solid rgba(17,18,23,0.06)}
+  .toggle button{padding:8px 12px;border:none;background:transparent;cursor:pointer;font-weight:600;color:var(--muted)}
+  .toggle button.active{background:var(--wine);color:#fff}
+
+  /* buttons: plush hover */
+  .btn{
+    display:inline-block;padding:12px 18px;border-radius:12px;font-weight:700;border:none;
+    cursor:pointer;box-shadow:0 14px 36px rgba(162,62,72,0.06);transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+    background:var(--wine);color:#fff;
+  }
+  .btn.secondary{background:transparent;color:var(--wine);border:1px solid rgba(162,62,72,0.14)}
+  .btn:hover{transform:translateY(-6px);box-shadow:0 24px 60px rgba(162,62,72,0.12)}
+  .btn:active{transform:translateY(-2px)}
+
+  /* subtle helper & validation */
+  .hint{font-size:13px;color:var(--muted);margin-top:6px}
+  .error{color:var(--wine);font-size:13px;margin-top:6px}
+  .success{color:#147a2b;font-size:14px;margin-top:8px}
+
+  /* Preview testimonial strip */
+  .testimonials{display:flex;gap:12px;overflow:auto;padding:12px 4px;margin-top:12px}
+  .testimonial{min-width:220px;background:linear-gradient(180deg, #fff, #fbfbfb);border-radius:10px;padding:12px;border:1px solid rgba(17,18,23,0.04)}
+  .test-logo{width:44px;height:44px;border-radius:8px;background:#faf6f6;display:inline-flex;align-items:center;justify-content:center;font-weight:700;color:var(--wine);margin-right:8px}
+
+  /* modal */
+  .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;align-items:center;justify-content:center;z-index:900}
+  .modal{width:min(720px,94%);background:var(--card);border-radius:12px;padding:18px;box-shadow:0 30px 80px rgba(17,18,23,0.4)}
+  .modal h4{margin:0 0 8px}
+</style>
+</head>
+<body>
+  <div class="wrap" role="main">
+
+    <!-- Header -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="eyebrow">The Lane Club — Beta</div>
+      <h1 id="hero-title" class="title">Welcome, Founding Merchant</h1>
+      <p class="subtitle">Join the Lane Club Beta to secure free visibility during the Black Friday pop-up and help build PopUp Lane with your first impressions.</p>
+    </section>
+
+    <!-- Instruction card -->
+    <section class="card" aria-labelledby="card-title">
+      <h3 id="card-title">Join The Lane Club — Mandatory First Impression Feedback</h3>
+      <p class="muted">To keep your brand visible in this season’s lane you must complete a short first-impression feedback form. Your answers help us craft social content, testimonials, and improve the platform. (Positive feedback is welcome — we just ask for honesty.)</p>
+
+      <!-- Feedback form -->
+      <form id="lane-form" aria-label="Lane Club Feedback Form" enctype="multipart/form-data" novalidate>
+        <!-- merchant identity -->
+        <div class="grid" style="margin-top:12px">
+          <div>
+            <label for="brand_name">Brand / Merchant Name *</label>
+            <input id="brand_name" name="brand_name" type="text" placeholder="Your brand name" required>
+          </div>
+          <div>
+            <label for="email">Contact Email *</label>
+            <input id="email" name="email" type="email" placeholder="your@email.com" required>
+          </div>
+        </div>
+
+        <!-- mandatory first impression -->
+        <div style="margin-top:12px">
+          <label for="first_impression">Your first impression of PopUp Lane *</label>
+          <textarea id="first_impression" name="first_impression" placeholder="Tell us what stood out first (this will help us create social content)" required></textarea>
+          <div id="first-help" class="hint">Short, emotional, and candid — perfect for social. Example: "Finally, a fair lane for small brands — excited to be seen."</div>
+        </div>
+
+        <!-- optional short quote for social -->
+        <div style="margin-top:12px">
+          <label for="short_quote">Short quote to feature publicly (optional)</label>
+          <input id="short_quote" name="short_quote" type="text" placeholder="10–20 words we can quote on socials">
+          <div class="hint">If left blank, we'll create a short quote from your first impression (admin-approved).</div>
+        </div>
+
+        <!-- excited feature + improvement -->
+        <div class="grid" style="margin-top:12px">
+          <div>
+            <label for="excited_feature">What feature excites you most? (optional)</label>
+            <input id="excited_feature" name="excited_feature" type="text" placeholder="e.g., Featured spot, early-access">
+          </div>
+          <div>
+            <label for="improvement">One thing we could improve before the next season (optional)</label>
+            <input id="improvement" name="improvement" type="text" placeholder="Constructive note">
+          </div>
+        </div>
+
+        <!-- rating -->
+        <div style="margin-top:12px">
+          <label>Overall onboarding experience (required)</label>
+          <div class="rating" role="radiogroup" aria-label="Rating">
+            <label class="star" data-val="1"><input type="radio" name="rating" value="1" required>1</label>
+            <label class="star" data-val="2"><input type="radio" name="rating" value="2">2</label>
+            <label class="star" data-val="3"><input type="radio" name="rating" value="3">3</label>
+            <label class="star" data-val="4"><input type="radio" name="rating" value="4">4</label>
+            <label class="star" data-val="5"><input type="radio" name="rating" value="5">5</label>
+          </div>
+        </div>
+
+        <!-- quote consent & logo -->
+        <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+          <div>
+            <label>Allow us to feature your quote/logo publicly?</label>
+            <div class="toggle" role="group" aria-label="Quote consent">
+              <button type="button" id="consent-yes" class="active" aria-pressed="true">Yes</button>
+              <button type="button" id="consent-no" aria-pressed="false">No</button>
+            </div>
+            <input type="hidden" id="consent" name="consent" value="yes">
+          </div>
+
+          <div style="flex:1;min-width:220px">
+            <label for="logo">Upload logo or product image (optional)</label>
+            <input id="logo" name="logo" type="file" accept="image/*" aria-describedby="logo-help">
+            <div id="logo-help" class="hint">PNG or JPG. Used with approved quotes on socials.</div>
+          </div>
+        </div>
+
+        <!-- admin note (hidden field for linking merchant ID) -->
+        <input type="hidden" name="merchant_id" id="merchant_id" value="<!-- fill server-side if available -->">
+
+        <!-- errors & success -->
+        <div id="form-msg" role="status" aria-live="polite" style="margin-top:10px"></div>
+
+        <!-- submit -->
+        <div style="margin-top:14px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+          <button type="submit" class="btn" id="submit-btn">Send Feedback & Join The Club</button>
+          <button type="button" class="btn secondary" id="skip-btn">Contact Support</button>
+          <div style="margin-left:auto" class="small muted">Required fields are marked *</div>
+        </div>
+      </form>
+
+      <!-- quick preview of testimonial carousel (admin will populate) -->
+      <div style="margin-top:18px">
+        <div class="small muted">Sample Voices from the Lane</div>
+        <div class="testimonials" id="testimonials">
+          <!-- admin / server will supply approved quotes -->
+          <div class="testimonial"><div style="display:flex;align-items:center"><div class="test-logo">LF</div><strong>Loom & Found</strong></div><p style="margin-top:8px" class="muted">"Finally, a fair place for small brands — excited to be seen."</p></div>
+          <div class="testimonial"><div style="display:flex;align-items:center"><div class="test-logo">BS</div><strong>Bright Studio</strong></div><p style="margin-top:8px" class="muted">"Great curation — already getting messages from new customers."</p></div>
+        </div>
+      </div>
+    </section>
+
+    <footer style="margin-top:18px;text-align:center;color:var(--muted);font-size:13px">
+      © <span id="year"></span> PopUp Lane — The Lane Club Beta
+    </footer>
+
+  </div>
+
+  <!-- Modal confirmation -->
+  <div id="modal" class="modal-backdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <h4 id="modal-title">You're in — Welcome to The Lane Club</h4>
+      <p class="muted" style="margin-top:8px">Thanks for your feedback. We’ll review submissions and may feature select quotes on our site or social channels. You’ll get an email confirmation shortly.</p>
+      <div style="margin-top:12px;text-align:right">
+        <button id="close-modal" class="btn">Close</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+/* =============================
+   Config - update POST_URL to your backend endpoint
+   The backend should accept multipart/form-data or JSON (see comments)
+   ============================= */
+const POST_URL = '/api/feedback'; // <-- replace with your server endpoint or Lovable/Airtable proxy
+
+document.getElementById('year').textContent = new Date().getFullYear();
+
+/* Toggle consent buttons */
+const consentYes = document.getElementById('consent-yes');
+const consentNo = document.getElementById('consent-no');
+const consentField = document.getElementById('consent');
+
+consentYes.addEventListener('click', ()=> {
+  consentYes.classList.add('active'); consentNo.classList.remove('active');
+  consentYes.setAttribute('aria-pressed','true'); consentNo.setAttribute('aria-pressed','false');
+  consentField.value = 'yes';
+});
+consentNo.addEventListener('click', ()=> {
+  consentNo.classList.add('active'); consentYes.classList.remove('active');
+  consentNo.setAttribute('aria-pressed','true'); consentYes.setAttribute('aria-pressed','false');
+  consentField.value = 'no';
+});
+
+/* Rating UI */
+document.querySelectorAll('.star').forEach(s=> {
+  s.addEventListener('click', (e)=>{
+    const val = s.dataset.val;
+    // mark selected
+    document.querySelectorAll('.star').forEach(x=> x.classList.toggle('selected', x.dataset.val === val));
+    // set radio input
+    const radio = s.querySelector('input[type="radio"]');
+    if(radio) radio.checked = true;
+  });
+});
+
+/* Form handling */
+const form = document.getElementById('lane-form');
+const msg = document.getElementById('form-msg');
+const modal = document.getElementById('modal');
+const closeModalBtn = document.getElementById('close-modal');
+
+form.addEventListener('submit', async function(e){
+  e.preventDefault();
+  msg.textContent = ''; msg.className = '';
+  // validate required fields
+  const brand = form.brand_name.value.trim();
+  const email = form.email.value.trim();
+  const first = form.first_impression.value.trim();
+  const rating = form.querySelector('input[name="rating"]:checked');
+  if(!brand || !email || !first || !rating){
+    msg.textContent = 'Please complete all required fields (brand, email, first impression, rating).';
+    msg.className = 'error';
+    return;
+  }
+
+  // Prepare payload: prefer FormData so we can include file
+  const data = new FormData();
+  data.append('brand_name', brand);
+  data.append('email', email);
+  data.append('first_impression', first);
+  data.append('short_quote', form.short_quote.value.trim());
+  data.append('excited_feature', form.excited_feature.value.trim());
+  data.append('improvement', form.improvement.value.trim());
+  data.append('rating', rating.value);
+  data.append('consent', form.consent.value || 'yes');
+  data.append('merchant_id', form.merchant_id.value || '');
+
+  // include logo file if provided
+  const logoInput = document.getElementById('logo');
+  if(logoInput && logoInput.files && logoInput.files[0]) data.append('logo', logoInput.files[0]);
+
+  // UI lock
+  const submitBtn = document.getElementById('submit-btn');
+  submitBtn.disabled = true; submitBtn.textContent = 'Sending...';
+
+  try {
+    // POST as multipart/form-data
+    const res = await fetch(POST_URL, {
+      method: 'POST',
+      body: data,
+      // If your backend requires auth, set headers here (e.g. Authorization). For Airtable proxy, handle on server.
+      // headers: { 'Authorization': 'Bearer YOUR_TOKEN' }
+    });
+
+    if(!res.ok) throw new Error(`Server returned ${res.status}`);
+
+    // success
+    submitBtn.textContent = 'Sent';
+    // show modal confirmation
+    modal.style.display = 'flex';
+    modal.setAttribute('aria-hidden','false');
+    // reset form lightly but keep merchant name/email for convenience
+    const keepBrand = form.brand_name.value;
+    const keepEmail = form.email.value;
+    form.reset();
+    form.brand_name.value = keepBrand;
+    form.email.value = keepEmail;
+    // reset consent default yes
+    consentYes.classList.add('active'); consentNo.classList.remove('active'); consentField.value = 'yes';
+    // display success message
+    msg.textContent = 'Thanks — your feedback has been received.';
+    msg.className = 'success';
+  } catch(err) {
+    console.error(err);
+    msg.textContent = 'Oops — we couldn’t submit your feedback. Please try again or email hello@popuplane.example';
+    msg.className = 'error';
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Send Feedback & Join The Club';
+  }
+});
+
+/* modal close */
+closeModalBtn.addEventListener('click', ()=> {
+  modal.style.display = 'none';
+  modal.setAttribute('aria-hidden','true');
+});
+
+/* Skip / support button (example) */
+document.getElementById('skip-btn').addEventListener('click', ()=> {
+  window.location.href = '/support'; // or open contact modal
+});
+
+/* Accessibility: focus trap or improved keyboard handling could be added later */
+</script>
+</body>
+</html>
