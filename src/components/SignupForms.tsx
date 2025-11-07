@@ -170,6 +170,7 @@ export const SignupForms = () => {
       <section className="py-16 px-4 max-w-[980px] mx-auto">
       {/* Shopper Notify Section */}
       <div
+        id="shopper-signup"
         className="rounded-2xl p-7 mb-7 shadow-[0_8px_20px_rgba(0,0,0,0.05)] border border-border bg-card"
         aria-labelledby="notify-title"
       >

@@ -68,7 +68,7 @@ export default function LaneHero({ isOpen, nextEventDate }: LaneHeroProps) {
             </>
           ) : (
             <Button size="lg" className="bg-wine hover:bg-wine-light text-white font-semibold px-8 py-6 text-lg" asChild>
-              <Link to="/#signup-forms">Get Notified</Link>
+              <Link to="/#shopper-signup">Get Notified</Link>
             </Button>
           )}
         </div>
