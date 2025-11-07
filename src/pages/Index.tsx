@@ -6,6 +6,7 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BrandCarousel } from "@/components/BrandCarousel";
 import { SignupForms } from "@/components/SignupForms";
+import { TestimonialCarousel } from "@/components/TestimonialCarousel";
 import { Footer } from "@/components/Footer";
 import { SEOHead } from "@/components/SEOHead";
 
@@ -59,6 +60,7 @@ const Index = () => {
         <div id="signup-forms">
           <SignupForms />
         </div>
+        <TestimonialCarousel />
         <Footer />
       </main>
     </>

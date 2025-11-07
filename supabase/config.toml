@@ -11,3 +11,6 @@ verify_jwt = true
 
 [functions.admin-send-merchant-email]
 verify_jwt = true
+
+[functions.submit-lane-club-feedback]
+verify_jwt = false

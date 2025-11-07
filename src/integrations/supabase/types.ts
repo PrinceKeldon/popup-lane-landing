@@ -47,6 +47,85 @@ export type Database = {
         }
         Relationships: []
       }
+      lane_club_feedback: {
+        Row: {
+          admin_notes: string | null
+          brand_name: string
+          consent_to_feature: boolean | null
+          created_at: string | null
+          email: string
+          excited_feature: string | null
+          featured_on_site: boolean | null
+          first_impression: string
+          id: string
+          improvement: string | null
+          logo_url: string | null
+          merchant_id: string | null
+          rating: number
+          short_quote: string | null
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          brand_name: string
+          consent_to_feature?: boolean | null
+          created_at?: string | null
+          email: string
+          excited_feature?: string | null
+          featured_on_site?: boolean | null
+          first_impression: string
+          id?: string
+          improvement?: string | null
+          logo_url?: string | null
+          merchant_id?: string | null
+          rating: number
+          short_quote?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          brand_name?: string
+          consent_to_feature?: boolean | null
+          created_at?: string | null
+          email?: string
+          excited_feature?: string | null
+          featured_on_site?: boolean | null
+          first_impression?: string
+          id?: string
+          improvement?: string | null
+          logo_url?: string | null
+          merchant_id?: string | null
+          rating?: number
+          short_quote?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lane_club_feedback_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "merchant_trending_stats"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lane_club_feedback_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lane_club_feedback_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "public_merchants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lane_settings: {
         Row: {
           early_access_date: string

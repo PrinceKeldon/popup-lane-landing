@@ -7,8 +7,10 @@ import { ShopperTable } from "@/components/admin/ShopperTable";
 import { LaneSettings } from "@/components/admin/LaneSettings";
 import { TierManagement } from "@/components/admin/TierManagement";
 import { TrendingUpdater } from "@/components/admin/TrendingUpdater";
+import { LaneClubManager } from "@/components/admin/LaneClubManager";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LogOut } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -152,42 +154,57 @@ export default function AdminDashboard() {
           isOpen={countdown.isExpired}
         />
 
-        <div className="space-y-6">
-          <TrendingUpdater />
-          
-          <TierManagement />
+        <Tabs defaultValue="overview" className="space-y-6">
+          <TabsList>
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="merchants">Merchants</TabsTrigger>
+            <TabsTrigger value="shoppers">Shoppers</TabsTrigger>
+            <TabsTrigger value="lane-club">Lane Club</TabsTrigger>
+            <TabsTrigger value="settings">Settings</TabsTrigger>
+          </TabsList>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2">
-              <Card className="p-6">
-                <h2 className="text-2xl font-bold mb-4 text-primary">
-                  Merchant Applications
-                </h2>
-                <MerchantTable
-                  merchants={merchants}
-                  onApprove={handleApprove}
-                  onReject={handleReject}
-                  onRefresh={loadData}
-                  loading={airtableLoading}
-                />
-              </Card>
-            </div>
+          <TabsContent value="overview" className="space-y-6">
+            <TrendingUpdater />
+            <TierManagement />
+          </TabsContent>
 
-            <div className="space-y-6">
-              <LaneSettings />
+          <TabsContent value="merchants">
+            <Card className="p-6">
+              <h2 className="text-2xl font-bold mb-4 text-primary">
+                Merchant Applications
+              </h2>
+              <MerchantTable
+                merchants={merchants}
+                onApprove={handleApprove}
+                onReject={handleReject}
+                onRefresh={loadData}
+                loading={airtableLoading}
+              />
+            </Card>
+          </TabsContent>
 
-              <Card className="p-6">
-                <h3 className="text-lg font-semibold mb-4">Shoppers</h3>
-                <ShopperTable
-                  shoppers={shoppers}
-                  onRefresh={loadData}
-                  onExport={handleExportShoppers}
-                  loading={airtableLoading}
-                />
-              </Card>
-            </div>
-          </div>
-        </div>
+          <TabsContent value="shoppers">
+            <Card className="p-6">
+              <h3 className="text-lg font-semibold mb-4">Shoppers</h3>
+              <ShopperTable
+                shoppers={shoppers}
+                onRefresh={loadData}
+                onExport={handleExportShoppers}
+                loading={airtableLoading}
+              />
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="lane-club">
+            <Card className="p-6">
+              <LaneClubManager />
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="settings">
+            <LaneSettings />
+          </TabsContent>
+        </Tabs>
       </main>
 
       <footer className="border-t mt-12 py-6">

@@ -59,12 +59,7 @@ export const Hero = () => {
                 List Your Brand
               </Button>
             </> : <>
-              <Button size="lg" className="w-full sm:w-auto min-h-[44px] text-base px-8 bg-primary text-primary-foreground shadow-[var(--shadow-button)] hover:bg-primary/90 group" onClick={() => {
-            const formsSection = document.getElementById("signup-forms");
-            formsSection?.scrollIntoView({
-              behavior: "smooth"
-            });
-          }}>
+              <Button size="lg" className="w-full sm:w-auto min-h-[44px] text-base px-8 bg-primary text-primary-foreground shadow-[var(--shadow-button)] hover:bg-primary/90 group" onClick={() => window.location.href = '/lane-club'}>
                 Join the Lane Club
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
