@@ -127,6 +127,95 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log('Lane Club feedback submitted:', insertedFeedback.id);
 
+    // Send confirmation email
+    const resendApiKey = Deno.env.get("RESEND_API_KEY");
+
+    if (resendApiKey) {
+      const emailHtml = `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <style>
+              body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #FAF9F8; }
+              .container { max-width: 600px; margin: 0 auto; }
+              .header { background: hsl(280, 65%, 60%); color: white; padding: 30px 20px; text-align: center; }
+              .header h1 { margin: 0; font-size: 28px; }
+              .content { padding: 30px 20px; background: white; }
+              .content p { line-height: 1.6; color: #333; }
+              .highlight { background: #f3f4f6; padding: 15px; border-radius: 8px; margin: 20px 0; }
+              .rating { color: #A23E48; font-size: 24px; }
+              .footer { text-align: center; padding: 20px; color: #888; font-size: 12px; background: #f5f5f5; }
+              .footer a { color: hsl(280, 65%, 60%); text-decoration: none; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <h1>🎉 Welcome to The Lane Club!</h1>
+              </div>
+              <div class="content">
+                <p>Hi ${brand_name},</p>
+                <p>Thank you for joining The Lane Club! We've received your feedback and are thrilled to have you as part of our community of small brands.</p>
+                
+                <div class="highlight">
+                  <p><strong>Your Submission Summary:</strong></p>
+                  <p><span class="rating">${'⭐'.repeat(rating)}</span> ${rating} out of 5 stars</p>
+                  <p><strong>First Impression:</strong> ${first_impression}</p>
+                  ${short_quote ? `<p><strong>Quote:</strong> "${short_quote}"</p>` : ''}
+                </div>
+
+                <p><strong>What happens next?</strong></p>
+                <ul>
+                  <li>Our team will review your feedback within 2-3 business days</li>
+                  <li>If approved, your testimonial may be featured on our site</li>
+                  <li>You'll be notified when your feedback is live</li>
+                </ul>
+
+                ${merchant_id ? `<p>Since you're already a merchant, you can track your feedback status in your dashboard.</p>` : ''}
+
+                <p>Thank you for helping us build a community that celebrates small brands!</p>
+                
+                <p>Best regards,<br>The PopUp Lane Team</p>
+              </div>
+              <div class="footer">
+                <p>You're receiving this because you submitted Lane Club feedback</p>
+                <p>Questions? Contact us at <a href="mailto:founder@popuplane.com">founder@popuplane.com</a></p>
+              </div>
+            </div>
+          </body>
+        </html>
+      `;
+
+      try {
+        const emailResponse = await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${resendApiKey}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            from: "PopUp Lane <founder@popuplane.com>",
+            reply_to: "founder@popuplane.com",
+            to: [email],
+            subject: "Welcome to The Lane Club! 🎉",
+            html: emailHtml,
+          }),
+        });
+
+        if (!emailResponse.ok) {
+          console.error("Failed to send confirmation email:", await emailResponse.text());
+          // Don't throw - we still want to return success for the submission
+        } else {
+          console.log("Lane Club confirmation email sent to:", email);
+        }
+      } catch (emailError) {
+        console.error("Error sending confirmation email:", emailError);
+        // Don't throw - we still want to return success for the submission
+      }
+    } else {
+      console.warn("RESEND_API_KEY not configured, skipping confirmation email");
+    }
+
     return new Response(
       JSON.stringify({ 
         success: true, 

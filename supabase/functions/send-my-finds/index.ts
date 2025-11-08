@@ -13,9 +13,15 @@ const corsHeaders = {
 const brandSchema = z.object({
   id: z.string().uuid(),
   brand_name: z.string().trim().min(1).max(100),
-  category: z.string().max(50).optional(),
-  website_url: z.string().url().startsWith('http').max(500).optional(),
-  social_media: z.string().url().startsWith('http').max(500).optional()
+  category: z.string().max(50).nullable().optional(),
+  website_url: z.preprocess(
+    (val) => val || undefined,
+    z.string().url().startsWith('http').max(500).optional()
+  ),
+  social_media: z.preprocess(
+    (val) => val || undefined,
+    z.string().url().startsWith('http').max(500).optional()
+  )
 });
 
 const requestSchema = z.object({
@@ -26,9 +32,9 @@ const requestSchema = z.object({
 interface Brand {
   id: string;
   brand_name: string;
-  category?: string;
-  website_url?: string;
-  social_media?: string;
+  category?: string | null;
+  website_url?: string | null;
+  social_media?: string | null;
 }
 
 // HTML escaping function to prevent XSS
@@ -117,7 +123,8 @@ const handler = async (req: Request): Promise<Response> => {
                 Thanks for discovering small brands with PopUp Lane! Don't forget to check back when The Lane opens again for more amazing finds.
               </p>
               <p style="color: #5f6163; font-size: 14px; margin: 16px 0 0;">
-                — The PopUp Lane Team
+                — The PopUp Lane Team<br>
+                <a href="mailto:founder@popuplane.com" style="color: #A23E48; text-decoration: none;">founder@popuplane.com</a>
               </p>
             </div>
           </div>
@@ -133,7 +140,8 @@ const handler = async (req: Request): Promise<Response> => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "PopUp Lane <onboarding@resend.dev>",
+        from: "PopUp Lane <founder@popuplane.com>",
+        reply_to: "founder@popuplane.com",
         to: [email],
         subject: "Your Saved Brands from PopUp Lane",
         html: emailHTML,

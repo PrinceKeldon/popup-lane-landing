@@ -129,7 +129,7 @@ const handler = async (req: Request): Promise<Response> => {
               </div>
               <div class="footer">
                 <p>You're receiving this because you're a merchant on PopUp Lane</p>
-                <p>Questions? Contact us at <a href="mailto:admin@popuplane.com">admin@popuplane.com</a></p>
+                <p>Questions? Contact us at <a href="mailto:founder@popuplane.com">founder@popuplane.com</a></p>
               </div>
             </div>
           </body>
@@ -143,7 +143,8 @@ const handler = async (req: Request): Promise<Response> => {
           Authorization: `Bearer ${resendApiKey}`,
         },
         body: JSON.stringify({
-          from: fromName ? `${fromName} <onboarding@resend.dev>` : "PopUp Lane <onboarding@resend.dev>",
+          from: "PopUp Lane <founder@popuplane.com>",
+          reply_to: "founder@popuplane.com",
           to: [merchant.email],
           subject: subject,
           html: emailHtml,
