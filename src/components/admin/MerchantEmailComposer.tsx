@@ -107,17 +107,39 @@ export function MerchantEmailComposer({ preselectedMerchantId, onClose }: Mercha
     setSending(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke("admin-send-merchant-email", {
-        body: {
-          mode,
-          merchantIds: mode === 'individual' ? selectedMerchants : undefined,
-          tier: mode === 'tier' ? selectedTier : undefined,
-          subject,
-          message,
-        },
-      });
+      // Get the current session
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        throw new Error("No active session. Please log in again.");
+      }
 
-      if (error) throw error;
+      // Use direct fetch with explicit Authorization header
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/admin-send-merchant-email`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session.access_token}`,
+            'apikey': import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+          },
+          body: JSON.stringify({
+            mode,
+            merchantIds: mode === 'individual' ? selectedMerchants : undefined,
+            tier: mode === 'tier' ? selectedTier : undefined,
+            subject,
+            message,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `HTTP error ${response.status}`);
+      }
+
+      const data = await response.json();
 
       toast({
         title: "Emails sent successfully",

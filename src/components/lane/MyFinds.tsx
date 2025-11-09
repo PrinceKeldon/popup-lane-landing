@@ -27,7 +27,7 @@ export default function MyFinds({
       
       const { data, error } = await supabase
         .from("merchants")
-        .select("id, brand_name, website_url, social_media, category, application_status, tier, click_count, created_at, updated_at, spots_claimed")
+        .select("id, brand_name, website_url, social_media, category")
         .in("id", savedMerchantIds);
 
       if (error) throw error;
@@ -38,16 +38,42 @@ export default function MyFinds({
 
   const handleEmailFinds = async () => {
     const email = prompt("Enter your email to receive your saved brands:");
-    if (!email) return;
+    if (!email || !email.trim()) return;
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast({
+        title: "Invalid email",
+        description: "Please enter a valid email address",
+        variant: "destructive",
+      });
+      return;
+    }
 
     setIsSending(true);
     try {
       const brands = savedMerchants || [];
-      const { error } = await supabase.functions.invoke("send-my-finds", {
-        body: { email, brands },
-      });
+      
+      // Use direct fetch instead of supabase.functions.invoke
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-my-finds`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+          },
+          body: JSON.stringify({ email: email.trim(), brands }),
+        }
+      );
 
-      if (error) throw error;
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `HTTP error ${response.status}`);
+      }
+
+      await response.json();
 
       toast({
         title: "Email sent!",
@@ -55,9 +81,10 @@ export default function MyFinds({
       });
     } catch (error: any) {
       console.error("Error sending email:", error);
+      
       // Fallback to mailto if edge function fails
       const merchantList = savedMerchants
-        ?.map((m) => `${m.brand_name} - ${m.website_url || "No website"}`)
+        ?.map((m) => `${m.brand_name}${m.website_url ? ` - ${m.website_url}` : ''}`)
         .join("\n");
 
       const subject = encodeURIComponent("My PopUp Lane Finds");
