@@ -15,12 +15,21 @@ const brandSchema = z.object({
   brand_name: z.string().trim().min(1).max(100),
   category: z.string().max(50).nullable().optional(),
   website_url: z.preprocess(
-    (val) => val || undefined,
+    (val) => {
+      // Convert null, empty string, or undefined to undefined
+      if (val === null || val === '' || val === undefined) return undefined;
+      return val;
+    },
     z.string().url().startsWith('http').max(500).optional()
   ),
   social_media: z.preprocess(
-    (val) => val || undefined,
-    z.string().url().startsWith('http').max(500).optional()
+    (val) => {
+      // Convert null, empty string, or undefined to undefined
+      if (val === null || val === '' || val === undefined) return undefined;
+      return val;
+    },
+    // Social media can be a handle (e.g., "@username", "hushara_merch") or a URL
+    z.string().trim().max(500).optional()
   )
 });
 
@@ -93,14 +102,23 @@ const handler = async (req: Request): Promise<Response> => {
     // Build the email HTML with proper escaping
     const brandsHTML = brands
       .map(
-        (brand) => `
+        (brand) => {
+          // Check if social_media is a URL or just a handle
+          const socialMediaDisplay = brand.social_media 
+            ? (brand.social_media.startsWith('http') 
+                ? `<a href="${escapeHtml(brand.social_media)}" style="color: #A23E48; text-decoration: none;">Social Media →</a>`
+                : `<span style="color: #6b7280;">${escapeHtml(brand.social_media)}</span>`)
+            : '';
+
+          return `
       <div style="margin-bottom: 24px; padding: 16px; border: 1px solid #e5e7eb; border-radius: 8px; background: #ffffff;">
         <h3 style="margin: 0 0 8px; color: #A23E48; font-size: 18px;">${escapeHtml(brand.brand_name)}</h3>
         ${brand.category ? `<p style="margin: 4px 0; color: #6b7280; font-size: 14px;">Category: ${escapeHtml(brand.category)}</p>` : ""}
         ${brand.website_url ? `<p style="margin: 4px 0;"><a href="${escapeHtml(brand.website_url)}" style="color: #A23E48; text-decoration: none;">Visit Website →</a></p>` : ""}
-        ${brand.social_media ? `<p style="margin: 4px 0;"><a href="${escapeHtml(brand.social_media)}" style="color: #A23E48; text-decoration: none;">Social Media →</a></p>` : ""}
+        ${socialMediaDisplay ? `<p style="margin: 4px 0;">${socialMediaDisplay}</p>` : ""}
       </div>
-    `
+    `;
+        }
       )
       .join("");
 
