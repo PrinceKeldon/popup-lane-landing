@@ -23,9 +23,14 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    console.log("=== Admin Email Request Debug ===");
+    
     // Create client with user's JWT for authentication
     const authHeader = req.headers.get("Authorization");
+    console.log("Has Authorization header:", !!authHeader);
+    
     if (!authHeader) {
+      console.error("Missing Authorization header");
       return new Response(
         JSON.stringify({ error: "Missing authorization header" }),
         { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -42,12 +47,22 @@ const handler = async (req: Request): Promise<Response> => {
       }
     );
 
+    console.log("Attempting to get user...");
+    
     // Verify admin authentication
     const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
+    
+    console.log("Auth result:", {
+      hasUser: !!user,
+      userId: user?.id,
+      authErrorMessage: authError?.message,
+      authErrorStatus: authError?.status
+    });
+    
     if (authError || !user) {
       console.error("Authentication error:", authError);
       return new Response(
-        JSON.stringify({ error: "Unauthorized" }),
+        JSON.stringify({ error: "Unauthorized", details: authError?.message }),
         { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
