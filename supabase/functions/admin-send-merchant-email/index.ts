@@ -25,55 +25,61 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     console.log("=== Admin Email Request Debug ===");
     
-    // Create client with user's JWT for authentication
+    // Get and validate JWT token
     const authHeader = req.headers.get("Authorization");
     console.log("Has Authorization header:", !!authHeader);
     
-    if (!authHeader) {
-      console.error("Missing Authorization header");
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      console.error("Missing or invalid Authorization header");
       return new Response(
         JSON.stringify({ error: "Missing authorization header" }),
         { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    const supabaseClient = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
-      {
-        global: {
-          headers: { Authorization: authHeader },
-        },
-      }
-    );
-
-    console.log("Attempting to get user...");
+    // Extract JWT token
+    const jwt = authHeader.replace("Bearer ", "");
     
-    // Verify admin authentication
-    const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
-    
-    console.log("Auth result:", {
-      hasUser: !!user,
-      userId: user?.id,
-      authErrorMessage: authError?.message,
-      authErrorStatus: authError?.status
-    });
-    
-    if (authError || !user) {
-      console.error("Authentication error:", authError);
+    // Decode JWT to get user info (JWT is already validated by Supabase when verify_jwt = true)
+    const jwtParts = jwt.split(".");
+    if (jwtParts.length !== 3) {
+      console.error("Invalid JWT format");
       return new Response(
-        JSON.stringify({ error: "Unauthorized", details: authError?.message }),
+        JSON.stringify({ error: "Invalid token format" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    
+    const payload = JSON.parse(atob(jwtParts[1]));
+    const userId = payload.sub;
+    
+    console.log("User ID from JWT:", userId);
+    
+    if (!userId) {
+      console.error("No user ID in JWT");
+      return new Response(
+        JSON.stringify({ error: "Invalid token payload" }),
         { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    // Check admin role
-    const { data: roleData } = await supabaseClient
+    // Create admin client with service role for database operations
+    const supabaseAdmin = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+    );
+
+    console.log("Checking admin role for user:", userId);
+
+    // Check admin role using service role client
+    const { data: roleData } = await supabaseAdmin
       .from("user_roles")
       .select("role")
-      .eq("user_id", user.id)
+      .eq("user_id", userId)
       .eq("role", "admin")
       .single();
+
+    console.log("Role check result:", { hasRole: !!roleData });
 
     if (!roleData) {
       console.error("User is not an admin");
@@ -87,8 +93,8 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Email request:", { mode, tier, merchantIdsCount: merchantIds?.length, subject });
 
-    // Fetch merchant emails based on mode
-    let query = supabaseClient
+    // Fetch merchant emails based on mode using admin client
+    let query = supabaseAdmin
       .from("merchants")
       .select("id, email, brand_name")
       .eq("application_status", "Approved")
@@ -195,9 +201,9 @@ const handler = async (req: Request): Promise<Response> => {
 
     await Promise.all(emailPromises);
 
-    // Log the email send
-    await supabaseClient.from("admin_email_logs").insert({
-      admin_id: user.id,
+    // Log the email send using admin client
+    await supabaseAdmin.from("admin_email_logs").insert({
+      admin_id: userId,
       recipient_mode: mode,
       recipient_count: sentMerchantIds.length,
       subject: subject,
