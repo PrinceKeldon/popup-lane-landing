@@ -23,18 +23,27 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const supabase = createClient(
+    // Create client with user's JWT for authentication
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: "Missing authorization header" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? "",
       {
         global: {
-          headers: { Authorization: req.headers.get("Authorization")! },
+          headers: { Authorization: authHeader },
         },
       }
     );
 
     // Verify admin authentication
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
     if (authError || !user) {
       console.error("Authentication error:", authError);
       return new Response(
@@ -44,7 +53,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     // Check admin role
-    const { data: roleData } = await supabase
+    const { data: roleData } = await supabaseClient
       .from("user_roles")
       .select("role")
       .eq("user_id", user.id)
@@ -64,7 +73,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Email request:", { mode, tier, merchantIdsCount: merchantIds?.length, subject });
 
     // Fetch merchant emails based on mode
-    let query = supabase
+    let query = supabaseClient
       .from("merchants")
       .select("id, email, brand_name")
       .eq("application_status", "Approved")
@@ -172,7 +181,7 @@ const handler = async (req: Request): Promise<Response> => {
     await Promise.all(emailPromises);
 
     // Log the email send
-    await supabase.from("admin_email_logs").insert({
+    await supabaseClient.from("admin_email_logs").insert({
       admin_id: user.id,
       recipient_mode: mode,
       recipient_count: sentMerchantIds.length,
