@@ -10,6 +10,21 @@ const corsHeaders = {
 };
 
 // Validation schemas
+const productSchema = z.object({
+  id: z.string().uuid(),
+  product_name: z.string().trim().min(1).max(200),
+  product_description: z.string().max(1000).nullable().optional(),
+  offer_text: z.string().max(200).nullable().optional(),
+  price: z.number().nullable().optional(),
+  original_price: z.number().nullable().optional(),
+  discount_percentage: z.number().nullable().optional(),
+  website_url: z.preprocess(
+    (val) => (val === null || val === '' || val === undefined) ? undefined : val,
+    z.string().url().startsWith('http').max(500).optional()
+  ),
+  is_featured: z.boolean().optional()
+});
+
 const brandSchema = z.object({
   id: z.string().uuid(),
   brand_name: z.string().trim().min(1).max(100),
@@ -30,13 +45,27 @@ const brandSchema = z.object({
     },
     // Social media can be a handle (e.g., "@username", "hushara_merch") or a URL
     z.string().trim().max(500).optional()
-  )
+  ),
+  merchant_products: z.array(productSchema).optional()
 });
 
 const requestSchema = z.object({
   email: z.string().email().max(255),
-  brands: z.array(brandSchema).min(1).max(50)
+  brands: z.array(brandSchema).min(1).max(50),
+  laneClosingDate: z.string().datetime().optional()
 });
+
+interface Product {
+  id: string;
+  product_name: string;
+  product_description?: string | null;
+  offer_text?: string | null;
+  price?: number | null;
+  original_price?: number | null;
+  discount_percentage?: number | null;
+  website_url?: string | null;
+  is_featured?: boolean;
+}
 
 interface Brand {
   id: string;
@@ -44,6 +73,7 @@ interface Brand {
   category?: string | null;
   website_url?: string | null;
   social_media?: string | null;
+  merchant_products?: Product[];
 }
 
 // HTML escaping function to prevent XSS
@@ -59,6 +89,7 @@ function escapeHtml(text: string): string {
 interface SendMyFindsRequest {
   email: string;
   brands: Brand[];
+  laneClosingDate?: string;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -86,7 +117,16 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    const { email, brands } = validation.data;
+    const { email, brands, laneClosingDate } = validation.data;
+
+    // Calculate days remaining until lane closes
+    let daysRemaining = 3; // Default
+    if (laneClosingDate) {
+      const closing = new Date(laneClosingDate);
+      const now = new Date();
+      const diffTime = closing.getTime() - now.getTime();
+      daysRemaining = Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+    }
 
     if (!resendApiKey) {
       console.error("RESEND_API_KEY is not set");
@@ -99,55 +139,144 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // Build the email HTML with proper escaping
-    const brandsHTML = brands
-      .map(
-        (brand) => {
-          // Check if social_media is a URL or just a handle
-          const socialMediaDisplay = brand.social_media 
-            ? (brand.social_media.startsWith('http') 
-                ? `<a href="${escapeHtml(brand.social_media)}" style="color: #A23E48; text-decoration: none;">Social Media →</a>`
-                : `<span style="color: #6b7280;">${escapeHtml(brand.social_media)}</span>`)
-            : '';
-
-          return `
-      <div style="margin-bottom: 24px; padding: 16px; border: 1px solid #e5e7eb; border-radius: 8px; background: #ffffff;">
-        <h3 style="margin: 0 0 8px; color: #A23E48; font-size: 18px;">${escapeHtml(brand.brand_name)}</h3>
-        ${brand.category ? `<p style="margin: 4px 0; color: #6b7280; font-size: 14px;">Category: ${escapeHtml(brand.category)}</p>` : ""}
-        ${brand.website_url ? `<p style="margin: 4px 0;"><a href="${escapeHtml(brand.website_url)}" style="color: #A23E48; text-decoration: none;">Visit Website →</a></p>` : ""}
-        ${socialMediaDisplay ? `<p style="margin: 4px 0;">${socialMediaDisplay}</p>` : ""}
-      </div>
-    `;
+    // Build product cards HTML
+    const productCardsHTML = brands
+      .flatMap(brand => {
+        const products = brand.merchant_products || [];
+        
+        // If no products, create a card for the brand itself
+        if (products.length === 0) {
+          return [`
+            <div style="border: 1px solid rgba(17,18,23,0.08); border-radius: 10px; padding: 16px; background-color: #fdfdfd; box-shadow: 0 3px 10px rgba(0,0,0,0.03);">
+              <div style="font-weight: 700; color: #221111; font-size: 16px; margin-bottom: 4px;">${escapeHtml(brand.brand_name)}</div>
+              ${brand.category ? `<div style="font-size: 13px; color: #666; margin-bottom: 8px;">${escapeHtml(brand.category)}</div>` : ''}
+              ${brand.website_url 
+                ? `<a href="${escapeHtml(brand.website_url)}" style="display: inline-block; text-decoration: none; background-color: #111; color: #fff; padding: 8px 12px; border-radius: 8px; font-size: 13px; font-weight: 600;">Visit Brand →</a>` 
+                : ''}
+            </div>
+          `];
         }
-      )
-      .join("");
+        
+        // Create card for each product
+        return products.map(product => {
+          const tagline = product.product_description 
+            ? product.product_description.substring(0, 120) + (product.product_description.length > 120 ? '...' : '')
+            : '';
+          
+          const offerText = product.offer_text || 
+            (product.discount_percentage ? `${product.discount_percentage}% off` : '');
+          
+          const productUrl = product.website_url || brand.website_url || '#';
+          
+          return `
+            <div style="border: 1px solid rgba(17,18,23,0.08); border-radius: 10px; padding: 16px; background-color: #fdfdfd; box-shadow: 0 3px 10px rgba(0,0,0,0.03);">
+              <div style="font-weight: 700; color: #221111; font-size: 16px; margin-bottom: 4px;">${escapeHtml(brand.brand_name)}</div>
+              <div style="font-weight: 500; font-size: 15px; margin-bottom: 6px; color: #333;">${escapeHtml(product.product_name)}</div>
+              ${offerText ? `<div style="background-color: #a23e48; color: #fff; font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 6px; display: inline-block; margin-bottom: 8px;">${escapeHtml(offerText)}</div>` : ''}
+              ${tagline ? `<div style="font-size: 13px; color: #555; margin-bottom: 10px; line-height: 1.4;">${escapeHtml(tagline)}</div>` : ''}
+              <a href="${escapeHtml(productUrl)}" style="display: inline-block; text-decoration: none; background-color: #111; color: #fff; padding: 8px 12px; border-radius: 8px; font-size: 13px; font-weight: 600;">View on the Lane →</a>
+            </div>
+          `;
+        });
+      })
+      .join('');
 
     const emailHTML = `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <meta charset="utf-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1">
-        </head>
-        <body style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; color: #141414; max-width: 600px; margin: 0 auto; padding: 20px; background: #FAF9F8;">
-          <div style="background: #ffffff; padding: 32px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);">
-            <h1 style="color: #A23E48; font-size: 28px; margin: 0 0 8px;">Your PopUp Lane Finds</h1>
-            <p style="color: #5f6163; margin: 0 0 24px;">Here are the brands you saved during your visit to The Lane:</p>
-            
-            ${brandsHTML}
-            
-            <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid #e5e7eb;">
-              <p style="color: #5f6163; font-size: 14px; margin: 0;">
-                Thanks for discovering small brands with PopUp Lane! Don't forget to check back when The Lane opens again for more amazing finds.
-              </p>
-              <p style="color: #5f6163; font-size: 14px; margin: 16px 0 0;">
-                — The PopUp Lane Team<br>
-                <a href="mailto:founder@popuplane.com" style="color: #A23E48; text-decoration: none;">founder@popuplane.com</a>
-              </p>
-            </div>
-          </div>
-        </body>
-      </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Lane Finds — PopUp Lane</title>
+<style>
+  body {
+    font-family: 'Inter', Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #111;
+    margin: 0;
+    padding: 0;
+  }
+  .email-container {
+    max-width: 640px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+  }
+  .header {
+    background-color: #221111;
+    color: #fff;
+    padding: 24px 20px;
+    text-align: center;
+  }
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    margin: 0;
+    font-size: 24px;
+  }
+  .subtext {
+    font-size: 14px;
+    color: #ddd;
+    margin-top: 6px;
+  }
+  .finds {
+    padding: 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .closing {
+    text-align: center;
+    padding: 20px;
+    font-size: 14px;
+    color: #555;
+  }
+  .footer {
+    text-align: center;
+    font-size: 12px;
+    color: #999;
+    padding: 16px;
+    border-top: 1px solid #eee;
+  }
+  .footer a {
+    color: #999;
+    text-decoration: none;
+  }
+  .footer a:hover {
+    color: #a23e48;
+  }
+  @media (max-width: 480px) {
+    .finds {
+      grid-template-columns: 1fr;
+      padding: 16px;
+    }
+    .header h1 { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+  <div class="email-container">
+    <div class="header">
+      <h1>Your Lane Finds Are Here</h1>
+      <p class="subtext">Limited-time drops you saved — still live for a few days.</p>
+    </div>
+
+    <div class="finds">
+      ${productCardsHTML}
+    </div>
+
+    <div class="closing">
+      🔔 The Lane closes in <strong>${daysRemaining} day${daysRemaining !== 1 ? 's' : ''}</strong> — don't miss your Finds before they disappear.
+    </div>
+
+    <div class="footer">
+      © 2025 PopUp Lane — Discover Small Brands<br>
+      <a href="mailto:founder@popuplane.com">Contact Us</a>
+    </div>
+  </div>
+</body>
+</html>
     `;
 
     // Use Resend API directly via fetch
@@ -161,7 +290,7 @@ const handler = async (req: Request): Promise<Response> => {
         from: "PopUp Lane <founder@popuplane.com>",
         reply_to: "founder@popuplane.com",
         to: [email],
-        subject: "Your Saved Brands from PopUp Lane",
+        subject: "Your Lane Finds — Closing Soon! 🔔",
         html: emailHTML,
       }),
     });

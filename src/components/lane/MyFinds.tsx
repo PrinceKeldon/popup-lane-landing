@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Heart, Mail, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
+import { useLaneSettings } from "@/hooks/useLaneSettings";
 
 interface MyFindsProps {
   savedMerchantIds: string[];
@@ -19,6 +20,7 @@ export default function MyFinds({
 }: MyFindsProps) {
   const { toast } = useToast();
   const [isSending, setIsSending] = useState(false);
+  const { earlyAccessDate } = useLaneSettings();
 
   const { data: savedMerchants } = useQuery({
     queryKey: ["saved-merchants", savedMerchantIds],
@@ -27,7 +29,24 @@ export default function MyFinds({
       
       const { data, error } = await supabase
         .from("merchants")
-        .select("id, brand_name, website_url, social_media, category")
+        .select(`
+          id,
+          brand_name,
+          website_url,
+          social_media,
+          category,
+          merchant_products (
+            id,
+            product_name,
+            product_description,
+            offer_text,
+            price,
+            original_price,
+            discount_percentage,
+            website_url,
+            is_featured
+          )
+        `)
         .in("id", savedMerchantIds);
 
       if (error) throw error;
@@ -64,7 +83,11 @@ export default function MyFinds({
             'Content-Type': 'application/json',
             'apikey': import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
           },
-          body: JSON.stringify({ email: email.trim(), brands }),
+          body: JSON.stringify({ 
+            email: email.trim(), 
+            brands,
+            laneClosingDate: earlyAccessDate.toISOString()
+          }),
         }
       );
 
