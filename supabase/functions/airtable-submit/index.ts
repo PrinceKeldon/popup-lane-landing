@@ -10,6 +10,15 @@ const AIRTABLE_TOKEN = Deno.env.get('AIRTABLE_TOKEN');
 const AIRTABLE_BASE_ID = "app25rRyBeipA50Rt";
 const SHOPPER_TABLE = "Shoppers";
 const MERCHANT_TABLE = "Merchants";
+const MERCHANT_NOTICES_TABLE = "Merchant Notices";
+const MERCHANT_FEEDBACK_TABLE = "Merchant Feedback";
+
+const VALID_TABLES = [
+  SHOPPER_TABLE,
+  MERCHANT_TABLE,
+  MERCHANT_NOTICES_TABLE,
+  MERCHANT_FEEDBACK_TABLE
+] as const;
 
 // Rate limiting: Track submissions by IP
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
@@ -32,6 +41,31 @@ const merchantSchema = z.object({
   ).optional().or(z.literal('')),
   socialMedia: z.string().trim().max(200).optional().or(z.literal('')),
   category: z.enum(['Fashion', 'Home', 'Beauty & Wellness', 'Art & Lifestyle', 'Other']),
+});
+
+const merchantNoticeSchema = z.object({
+  table: z.literal('Merchant Notices'),
+  fields: z.object({
+    merchant_name: z.string().trim().min(1).max(100),
+    title: z.string().trim().min(1).max(200),
+    message: z.string().trim().min(1).max(2000),
+    category: z.enum(['Update', 'Offer', 'Collab', 'Event']),
+    link: z.string().url().max(500).optional(),
+    visibility: z.enum(['Public', 'Merchant-only']),
+    status: z.string().default('pending'),
+  })
+});
+
+const merchantFeedbackSchema = z.object({
+  table: z.literal('Merchant Feedback'),
+  fields: z.object({
+    merchant_name: z.string().trim().min(1).max(100),
+    brand_website: z.string().url().max(500),
+    rating: z.number().int().min(1).max(5),
+    feedback: z.string().trim().min(10).max(2000),
+    allow_quote: z.boolean(),
+    status: z.string().default('pending'),
+  })
 });
 
 // Sanitize text input to prevent XSS
@@ -130,7 +164,80 @@ serve(async (req) => {
 
     // Parse and validate request body
     const body = await req.json();
-    const { type } = body;
+    const { type, table } = body;
+
+    // Handle new Airtable direct submissions (Merchant Notices & Feedback)
+    if (table && VALID_TABLES.includes(table)) {
+      if (table === MERCHANT_NOTICES_TABLE) {
+        const validationResult = merchantNoticeSchema.safeParse(body);
+        if (!validationResult.success) {
+          return new Response(
+            JSON.stringify({ 
+              success: false, 
+              error: 'Invalid input', 
+              details: validationResult.error.issues 
+            }),
+            { 
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+              status: 400,
+            }
+          );
+        }
+
+        const { fields } = validationResult.data;
+        await postToAirtable(MERCHANT_NOTICES_TABLE, {
+          "Merchant Name": sanitizeText(fields.merchant_name),
+          "Title": sanitizeText(fields.title),
+          "Message": sanitizeText(fields.message),
+          "Category": fields.category,
+          "Link": fields.link || '',
+          "Visibility": fields.visibility,
+          "Status": fields.status,
+          "Featured": false,
+        });
+
+        return new Response(
+          JSON.stringify({ success: true, message: 'Notice submitted successfully' }),
+          { 
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            status: 200,
+          }
+        );
+      } else if (table === MERCHANT_FEEDBACK_TABLE) {
+        const validationResult = merchantFeedbackSchema.safeParse(body);
+        if (!validationResult.success) {
+          return new Response(
+            JSON.stringify({ 
+              success: false, 
+              error: 'Invalid input', 
+              details: validationResult.error.issues 
+            }),
+            { 
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+              status: 400,
+            }
+          );
+        }
+
+        const { fields } = validationResult.data;
+        await postToAirtable(MERCHANT_FEEDBACK_TABLE, {
+          "Merchant Name": sanitizeText(fields.merchant_name),
+          "Brand Website": fields.brand_website,
+          "Rating": fields.rating,
+          "Feedback": sanitizeText(fields.feedback),
+          "Allow Quote": fields.allow_quote,
+          "Status": fields.status,
+        });
+
+        return new Response(
+          JSON.stringify({ success: true, message: 'Feedback submitted successfully' }),
+          { 
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            status: 200,
+          }
+        );
+      }
+    }
 
     if (type === 'shopper') {
       // Validate shopper data

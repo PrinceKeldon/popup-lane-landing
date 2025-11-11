@@ -7,6 +7,7 @@ import { ShopperTable } from "@/components/admin/ShopperTable";
 import { LaneSettings } from "@/components/admin/LaneSettings";
 import { TierManagement } from "@/components/admin/TierManagement";
 import { TrendingUpdater } from "@/components/admin/TrendingUpdater";
+import { MerchantEmailComposer } from "@/components/admin/MerchantEmailComposer";
 import { LaneClubManager } from "@/components/admin/LaneClubManager";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -155,17 +156,26 @@ export default function AdminDashboard() {
         />
 
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList>
+          <TabsList className="flex-wrap h-auto">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="merchants">Merchants</TabsTrigger>
             <TabsTrigger value="shoppers">Shoppers</TabsTrigger>
-            <TabsTrigger value="lane-club">Lane Club</TabsTrigger>
             <TabsTrigger value="settings">Settings</TabsTrigger>
+            <TabsTrigger value="trending">Trending</TabsTrigger>
+            <TabsTrigger value="tiers">Tiers</TabsTrigger>
+            <TabsTrigger value="email">Email</TabsTrigger>
+            <TabsTrigger value="lane-club">Lane Club</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="overview" className="space-y-6">
-            <TrendingUpdater />
-            <TierManagement />
+          <TabsContent value="overview">
+            <OverviewStats
+              merchantsTotal={merchantsTotal}
+              merchantsPending={merchantsPending}
+              shoppersTotal={shoppersTotal}
+              spotsRemaining={spotsRemaining}
+              daysUntilOpen={countdown.days}
+              isOpen={countdown.isExpired}
+            />
           </TabsContent>
 
           <TabsContent value="merchants">
@@ -195,14 +205,24 @@ export default function AdminDashboard() {
             </Card>
           </TabsContent>
 
-          <TabsContent value="lane-club">
-            <Card className="p-6">
-              <LaneClubManager />
-            </Card>
-          </TabsContent>
-
           <TabsContent value="settings">
             <LaneSettings />
+          </TabsContent>
+
+          <TabsContent value="trending">
+            <TrendingUpdater />
+          </TabsContent>
+
+          <TabsContent value="tiers">
+            <TierManagement />
+          </TabsContent>
+
+          <TabsContent value="email">
+            <MerchantEmailComposer />
+          </TabsContent>
+
+          <TabsContent value="lane-club">
+            <LaneClubManager />
           </TabsContent>
         </Tabs>
       </main>
