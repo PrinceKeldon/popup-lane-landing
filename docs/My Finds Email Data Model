@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Lane Finds — PopUp Lane</title>
+<style>
+  body {
+    font-family: 'Inter', Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #111;
+    margin: 0;
+    padding: 0;
+  }
+
+  .email-container {
+    max-width: 640px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+  }
+
+  .header {
+    background-color: #221111;
+    color: #fff;
+    padding: 24px 20px;
+    text-align: center;
+  }
+
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    margin: 0;
+    font-size: 24px;
+  }
+
+  .subtext {
+    font-size: 14px;
+    color: #ddd;
+    margin-top: 6px;
+  }
+
+  .finds {
+    padding: 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+  }
+
+  .card {
+    border: 1px solid rgba(17,18,23,0.08);
+    border-radius: 10px;
+    padding: 16px;
+    background-color: #fdfdfd;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.03);
+  }
+
+  .brand-name {
+    font-weight: 700;
+    color: #221111;
+    font-size: 16px;
+    margin-bottom: 4px;
+  }
+
+  .product-name {
+    font-weight: 500;
+    font-size: 15px;
+    margin-bottom: 6px;
+  }
+
+  .offer {
+    background-color: #a23e48;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
+    display: inline-block;
+    margin-bottom: 8px;
+  }
+
+  .tagline {
+    font-size: 13px;
+    color: #555;
+    margin-bottom: 10px;
+  }
+
+  .cta {
+    display: inline-block;
+    text-decoration: none;
+    background-color: #111;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background 0.2s ease;
+  }
+
+  .cta:hover {
+    background-color: #a23e48;
+  }
+
+  .closing {
+    text-align: center;
+    padding: 20px;
+    font-size: 14px;
+    color: #555;
+  }
+
+  .footer {
+    text-align: center;
+    font-size: 12px;
+    color: #999;
+    padding: 16px;
+    border-top: 1px solid #eee;
+  }
+
+  @media (max-width: 480px) {
+    .finds {
+      grid-template-columns: 1fr;
+      padding: 16px;
+    }
+    .header h1 { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+  <div class="email-container">
+    <div class="header">
+      <h1>Your Lane Finds Are Here</h1>
+      <p class="subtext">Limited-time drops you saved — still live for a few days.</p>
+    </div>
+
+    <div class="finds">
+      <!-- Example Card -->
+      <div class="card">
+        <div class="brand-name">{{brandName}}</div>
+        <div class="product-name">{{productName}}</div>
+        <div class="offer">{{offerText}}</div>
+        <div class="tagline">{{tagline}}</div>
+        <a href="{{productUrl}}" class="cta">View on the Lane →</a>
+      </div>
+
+      <!-- Duplicate or loop for each find -->
+    </div>
+
+    <div class="closing">
+      🔔 The Lane closes in <strong>{{daysRemaining}} days</strong> — don’t miss your Finds before they disappear.
+    </div>
+
+    <div class="footer">
+      © 2025 PopUp Lane — Discover Small Brands · <a href="{{unsubscribeUrl}}" style="color:#999;">Unsubscribe</a> · <a href="{{privacyUrl}}" style="color:#999;">Privacy</a>
+    </div>
+  </div>
+</body>
+</html>
