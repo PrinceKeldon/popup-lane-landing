@@ -1,60 +1,32 @@
-import { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { NoticeList } from "./NoticeList";
-import { NoticeSubmissionForm } from "./NoticeSubmissionForm";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Megaphone } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const MerchantNoticeBoard = () => {
-  const [showForm, setShowForm] = useState(false);
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
-
-  const handleSubmitSuccess = () => {
-    setShowForm(false);
-    setRefreshTrigger(prev => prev + 1);
-  };
-
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8 space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground">Merchant Notice Board</h2>
-          <p className="text-muted-foreground mt-1">
-            Share updates, offers, and opportunities with the community
+    <div className="max-w-4xl mx-auto px-4 py-8">
+      <Card className="border-2 border-dashed border-muted">
+        <CardHeader className="text-center">
+          <div className="flex justify-center mb-4">
+            <Megaphone className="w-16 h-16 text-muted-foreground" />
+          </div>
+          <CardTitle className="text-2xl">Merchant Notice Board Coming Soon</CardTitle>
+          <CardDescription className="text-base">
+            This space will soon allow merchants to post updates, special offers, 
+            collaboration opportunities, and event announcements to the community.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="text-center space-y-4">
+          <div className="flex items-center justify-center gap-2 text-muted-foreground">
+            <Megaphone className="w-5 h-5" />
+            <p className="text-sm">
+              Future features: Public notices, merchant-only updates, offers, and more
+            </p>
+          </div>
+          <p className="text-sm text-muted-foreground italic">
+            In the meantime, share your feedback to help shape PopUp Lane!
           </p>
-        </div>
-        
-        <Dialog open={showForm} onOpenChange={setShowForm}>
-          <DialogTrigger asChild>
-            <Button className="gap-2">
-              <Plus className="w-4 h-4" />
-              Post Update
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Post a Notice</DialogTitle>
-            </DialogHeader>
-            <NoticeSubmissionForm onSuccess={handleSubmitSuccess} />
-          </DialogContent>
-        </Dialog>
-      </div>
-
-      <Tabs defaultValue="public" className="w-full">
-        <TabsList className="grid w-full max-w-md grid-cols-2">
-          <TabsTrigger value="public">🌍 Public Notices</TabsTrigger>
-          <TabsTrigger value="merchant">🛍️ Merchant Hub</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="public" className="mt-6">
-          <NoticeList visibility="Public" refreshTrigger={refreshTrigger} />
-        </TabsContent>
-        
-        <TabsContent value="merchant" className="mt-6">
-          <NoticeList visibility="Merchant-only" refreshTrigger={refreshTrigger} />
-        </TabsContent>
-      </Tabs>
+        </CardContent>
+      </Card>
     </div>
   );
 };
