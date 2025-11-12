@@ -1,13 +1,11 @@
-import { MessageSquare, Sparkles } from "lucide-react";
+import { MessageSquare } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-
 export const CommunityFeed = () => {
-  return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+  return <div className="max-w-4xl mx-auto px-4 py-8">
       <Card className="border-2 border-dashed border-muted">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            <Sparkles className="w-16 h-16 text-primary" />
+            
           </div>
           <CardTitle className="text-2xl">Community Feed Coming Soon</CardTitle>
           <CardDescription className="text-base">
@@ -27,6 +25,5 @@ export const CommunityFeed = () => {
           </p>
         </CardContent>
       </Card>
-    </div>
-  );
+    </div>;
 };
