@@ -7,7 +7,7 @@ const corsHeaders = {
 };
 
 const AIRTABLE_TOKEN = Deno.env.get('AIRTABLE_TOKEN');
-const AIRTABLE_BASE_ID = "app25rRyBeipA50Rt";
+const AIRTABLE_BASE_ID = Deno.env.get('AIRTABLE_BASE_ID');
 const SHOPPER_TABLE = "Shoppers";
 const MERCHANT_TABLE = "Merchants";
 const MERCHANT_NOTICES_TABLE = "Merchant Notices";
