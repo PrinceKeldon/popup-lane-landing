@@ -7,6 +7,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import TheLane from "./pages/TheLane";
+import Backroom from "./pages/Backroom";
 import LanePreview from "./pages/LanePreview";
 import MerchantDashboard from "./pages/MerchantDashboard";
 import MerchantLogin from "./pages/MerchantLogin";
@@ -27,6 +28,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
           <Route path="/lane" element={<TheLane />} />
+          <Route path="/backroom" element={<Backroom />} />
           <Route path="/lane-preview" element={<LanePreview />} />
             <Route path="/merchant/dashboard" element={<MerchantDashboard />} />
             <Route path="/merchant/login" element={<MerchantLogin />} />
