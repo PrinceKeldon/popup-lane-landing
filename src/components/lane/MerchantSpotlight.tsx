@@ -12,6 +12,7 @@ interface MerchantSpotlightProps {
   onClose: () => void;
   onSave: (merchantId: string) => void;
   isSaved: boolean;
+  mode?: 'active' | 'backroom';
 }
 
 export default function MerchantSpotlight({
@@ -19,6 +20,7 @@ export default function MerchantSpotlight({
   onClose,
   onSave,
   isSaved,
+  mode = 'active',
 }: MerchantSpotlightProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -127,11 +129,16 @@ export default function MerchantSpotlight({
               {products.length > 0 && (
                 <div className="space-y-3">
                   <h4 className="font-semibold">Products & Offers:</h4>
+                  {mode === 'backroom' && (
+                    <p className="text-sm text-muted-foreground italic">
+                      💡 Check back during our next pop-up for exclusive offers
+                    </p>
+                  )}
                   {products.map((product: any) => (
                     <div key={product.id} className="bg-muted/50 p-3 rounded-lg">
                       <div className="flex justify-between items-start mb-2">
                         <h5 className="font-semibold">{product.product_name}</h5>
-                        {product.discount_percentage && (
+                        {mode === 'active' && product.discount_percentage && (
                           <Badge className="bg-red-500 text-white">
                             {product.discount_percentage}% OFF
                           </Badge>
@@ -140,7 +147,7 @@ export default function MerchantSpotlight({
                       <p className="text-sm text-muted-foreground mb-2">
                         {product.product_description}
                       </p>
-                      {product.offer_text && (
+                      {mode === 'active' && product.offer_text && (
                         <p className="text-sm font-semibold text-wine">
                           {product.offer_text}
                         </p>
@@ -156,7 +163,7 @@ export default function MerchantSpotlight({
                   onClick={() => window.open(merchant.website_url || "#", "_blank")}
                 >
                   <Store className="h-4 w-4 mr-2" />
-                  Visit Store
+                  {mode === 'active' ? 'Visit Store' : 'Visit Website'}
                 </Button>
                 <Button
                   variant={isSaved ? "default" : "outline"}
