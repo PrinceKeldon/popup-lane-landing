@@ -17,11 +17,11 @@ export default function MerchantTile({
   isSaved
 }: MerchantTileProps) {
   const {
-    trackMerchantClick
+    trackEvent
   } = useTrackMerchantAnalytics();
   const productCount = merchant.merchant_products?.length || 0;
   const handleClick = () => {
-    trackMerchantClick(merchant.id);
+    trackEvent(merchant.id, 'click', 'active');
     onClick();
   };
 
@@ -79,7 +79,7 @@ export default function MerchantTile({
           {merchant.website_url && <Button size="sm" className="flex-1 bg-foreground hover:bg-foreground/90 text-background transition-all duration-300" onClick={e => {
           e.stopPropagation();
           if (merchant.website_url) {
-            trackMerchantClick(merchant.id);
+            trackEvent(merchant.id, 'click', 'active');
             window.open(merchant.website_url, "_blank");
           } else {
             handleClick();

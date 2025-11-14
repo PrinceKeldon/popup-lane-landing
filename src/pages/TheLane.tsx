@@ -8,24 +8,15 @@ import { Footer } from "@/components/Footer";
 import { useLaneSettings } from "@/hooks/useLaneSettings";
 import { supabase } from "@/integrations/supabase/client";
 import { SEOHead } from "@/components/SEOHead";
+import { BackroomHero } from "@/components/backroom/BackroomHero";
+import { BackroomDirectory } from "@/components/backroom/BackroomDirectory";
+import { BackroomBanner } from "@/components/backroom/BackroomBanner";
 
 export default function TheLane() {
   const { earlyAccessDate, laneStatus } = useLaneSettings();
   const nextEventDate = earlyAccessDate.toISOString();
+  const isOpen = laneStatus === "open";
   
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "Event",
-    "name": "PopUp Lane Black Friday '25",
-    "description": "Shop curated small brands with exclusive Black Friday offers",
-    "startDate": earlyAccessDate.toISOString(),
-    "eventStatus": laneStatus === 'open' ? "https://schema.org/EventScheduled" : "https://schema.org/EventPostponed",
-    "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode",
-    "location": {
-      "@type": "VirtualLocation",
-      "url": `${window.location.origin}/lane`
-    }
-  };
   const [selectedMerchantId, setSelectedMerchantId] = useState<string | null>(null);
   const [savedMerchantIds, setSavedMerchantIds] = useState<string[]>(() => {
     const saved = localStorage.getItem("savedMerchants");
@@ -69,28 +60,76 @@ export default function TheLane() {
     localStorage.removeItem("savedMerchants");
   };
 
+  // Dynamic SEO metadata based on lane status
+  const seoTitle = isOpen
+    ? "Walk The Lane | Shop Small Brands | PopUp Lane"
+    : "The Backroom | Merchant Directory | PopUp Lane";
+  
+  const seoDescription = isOpen
+    ? "Browse curated small brands with exclusive Black Friday offers. Limited-time pop-up shop featuring indie makers and creators."
+    : "Discover small brands year-round in our permanent directory. Browse indie makers and creators even when The Lane is closed.";
+  
+  const structuredData = isOpen ? {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    "name": "PopUp Lane Black Friday '25",
+    "description": "Shop curated small brands with exclusive Black Friday offers",
+    "startDate": earlyAccessDate.toISOString(),
+    "eventStatus": "https://schema.org/EventScheduled",
+    "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode",
+    "location": {
+      "@type": "VirtualLocation",
+      "url": `${window.location.origin}/lane`
+    }
+  } : {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "The Backroom — PopUp Lane Merchant Directory",
+    "description": "Year-round directory of small brands",
+    "url": `${window.location.origin}/lane`
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
-        title="Walk The Lane | Shop Small Brands | PopUp Lane"
-        description="Browse curated small brands with exclusive Black Friday offers. Limited-time pop-up shop featuring indie makers and creators."
+        title={seoTitle}
+        description={seoDescription}
         canonical={`${window.location.origin}/lane`}
         structuredData={structuredData}
       />
       <Navigation />
       
       <main>
-        <LaneHero 
-          isOpen={laneStatus === "open"} 
-          nextEventDate={nextEventDate}
-        />
-        
-        <LaneFeed
-          isOpen={laneStatus === "open"}
-          onMerchantClick={handleMerchantClick}
-          onSaveMerchant={handleSaveMerchant}
-          savedMerchantIds={savedMerchantIds}
-        />
+        {isOpen ? (
+          <>
+            <LaneHero 
+              isOpen={true} 
+              nextEventDate={nextEventDate}
+            />
+            
+            <LaneFeed
+              isOpen={true}
+              onMerchantClick={handleMerchantClick}
+              onSaveMerchant={handleSaveMerchant}
+              savedMerchantIds={savedMerchantIds}
+            />
+          </>
+        ) : (
+          <>
+            <BackroomHero 
+              nextSeasonDate={earlyAccessDate}
+              merchantCount={0}
+            />
+            
+            <BackroomDirectory
+              onMerchantClick={handleMerchantClick}
+              onSaveMerchant={handleSaveMerchant}
+              savedMerchantIds={savedMerchantIds}
+            />
+            
+            <BackroomBanner />
+          </>
+        )}
       </main>
 
       <Footer />
@@ -101,6 +140,7 @@ export default function TheLane() {
           onClose={() => setSelectedMerchantId(null)}
           onSave={handleSaveMerchant}
           isSaved={savedMerchantIds.includes(selectedMerchantId)}
+          mode={isOpen ? "active" : "backroom"}
         />
       )}
 
