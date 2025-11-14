@@ -63,9 +63,9 @@ export const Hero = () => {
                 Join the Lane Club
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
-              <Button size="lg" variant="outline" className="w-full sm:w-auto min-h-[44px] text-base px-8 bg-transparent border-input hover:bg-accent/10" onClick={() => window.location.href = '/lane'}>
-                Browse the Backroom
-              </Button>
+            <Button size="lg" variant="outline" className="w-full sm:w-auto min-h-[44px] text-base px-8 bg-transparent border-input hover:bg-accent/10" onClick={() => window.location.href = '/backroom'}>
+              Browse the Backroom
+            </Button>
             </>}
         </div>
       </div>

@@ -1,29 +1,46 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
-import LaneHero from "@/components/lane/LaneHero";
-import LaneFeed from "@/components/lane/LaneFeed";
+import { Footer } from "@/components/Footer";
+import { BackroomHero } from "@/components/backroom/BackroomHero";
+import { BackroomDirectory } from "@/components/backroom/BackroomDirectory";
+import { BackroomBanner } from "@/components/backroom/BackroomBanner";
 import MerchantSpotlight from "@/components/lane/MerchantSpotlight";
 import MyFinds from "@/components/lane/MyFinds";
-import { Footer } from "@/components/Footer";
 import { useLaneSettings } from "@/hooks/useLaneSettings";
 import { supabase } from "@/integrations/supabase/client";
 import { SEOHead } from "@/components/SEOHead";
 
-export default function TheLane() {
-  const { earlyAccessDate, laneStatus } = useLaneSettings();
-  const nextEventDate = earlyAccessDate.toISOString();
-  const isOpen = laneStatus === "open";
-  
+export default function Backroom() {
+  const { earlyAccessDate } = useLaneSettings();
   const [selectedMerchantId, setSelectedMerchantId] = useState<string | null>(null);
   const [savedMerchantIds, setSavedMerchantIds] = useState<string[]>(() => {
     const saved = localStorage.getItem("savedMerchants");
     return saved ? JSON.parse(saved) : [];
   });
+  const [merchantCount, setMerchantCount] = useState(0);
+
+  useEffect(() => {
+    const fetchMerchantCount = async () => {
+      try {
+        const { data, error } = await (supabase
+          .from("merchants")
+          .select("id")
+          .eq("application_status", "Approved")
+          .eq("backroom_status", "active") as any);
+        
+        if (!error && data) {
+          setMerchantCount(data.length);
+        }
+      } catch (error) {
+        console.error("Error fetching merchant count:", error);
+      }
+    };
+    fetchMerchantCount();
+  }, []);
 
   const handleMerchantClick = async (merchantId: string) => {
     setSelectedMerchantId(merchantId);
     
-    // Track click count
     try {
       const { data: merchant } = await supabase
         .from("merchants")
@@ -59,40 +76,35 @@ export default function TheLane() {
 
   const structuredData = {
     "@context": "https://schema.org",
-    "@type": "Event",
-    "name": "PopUp Lane Black Friday '25",
-    "description": "Shop curated small brands with exclusive Black Friday offers",
-    "startDate": earlyAccessDate.toISOString(),
-    "eventStatus": "https://schema.org/EventScheduled",
-    "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode",
-    "location": {
-      "@type": "VirtualLocation",
-      "url": `${window.location.origin}/lane`
-    }
+    "@type": "ItemList",
+    "name": "The Backroom — PopUp Lane Merchant Directory",
+    "description": "Year-round directory of small brands and indie makers",
+    "url": `${window.location.origin}/backroom`
   };
 
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
-        title="Walk The Lane | Shop Small Brands | PopUp Lane"
-        description="Browse curated small brands with exclusive Black Friday offers. Limited-time pop-up shop featuring indie makers and creators."
-        canonical={`${window.location.origin}/lane`}
+        title="The Backroom | Merchant Directory | PopUp Lane"
+        description="Discover small brands year-round in our permanent directory. Browse indie makers and creators even when The Lane is closed."
+        canonical={`${window.location.origin}/backroom`}
         structuredData={structuredData}
       />
       <Navigation />
       
       <main>
-        <LaneHero 
-          isOpen={isOpen} 
-          nextEventDate={nextEventDate}
+        <BackroomHero 
+          nextSeasonDate={earlyAccessDate}
+          merchantCount={merchantCount}
         />
         
-        <LaneFeed
-          isOpen={isOpen}
+        <BackroomDirectory
           onMerchantClick={handleMerchantClick}
           onSaveMerchant={handleSaveMerchant}
           savedMerchantIds={savedMerchantIds}
         />
+        
+        <BackroomBanner />
       </main>
 
       <Footer />
@@ -103,7 +115,7 @@ export default function TheLane() {
           onClose={() => setSelectedMerchantId(null)}
           onSave={handleSaveMerchant}
           isSaved={savedMerchantIds.includes(selectedMerchantId)}
-          mode={isOpen ? "active" : "backroom"}
+          mode="backroom"
         />
       )}
 
