@@ -53,6 +53,9 @@ export const Navigation = () => {
             <Link to="/backroom" className="text-sm font-medium hover:text-primary transition-colors">
               The Backroom
             </Link>
+            <Link to="/pricing" className="text-sm font-medium hover:text-primary transition-colors">
+              Pricing
+            </Link>
             
             {/* For Merchants Dropdown */}
             <DropdownMenu>
@@ -137,6 +140,16 @@ export const Navigation = () => {
               }}
             >
               The Backroom
+            </Button>
+            <Button
+              variant="ghost"
+              className="w-full justify-start"
+              onClick={() => {
+                navigate("/pricing");
+                setMobileMenuOpen(false);
+              }}
+            >
+              Pricing
             </Button>
             {user ? (
               <>
