@@ -1,0 +1,18 @@
+<script>
+async function startCheckout(plan) {
+  const email = prompt("Optional: enter your email for receipt");
+
+  const res = await fetch("/api/checkout", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ plan, email })
+  });
+
+  const data = await res.json();
+  if (data.url) window.location = data.url;
+}
+</script>
+
+<!-- Example button usage -->
+<a onclick="startCheckout('lane_pass')" class="btn">Join a Lane</a>
+<a onclick="startCheckout('backroom_membership')" class="btn">Join the Backroom</a>
