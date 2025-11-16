@@ -330,12 +330,78 @@ export type Database = {
           },
         ]
       }
+      merchant_purchases: {
+        Row: {
+          amount_paid: number
+          created_at: string | null
+          id: string
+          lane_id: string | null
+          merchant_id: string | null
+          metadata: Json | null
+          product_type: string
+          status: string | null
+          stripe_checkout_session_id: string | null
+          stripe_payment_intent_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          amount_paid: number
+          created_at?: string | null
+          id?: string
+          lane_id?: string | null
+          merchant_id?: string | null
+          metadata?: Json | null
+          product_type: string
+          status?: string | null
+          stripe_checkout_session_id?: string | null
+          stripe_payment_intent_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          amount_paid?: number
+          created_at?: string | null
+          id?: string
+          lane_id?: string | null
+          merchant_id?: string | null
+          metadata?: Json | null
+          product_type?: string
+          status?: string | null
+          stripe_checkout_session_id?: string | null
+          stripe_payment_intent_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "merchant_purchases_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "merchant_trending_stats"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "merchant_purchases_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "merchant_purchases_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "public_merchants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       merchants: {
         Row: {
           airtable_record_id: string | null
           application_status: string
+          backroom_discount: number | null
           backroom_featured_until: string | null
           backroom_status: string | null
+          beta_merchant: boolean | null
           brand_name: string
           category: string | null
           click_count: number
@@ -343,10 +409,14 @@ export type Database = {
           email: string
           id: string
           last_trending_update: string | null
+          next_lane_discount: number | null
           season_joined: string | null
           social_media: string | null
           spots_claimed: number
           status: string | null
+          stripe_customer_id: string | null
+          subscription_id: string | null
+          subscription_status: string | null
           tier: string | null
           updated_at: string
           user_id: string | null
@@ -355,8 +425,10 @@ export type Database = {
         Insert: {
           airtable_record_id?: string | null
           application_status?: string
+          backroom_discount?: number | null
           backroom_featured_until?: string | null
           backroom_status?: string | null
+          beta_merchant?: boolean | null
           brand_name: string
           category?: string | null
           click_count?: number
@@ -364,10 +436,14 @@ export type Database = {
           email: string
           id?: string
           last_trending_update?: string | null
+          next_lane_discount?: number | null
           season_joined?: string | null
           social_media?: string | null
           spots_claimed?: number
           status?: string | null
+          stripe_customer_id?: string | null
+          subscription_id?: string | null
+          subscription_status?: string | null
           tier?: string | null
           updated_at?: string
           user_id?: string | null
@@ -376,8 +452,10 @@ export type Database = {
         Update: {
           airtable_record_id?: string | null
           application_status?: string
+          backroom_discount?: number | null
           backroom_featured_until?: string | null
           backroom_status?: string | null
+          beta_merchant?: boolean | null
           brand_name?: string
           category?: string | null
           click_count?: number
@@ -385,10 +463,14 @@ export type Database = {
           email?: string
           id?: string
           last_trending_update?: string | null
+          next_lane_discount?: number | null
           season_joined?: string | null
           social_media?: string | null
           spots_claimed?: number
           status?: string | null
+          stripe_customer_id?: string | null
+          subscription_id?: string | null
+          subscription_status?: string | null
           tier?: string | null
           updated_at?: string
           user_id?: string | null
