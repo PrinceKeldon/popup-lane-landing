@@ -22,14 +22,14 @@ export default function Backroom() {
   useEffect(() => {
     const fetchMerchantCount = async () => {
       try {
-        const { data, error } = await (supabase
+        const { count, error } = await supabase
           .from("merchants")
-          .select("id")
+          .select("*", { count: "exact", head: true })
           .eq("application_status", "Approved")
-          .eq("backroom_status", "active") as any);
+          .eq("backroom_status", "active");
         
-        if (!error && data) {
-          setMerchantCount(data.length);
+        if (!error && count !== null) {
+          setMerchantCount(count);
         }
       } catch (error) {
         console.error("Error fetching merchant count:", error);
