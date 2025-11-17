@@ -1,0 +1,463 @@
+### Overview
+Build a professional contact page with a validated form that sends emails to `founder@popuplane.com` via Resend, and update all contact touchpoints throughout the site to use this page.
+
+---
+
+## Phase 1: Create Contact Page Edge Function (20 min)
+
+**File: `supabase/functions/send-contact-form/index.ts`**
+
+**Functionality:**
+- Accept POST requests with contact form data
+- Validate input using zod schemas (name, email, subject, message, inquiry_type)
+- Send formatted email to `founder@popuplane.com` using Resend
+- Include security measures: input validation, rate limiting consideration
+- Return success/error responses with proper CORS headers
+
+**Email Structure:**
+- **From:** "PopUp Lane Contact Form "
+- **To:** founder@popuplane.com
+- **Subject:** `[PopUp Lane] ${inquiry_type}: ${subject}`
+- **HTML Body:** Professional template with:
+  - Inquiry type badge (color-coded by type)
+  - Sender details (name, email)
+  - Subject line
+  - Message content
+  - Reply CTA button with mailto link
+  - Footer with timestamp
+
+**Inquiry Types:**
+1. "General Question" (default)
+2. "Merchant Application Support"
+3. "Technical Issue"
+4. "Partnership Inquiry"
+5. "Billing & Payments"
+6. "Feature Request"
+7. "Other"
+
+**Validation Rules:**
+- Name: 2-100 characters, trim whitespace
+- Email: Valid email format, max 255 characters
+- Subject: 5-200 characters, required
+- Message: 10-2000 characters, required
+- Inquiry type: Must be one of the predefined types
+
+---
+
+## Phase 2: Create Contact Page Component (30 min)
+
+**File: `src/pages/Contact.tsx`**
+
+**Layout Structure:**
+```
+┌─────────────────────────────────────────────┐
+│           [Navigation Component]             │
+├─────────────────────────────────────────────┤
+│                                             │
+│              Get in Touch                   │
+│   We'd love to hear from you. Reach out!   │
+│                                             │
+│  ┌──────────────┐  ┌──────────────────────┐│
+│  │              │  │                      ││
+│  │  Contact     │  │   Contact Form       ││
+│  │  Info Card   │  │   - Inquiry Type     ││
+│  │              │  │   - Name             ││
+│  │  📧 Email    │  │   - Email            ││
+│  │  ⏰ Response │  │   - Subject          ││
+│  │  🌍 Based in │  │   - Message          ││
+│  │              │  │   [Submit Button]    ││
+│  │              │  │                      ││
+│  └──────────────┘  └──────────────────────┘│
+│                                             │
+│              [FAQ Section]                  │
+│                                             │
+│              [Footer]                       │
+└─────────────────────────────────────────────┘
+```
+
+**Design Elements:**
+- Two-column layout (desktop): Left = contact info, Right = form
+- Single column on mobile with contact info stacked above form
+- Wine-colored accents for CTAs and headers
+- Card-based design matching existing UI patterns
+- Loading states during submission
+- Success/error toast notifications
+- Form reset after successful submission
+
+**Contact Info Card:**
+- **Email:** founder@popuplane.com (clickable mailto link)
+- **Response Time:** "We typically respond within 24-48 hours"
+- **Location:** "Based in [City], serving brands worldwide"
+- **Hours:** "Monday - Friday, 9 AM - 5 PM EST"
+
+**Form Features:**
+- React Hook Form with Zod validation
+- Real-time validation feedback
+- Character counters for message field (10/2000)
+- Accessible form labels (screen reader friendly)
+- Disabled state during submission
+- Clear error messages inline with fields
+
+**Success State:**
+- Toast notification: "Message sent successfully!"
+- Form clears automatically
+- Brief confirmation message with expected response time
+
+**Error Handling:**
+- Network errors: "Unable to send message. Please try again."
+- Validation errors: Inline field-specific messages
+- Server errors: "Something went wrong. Please email us directly at founder@popuplane.com"
+
+---
+
+## Phase 3: Add Contact Route (5 min)
+
+**File: `src/App.tsx`**
+
+Add route:
+```tsx
+} />
+```
+
+Position: After `/pricing` route, before `NotFound` catch-all
+
+---
+
+## Phase 4: Update All Contact Links (15 min)
+
+**Files to Update:**
+
+1. **`src/components/pricing/PricingFAQ.tsx`** (Line 66-71)
+   - Change from: `href="mailto:hello@popuplane.com"`
+   - Change to: `href="/contact"`
+   - Update link text to: "Visit our contact page"
+   - Keep wine styling
+
+2. **`src/components/Footer.tsx`** (After line 37, before closing div)
+   - Add new footer link: `Contact`
+   - Position between "Privacy" and end of link group
+   - Match existing footer link styling
+
+3. **`src/components/Navigation.tsx`**
+   - Add "Contact" link in desktop nav (after "Pricing")
+   - Add "Contact" item in mobile menu
+   - Match existing nav link styling
+
+4. **`src/pages/NotFound.tsx`** (Line 16)
+   - Add secondary link below "Return to Home"
+   - Text: "Need help? Contact us"
+   - Link to: `/contact`
+
+5. **`src/components/PioneerBenefits.tsx`** (Optional enhancement)
+   - Add small text below CTAs: "Questions? Contact us"
+   - Link to `/contact`
+
+6. **`src/pages/MerchantDashboard.tsx`** (Enhancement)
+   - Add "Contact Support" button in error states or empty states
+   - Pre-fill inquiry type with "Technical Issue" or "Merchant Application Support"
+
+---
+
+## Phase 5: Create Contact-Specific Components (20 min)
+
+**File: `src/components/contact/ContactInfoCard.tsx`**
+- Reusable card showing contact details
+- Icons from lucide-react (Mail, Clock, MapPin, MessageCircle)
+- Responsive design
+- Optional: Add social media links if available
+
+**File: `src/components/contact/ContactForm.tsx`**
+- Isolated form component with all validation logic
+- Can be reused in modals or other pages if needed
+- Props: onSuccess callback, defaultInquiryType (optional)
+- Export form schema for reuse
+
+**File: `src/components/contact/ContactFAQ.tsx`**
+- Quick answers section below main contact form
+- Accordion-style FAQs specific to contact/support
+- Questions:
+  - "How quickly will I hear back?"
+  - "Can I schedule a call with your team?"
+  - "Do you offer live chat support?"
+  - "What if I need urgent assistance?"
+
+---
+
+## Phase 6: SEO & Accessibility (10 min)
+
+**SEO Implementation:**
+```tsx
+
+```
+
+**Accessibility Features:**
+- Proper form label associations
+- ARIA labels for icon-only buttons
+- Focus management (focus on first error field)
+- Keyboard navigation support
+- Screen reader announcements for success/error states
+- High contrast mode compatibility
+
+**Schema Markup (Optional):**
+```json
+{
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  "name": "Contact PopUp Lane",
+  "description": "Contact form for PopUp Lane inquiries",
+  "url": "https://popuplane.com/contact"
+}
+```
+
+---
+
+## Phase 7: Email Template Design (15 min)
+
+**HTML Email Structure:**
+```html
+
+    /* Wine-branded email styling */
+    /* Responsive design for mobile */
+
+      New Contact Form Submission
+
+      🔔 Merchant Application Support
+
+      From: John Doe
+      Email: john@example.com
+      Submitted: November 17, 2025 at 3:45 PM EST
+
+      Question about merchant onboarding
+
+      [User's message content here]
+
+        Reply to John
+
+      Sent from PopUp Lane Contact Form
+      Do not reply to this email directly
+
+```
+
+**Color Scheme:**
+- Primary: Wine (#8B1538)
+- Secondary: Light wine (#A01C4A)
+- Background: Light gray (#f3f4f6)
+- Text: Dark gray (#1f2937)
+
+**Inquiry Type Badge Colors:**
+- General Question: Blue
+- Merchant Support: Purple
+- Technical Issue: Red
+- Partnership: Green
+- Billing: Orange
+- Feature Request: Teal
+- Other: Gray
+
+---
+
+## Phase 8: Advanced Features (Optional - Phase 2)
+
+**Rate Limiting:**
+- Implement Upstash Redis or similar
+- Limit: 5 submissions per email per hour
+- Return 429 error with retry message
+
+**Auto-Reply:**
+- Send confirmation email to user
+- "Thanks for reaching out! We received your message and will respond within 24-48 hours."
+- Include ticket reference number
+- Link back to website
+
+**CRM Integration:**
+- Log submissions to admin dashboard
+- Create `contact_submissions` table in Supabase
+- Track: submission date, inquiry type, status (pending/responded/resolved)
+- Admin view of all contact form submissions
+
+**Spam Protection:**
+- Add honeypot field (hidden from users)
+- Implement simple CAPTCHA (if spam becomes issue)
+- Time-based validation (reject forms submitted < 3 seconds)
+
+**Pre-filled Forms:**
+- Support URL parameters: `?type=merchant&subject=Application%20Question`
+- Merchants can link from dashboard with pre-filled context
+
+**File Attachments (Future):**
+- Allow users to upload screenshots for technical issues
+- Max 5MB, only images allowed
+- Store in Supabase Storage
+- Include in notification email as links
+
+---
+
+## Phase 9: Testing Checklist (20 min)
+
+**Functional Testing:**
+- [ ] Form submission succeeds with valid data
+- [ ] Email received at founder@popuplane.com
+- [ ] All inquiry types work correctly
+- [ ] Validation errors display properly
+- [ ] Character counters work
+- [ ] Form clears after successful submission
+- [ ] Toast notifications appear correctly
+
+**Email Testing:**
+- [ ] Email renders correctly in Gmail
+- [ ] Email renders correctly in Outlook
+- [ ] Email renders correctly on mobile
+- [ ] Reply link works (opens mail client)
+- [ ] All variables populate correctly
+- [ ] No HTML escaping issues
+
+**Edge Cases:**
+- [ ] Form submission with special characters (', ", <, >)
+- [ ] Very long messages (near 2000 char limit)
+- [ ] Multiple rapid submissions (test rate limiting if implemented)
+- [ ] Network failures (test error handling)
+- [ ] Empty optional fields
+
+**Accessibility Testing:**
+- [ ] Screen reader navigation
+- [ ] Keyboard-only navigation
+- [ ] Focus states visible
+- [ ] Error announcements audible
+- [ ] Color contrast passes WCAG AA
+
+**Responsive Testing:**
+- [ ] Mobile (375px)
+- [ ] Tablet (768px)
+- [ ] Desktop (1280px)
+- [ ] Large desktop (1920px)
+
+**Cross-Browser Testing:**
+- [ ] Chrome
+- [ ] Firefox
+- [ ] Safari
+- [ ] Edge
+
+---
+
+## Phase 10: Documentation (10 min)
+
+**File: `docs/Contact-System.md`**
+
+Document:
+- How the contact system works
+- Edge function details
+- Email template customization
+- How to update contact email address
+- Testing procedures
+- Troubleshooting common issues
+
+**Update `README.md`:**
+- Add "Contact" to features list
+- Document environment variables (RESEND_API_KEY)
+
+---
+
+## Implementation Timeline
+
+| Phase | Task | Duration | Dependencies |
+|-------|------|----------|--------------|
+| 1 | Contact Edge Function | 20 min | Resend API configured |
+| 2 | Contact Page Component | 30 min | Phase 1 |
+| 3 | Add Route | 5 min | Phase 2 |
+| 4 | Update All Links | 15 min | Phase 3 |
+| 5 | Contact Components | 20 min | Phase 2 |
+| 6 | SEO & Accessibility | 10 min | Phase 2 |
+| 7 | Email Template | 15 min | Phase 1 |
+| 8 | Advanced Features | Optional | All phases |
+| 9 | Testing | 20 min | All phases |
+| 10 | Documentation | 10 min | All phases |
+
+**Total Core Implementation Time: ~2.5 hours**
+
+---
+
+## Technical Decisions Explained
+
+### Why Separate Edge Function?
+- Keeps email sending server-side (secure)
+- Hides Resend API key from frontend
+- Allows server-side validation
+- Can implement rate limiting
+- Easier to add CRM integration later
+
+### Why React Hook Form + Zod?
+- Type-safe validation
+- Already used in other parts of app (consistency)
+- Excellent error handling
+- Performance optimized (minimal re-renders)
+- Accessible by default
+
+### Why Not Use mailto: Links?
+- Poor user experience (opens mail client)
+- No validation or error handling
+- Can't track submissions
+- No spam protection
+- Looks less professional
+
+### Why Create Separate Components?
+- Reusability (can use ContactForm in modals)
+- Easier to maintain
+- Follows single responsibility principle
+- Can test in isolation
+
+---
+
+## Success Metrics
+
+**Week 1:**
+- [ ] Contact page receives first submission
+- [ ] Zero critical bugs reported
+- [ ] Email deliverability at 100%
+
+**Month 1:**
+- [ ] Average response time < 24 hours
+- [ ] Contact form conversion rate > 80% (submitted vs started)
+- [ ] Zero spam submissions (if protection implemented)
+
+**Quarter 1:**
+- [ ] Contact page in top 5 most visited pages
+- [ ] Merchant support inquiries handled via form vs direct email > 70%
+- [ ] User satisfaction with contact process > 4/5 stars
+
+---
+
+## Rollback Plan
+
+If issues arise:
+
+1. **Immediate (<30 min):**
+   - Remove contact route from App.tsx
+   - Revert all links to mailto: founder@popuplane.com
+   - Add "Contact us at founder@popuplane.com" text to footer
+
+2. **Debug Period (<24 hours):**
+   - Check edge function logs for errors
+   - Test Resend API key validity
+   - Verify CORS headers
+   - Test form validation
+
+3. **Alternative:**
+   - Keep simple mailto link with subject pre-filled
+   - Example: `mailto:founder@popuplane.com?subject=PopUp Lane Inquiry`
+
+---
+
+## Post-Launch Enhancements
+
+**V2 Features:**
+1. **Live Chat Widget** - Add Intercom or similar
+2. **FAQ Search** - Searchable knowledge base
+3. **Status Page** - System status and incidents
+4. **Ticket System** - Track inquiry status
+5. **Multi-language Support** - Translate form to Spanish, French
+6. **Office Hours Calendar** - Book 15-min calls
+7. **Priority Support** - VIP lane for beta merchants
+8. **Auto-categorization** - AI categorizes inquiries
+9. **Satisfaction Survey** - Post-response feedback
+10. **Knowledge Base Integration** - Suggest articles before submitting
+
+Implement the plan
