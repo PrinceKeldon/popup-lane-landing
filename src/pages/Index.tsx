@@ -9,6 +9,7 @@ import { SignupForms } from "@/components/SignupForms";
 import { TestimonialCarousel } from "@/components/TestimonialCarousel";
 import { Footer } from "@/components/Footer";
 import { SEOHead } from "@/components/SEOHead";
+import { PioneerBenefits } from "@/components/PioneerBenefits";
 
 const Index = () => {
   const structuredData = {
@@ -56,6 +57,7 @@ const Index = () => {
       </section>
         <HowItWorks />
         <About />
+        <PioneerBenefits />
         <BrandCarousel />
         <div id="signup-forms">
           <SignupForms />
