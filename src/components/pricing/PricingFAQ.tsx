@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import {
   Accordion,
   AccordionContent,
@@ -63,12 +64,12 @@ export const PricingFAQ = () => {
 
       <div className="mt-12 text-center">
         <p className="text-muted-foreground mb-4">Still have questions?</p>
-        <a 
-          href="mailto:hello@popuplane.com" 
+        <Link 
+          to="/contact" 
           className="text-wine hover:text-wine-light font-medium underline underline-offset-4"
         >
           Contact our team
-        </a>
+        </Link>
       </div>
     </div>
   );

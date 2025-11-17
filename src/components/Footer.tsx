@@ -35,6 +35,10 @@ export const Footer = () => {
           <a href="#privacy" className="text-muted-foreground hover:text-foreground transition-colors no-underline">
             Privacy
           </a>
+          <span>·</span>
+          <Link to="/contact" className="text-muted-foreground hover:text-foreground transition-colors no-underline">
+            Contact
+          </Link>
         </div>
       </div>
     </footer>
