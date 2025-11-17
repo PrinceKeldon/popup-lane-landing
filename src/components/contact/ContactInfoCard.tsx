@@ -1,9 +1,7 @@
 import { Mail, Clock, MapPin, MessageCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
 export const ContactInfoCard = () => {
-  return (
-    <Card className="h-fit">
+  return <Card className="h-fit">
       <CardHeader>
         <CardTitle className="text-xl">Get in Touch</CardTitle>
       </CardHeader>
@@ -12,10 +10,7 @@ export const ContactInfoCard = () => {
           <Mail className="h-5 w-5 text-wine mt-0.5" />
           <div>
             <p className="font-medium text-foreground mb-1">Email</p>
-            <a 
-              href="mailto:founder@popuplane.com"
-              className="text-sm text-muted-foreground hover:text-wine transition-colors"
-            >
+            <a href="mailto:founder@popuplane.com" className="text-sm text-muted-foreground hover:text-wine transition-colors">
               founder@popuplane.com
             </a>
           </div>
@@ -36,7 +31,7 @@ export const ContactInfoCard = () => {
           <div>
             <p className="font-medium text-foreground mb-1">Location</p>
             <p className="text-sm text-muted-foreground">
-              Based in the US, serving brands worldwide
+              Based in the EU, serving brands worldwide
             </p>
           </div>
         </div>
@@ -51,6 +46,5 @@ export const ContactInfoCard = () => {
           </div>
         </div>
       </CardContent>
-    </Card>
-  );
+    </Card>;
 };
