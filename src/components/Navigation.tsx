@@ -56,6 +56,9 @@ export const Navigation = () => {
             <Link to="/pricing" className="text-sm font-medium hover:text-primary transition-colors">
               Pricing
             </Link>
+            <Link to="/contact" className="text-sm font-medium hover:text-primary transition-colors">
+              Contact
+            </Link>
             
             {/* For Merchants Dropdown */}
             <DropdownMenu>
@@ -150,6 +153,16 @@ export const Navigation = () => {
               }}
             >
               Pricing
+            </Button>
+            <Button
+              variant="ghost"
+              className="w-full justify-start"
+              onClick={() => {
+                navigate("/contact");
+                setMobileMenuOpen(false);
+              }}
+            >
+              Contact
             </Button>
             {user ? (
               <>
