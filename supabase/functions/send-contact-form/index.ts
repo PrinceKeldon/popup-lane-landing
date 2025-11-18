@@ -2,6 +2,10 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
 const resendApiKey = Deno.env.get("RESEND_API_KEY");
 
+if (!resendApiKey) {
+  console.error("RESEND_API_KEY is not configured");
+}
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -128,6 +132,20 @@ const handler = async (req: Request): Promise<Response> => {
       </html>
     `;
 
+    // Verify API key is available
+    if (!resendApiKey) {
+      console.error("RESEND_API_KEY is missing");
+      throw new Error("Email service is not configured. Please contact support.");
+    }
+
+    console.log("Sending contact form email:", {
+      from: name,
+      email,
+      inquiryType,
+      subject,
+      timestamp
+    });
+
     // Send email using Resend API
     const resendResponse = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -144,13 +162,20 @@ const handler = async (req: Request): Promise<Response> => {
       }),
     });
 
+    const responseText = await resendResponse.text();
+    console.log("Resend API response status:", resendResponse.status);
+    console.log("Resend API response body:", responseText);
+
     if (!resendResponse.ok) {
-      const errorData = await resendResponse.text();
-      console.error("Resend API error:", errorData);
-      throw new Error("Failed to send email via Resend");
+      console.error("Resend API error:", {
+        status: resendResponse.status,
+        statusText: resendResponse.statusText,
+        body: responseText
+      });
+      throw new Error(`Failed to send email: ${resendResponse.statusText}`);
     }
 
-    const emailResult = await resendResponse.json();
+    const emailResult = JSON.parse(responseText);
     console.log("Contact form email sent successfully:", emailResult);
 
     return new Response(JSON.stringify({ success: true }), {
