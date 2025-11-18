@@ -178,6 +178,94 @@ const handler = async (req: Request): Promise<Response> => {
     const emailResult = JSON.parse(responseText);
     console.log("Contact form email sent successfully:", emailResult);
 
+    // Send auto-reply confirmation email to the user
+    const autoReplyHtml = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; background-color: #f3f4f6; }
+          .container { max-width: 600px; margin: 0 auto; background-color: white; }
+          .header { background: linear-gradient(to right, #8B1538, #A01C4A); color: white; padding: 30px; text-align: center; }
+          .header h1 { margin: 0; font-size: 24px; font-weight: bold; }
+          .content { padding: 30px; }
+          .message-box { background-color: #f9fafb; border-left: 4px solid #8B1538; padding: 20px; margin: 20px 0; line-height: 1.6; }
+          .info-label { font-weight: 600; color: #4b5563; }
+          .footer { text-align: center; padding: 20px; font-size: 12px; color: #6b7280; border-top: 1px solid #e5e7eb; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>Thank You for Contacting PopUp Lane</h1>
+          </div>
+          
+          <div class="content">
+            <p style="font-size: 16px; color: #1f2937; margin-bottom: 20px;">
+              Hi ${name},
+            </p>
+            
+            <p style="font-size: 14px; color: #4b5563; line-height: 1.6;">
+              Thank you for reaching out to us! We've received your message and our team will review it shortly.
+            </p>
+
+            <div class="message-box">
+              <p style="margin: 0 0 10px 0;"><span class="info-label">Subject:</span> ${subject}</p>
+              <p style="margin: 0 0 10px 0;"><span class="info-label">Inquiry Type:</span> ${inquiryType}</p>
+              <p style="margin: 0;"><span class="info-label">Submitted:</span> ${timestamp} EST</p>
+            </div>
+
+            <p style="font-size: 14px; color: #4b5563; line-height: 1.6;">
+              We typically respond within 24-48 hours during business days. If your inquiry is urgent, please note that in your message.
+            </p>
+
+            <p style="font-size: 14px; color: #4b5563; line-height: 1.6; margin-top: 30px;">
+              Best regards,<br>
+              <strong>The PopUp Lane Team</strong>
+            </p>
+          </div>
+
+          <div class="footer">
+            <p>This is an automated confirmation email</p>
+            <p>© ${new Date().getFullYear()} PopUp Lane. All rights reserved.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    console.log("Sending auto-reply confirmation to:", email);
+
+    const autoReplyResponse = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${resendApiKey}`,
+      },
+      body: JSON.stringify({
+        from: "PopUp Lane <contact@popuplane.com>",
+        to: [email],
+        subject: "We've received your message - PopUp Lane",
+        html: autoReplyHtml,
+      }),
+    });
+
+    const autoReplyText = await autoReplyResponse.text();
+    console.log("Auto-reply response status:", autoReplyResponse.status);
+
+    if (autoReplyResponse.ok) {
+      const autoReplyResult = JSON.parse(autoReplyText);
+      console.log("Auto-reply sent successfully:", autoReplyResult);
+    } else {
+      console.error("Auto-reply failed:", {
+        status: autoReplyResponse.status,
+        body: autoReplyText
+      });
+      // Don't throw error - main email was sent successfully
+    }
+
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
       headers: {
