@@ -147,6 +147,10 @@ const handler = async (req: Request): Promise<Response> => {
     });
 
     // Send email using Resend API
+    // NOTE: In Resend test mode, emails can only be sent to verified addresses
+    // To send to any email, verify a domain at resend.com/domains
+    const recipientEmail = "dakiri_keldon@protonmail.com"; // Change to founder@popuplane.com after domain verification
+    
     const resendResponse = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -155,7 +159,7 @@ const handler = async (req: Request): Promise<Response> => {
       },
       body: JSON.stringify({
         from: "PopUp Lane Contact Form <onboarding@resend.dev>",
-        to: ["founder@popuplane.com"],
+        to: [recipientEmail],
         subject: `[PopUp Lane] ${inquiryType}: ${subject}`,
         html: emailHtml,
         reply_to: email,
