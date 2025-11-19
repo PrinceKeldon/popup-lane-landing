@@ -5,10 +5,11 @@ import { useLaneSettings } from "@/hooks/useLaneSettings";
 export const Hero = () => {
   const {
     earlyAccessDate,
+    laneCloseDate,
     laneStatus
   } = useLaneSettings();
   const isOpen = laneStatus === "open";
-  const nextEventDate = earlyAccessDate.toISOString();
+  const nextEventDate = (isOpen ? laneCloseDate : earlyAccessDate).toISOString();
   return <section className={`relative py-8 sm:py-12 md:py-16 px-3 sm:px-4 text-center transition-all duration-[450ms] ease-out will-change-transform rounded-lg ${isOpen ? 'transform -translate-y-2.5 bg-[hsl(var(--open-overlay))]' : ''}`} role="banner" aria-labelledby="page-title">
       {/* ARIA live announcer */}
       <div className="sr-only" aria-live="polite" aria-atomic="true">

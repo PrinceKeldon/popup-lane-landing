@@ -9,8 +9,10 @@ interface MerchantHeaderProps {
 }
 
 export const MerchantHeader = ({ brandName, email, productCount }: MerchantHeaderProps) => {
-  const { earlyAccessDate } = useLaneSettings();
-  const countdown = useCountdown(earlyAccessDate);
+  const { earlyAccessDate, laneCloseDate, laneStatus } = useLaneSettings();
+  const isOpen = laneStatus === "open";
+  const targetDate = isOpen ? laneCloseDate : earlyAccessDate;
+  const countdown = useCountdown(targetDate);
   const { spotsRemaining } = useMerchantSpots();
 
   return (
@@ -25,9 +27,13 @@ export const MerchantHeader = ({ brandName, email, productCount }: MerchantHeade
           <p className="text-sm text-muted-foreground mb-1">Lane Status</p>
           <p className="text-2xl font-bold">
             {countdown.isExpired ? (
-              <span className="text-green-500">Live!</span>
+              isOpen ? (
+                <span className="text-red-500">Closed!</span>
+              ) : (
+                <span className="text-green-500">Live!</span>
+              )
             ) : (
-              `Opens in ${countdown.days} days`
+              `${isOpen ? 'Closes' : 'Opens'} in ${countdown.days} days`
             )}
           </p>
         </div>

@@ -24,13 +24,15 @@ export const CountdownTimer = ({ targetDate, isOpen = false }: CountdownTimerPro
     </div>
   );
 
+  const timeLabel = isOpen ? "until lane closes" : "until lane opens";
+  
   return (
     <div 
       className="flex gap-2 sm:gap-3 md:gap-4.5 justify-center items-end my-7 font-mono"
       role="timer"
       aria-live="polite"
       aria-atomic="true"
-      aria-label={isOpen ? "Time until lane closes" : "Time until lane opens"}
+      aria-label={`Time ${timeLabel}`}
     >
       <TimeBlock value={days} label="Days" />
       <TimeBlock value={hours} label="Hrs" />

@@ -21,6 +21,9 @@ export const useLaneSettings = () => {
     earlyAccessDate: settings?.early_access_date 
       ? new Date(settings.early_access_date) 
       : new Date("2025-11-21T10:00:00"), // Fallback
+    laneCloseDate: settings?.lane_close_date 
+      ? new Date(settings.lane_close_date) 
+      : new Date("2025-11-28T10:00:00"), // Fallback
     laneStatus: settings?.lane_status || "closed",
     spotsLimit: settings?.spots_limit || 50,
     isLoading,
