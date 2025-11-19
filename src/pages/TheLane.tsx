@@ -10,8 +10,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { SEOHead } from "@/components/SEOHead";
 
 export default function TheLane() {
-  const { earlyAccessDate, laneStatus } = useLaneSettings();
-  const nextEventDate = earlyAccessDate.toISOString();
+  const { earlyAccessDate, laneCloseDate, laneStatus } = useLaneSettings();
+  const nextEventDate = (laneStatus === "open" ? laneCloseDate : earlyAccessDate).toISOString();
   const isOpen = laneStatus === "open";
   
   const [selectedMerchantId, setSelectedMerchantId] = useState<string | null>(null);

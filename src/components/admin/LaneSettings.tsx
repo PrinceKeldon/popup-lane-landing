@@ -13,16 +13,23 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useCountdown } from "@/hooks/useCountdown";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const LaneSettings = () => {
   const [earlyAccessDate, setEarlyAccessDate] = useState("");
+  const [laneCloseDate, setLaneCloseDate] = useState("");
   const [laneStatus, setLaneStatus] = useState("closed");
   const [spotsLimit, setSpotsLimit] = useState(50);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
-  const countdown = useCountdown(
+  const openCountdown = useCountdown(
     earlyAccessDate ? new Date(earlyAccessDate) : new Date()
+  );
+  
+  const closeCountdown = useCountdown(
+    laneCloseDate ? new Date(laneCloseDate) : new Date()
   );
 
   useEffect(() => {
@@ -41,6 +48,9 @@ export const LaneSettings = () => {
 
       if (data) {
         setEarlyAccessDate(new Date(data.early_access_date).toISOString().slice(0, 16));
+        if (data.lane_close_date) {
+          setLaneCloseDate(new Date(data.lane_close_date).toISOString().slice(0, 16));
+        }
         setLaneStatus(data.lane_status);
         setSpotsLimit(data.spots_limit);
       }
@@ -60,6 +70,7 @@ export const LaneSettings = () => {
 
       const settingsData = {
         early_access_date: new Date(earlyAccessDate).toISOString(),
+        lane_close_date: laneCloseDate ? new Date(laneCloseDate).toISOString() : null,
         lane_status: laneStatus,
         spots_limit: spotsLimit,
         updated_at: new Date().toISOString()
@@ -80,6 +91,9 @@ export const LaneSettings = () => {
         if (error) throw error;
       }
 
+      // Force refetch of lane settings to sync across platform
+      await queryClient.invalidateQueries({ queryKey: ['lane-settings'] });
+      
       toast({
         title: "Success",
         description: "Lane settings updated successfully"
@@ -111,41 +125,83 @@ export const LaneSettings = () => {
           />
         </div>
 
-        {/* Countdown Display */}
+        {/* Opening Countdown Display */}
         {earlyAccessDate && (
           <Card className="p-4 bg-muted/50">
             <Label className="text-sm font-medium mb-2 block">
-              Countdown Preview
+              Opening Countdown Preview
             </Label>
-            {countdown.isExpired ? (
+            {openCountdown.isExpired ? (
               <div className="text-center">
                 <p className="text-2xl font-bold text-green-500">
-                  🎉 Lane is Live!
+                  🎉 Lane Opens Now!
                 </p>
               </div>
             ) : (
               <div className="grid grid-cols-4 gap-2 text-center">
                 <div className="bg-background rounded p-2">
-                  <p className="text-2xl font-bold">{countdown.days}</p>
+                  <p className="text-2xl font-bold">{openCountdown.days}</p>
                   <p className="text-xs text-muted-foreground">Days</p>
                 </div>
                 <div className="bg-background rounded p-2">
-                  <p className="text-2xl font-bold">{countdown.hours}</p>
+                  <p className="text-2xl font-bold">{openCountdown.hours}</p>
                   <p className="text-xs text-muted-foreground">Hours</p>
                 </div>
                 <div className="bg-background rounded p-2">
-                  <p className="text-2xl font-bold">{countdown.minutes}</p>
+                  <p className="text-2xl font-bold">{openCountdown.minutes}</p>
                   <p className="text-xs text-muted-foreground">Minutes</p>
                 </div>
                 <div className="bg-background rounded p-2">
-                  <p className="text-2xl font-bold">{countdown.seconds}</p>
+                  <p className="text-2xl font-bold">{openCountdown.seconds}</p>
                   <p className="text-xs text-muted-foreground">Seconds</p>
                 </div>
               </div>
             )}
-            <p className="text-xs text-muted-foreground mt-2 text-center">
-              This is what merchants and shoppers see
-            </p>
+          </Card>
+        )}
+
+        <div className="space-y-2">
+          <Label htmlFor="closeDate">Lane Close Date</Label>
+          <Input
+            id="closeDate"
+            type="datetime-local"
+            value={laneCloseDate}
+            onChange={(e) => setLaneCloseDate(e.target.value)}
+          />
+        </div>
+
+        {/* Closing Countdown Display */}
+        {laneCloseDate && (
+          <Card className="p-4 bg-muted/50">
+            <Label className="text-sm font-medium mb-2 block">
+              Closing Countdown Preview
+            </Label>
+            {closeCountdown.isExpired ? (
+              <div className="text-center">
+                <p className="text-2xl font-bold text-red-500">
+                  🔒 Lane Closed!
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-4 gap-2 text-center">
+                <div className="bg-background rounded p-2">
+                  <p className="text-2xl font-bold">{closeCountdown.days}</p>
+                  <p className="text-xs text-muted-foreground">Days</p>
+                </div>
+                <div className="bg-background rounded p-2">
+                  <p className="text-2xl font-bold">{closeCountdown.hours}</p>
+                  <p className="text-xs text-muted-foreground">Hours</p>
+                </div>
+                <div className="bg-background rounded p-2">
+                  <p className="text-2xl font-bold">{closeCountdown.minutes}</p>
+                  <p className="text-xs text-muted-foreground">Minutes</p>
+                </div>
+                <div className="bg-background rounded p-2">
+                  <p className="text-2xl font-bold">{closeCountdown.seconds}</p>
+                  <p className="text-xs text-muted-foreground">Seconds</p>
+                </div>
+              </div>
+            )}
           </Card>
         )}
 
