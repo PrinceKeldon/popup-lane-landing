@@ -1,25 +1,9 @@
 import { Crown, Percent, Zap, Users, TrendingUp, Calendar, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { useMerchantSpots } from "@/hooks/useMerchantSpots";
 
 export const PioneerBenefits = () => {
-  const { data: spotsData } = useQuery({
-    queryKey: ['beta-merchant-count'],
-    queryFn: async () => {
-      const { count } = await supabase
-        .from('merchants')
-        .select('*', { count: 'exact', head: true })
-        .eq('beta_merchant', true)
-        .eq('application_status', 'Approved');
-      
-      const taken = count || 0;
-      const remaining = Math.max(0, 50 - taken);
-      
-      return { taken, remaining };
-    },
-    refetchInterval: 10000,
-  });
+  const { spotsRemaining, totalSpots } = useMerchantSpots();
 
   const benefits = [
     {
@@ -60,7 +44,7 @@ export const PioneerBenefits = () => {
     },
   ];
 
-  const remaining = spotsData?.remaining ?? 50;
+  const remaining = spotsRemaining;
   
   const getUrgencyMessage = () => {
     if (remaining === 0) return "Program Full - Waitlist Open";
@@ -89,7 +73,7 @@ export const PioneerBenefits = () => {
           </h2>
           
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Join the first 50 merchants and unlock over <span className="text-wine font-semibold">$1,200 in lifetime benefits</span>. 
+            Join the first {totalSpots} merchants and unlock over <span className="text-wine font-semibold">$1,200 in lifetime benefits</span>. 
             Shape the future of small brand discovery.
           </p>
           
