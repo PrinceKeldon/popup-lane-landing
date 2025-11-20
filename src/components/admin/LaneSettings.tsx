@@ -42,7 +42,7 @@ export const LaneSettings = () => {
         .from('lane_settings')
         .select('*')
         .limit(1)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
 
@@ -56,6 +56,11 @@ export const LaneSettings = () => {
       }
     } catch (error) {
       console.error('Error loading settings:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load settings",
+        variant: "destructive"
+      });
     }
   };
 
@@ -94,9 +99,12 @@ export const LaneSettings = () => {
       // Force refetch of lane settings to sync across platform
       await queryClient.invalidateQueries({ queryKey: ['lane-settings'] });
       
+      // Reload local state to update countdown previews immediately
+      await loadSettings();
+      
       toast({
         title: "Success",
-        description: "Lane settings updated successfully"
+        description: "Lane settings updated successfully. Changes will sync across platform within 5 seconds."
       });
     } catch (error) {
       console.error('Error saving settings:', error);
