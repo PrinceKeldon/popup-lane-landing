@@ -8,7 +8,7 @@ interface CountdownReturn {
   isExpired: boolean;
 }
 
-export const useCountdown = (targetDate: Date | null): CountdownReturn => {
+export const useCountdown = (targetDate: Date): CountdownReturn => {
   const [timeRemaining, setTimeRemaining] = useState<CountdownReturn>({
     days: 0,
     hours: 0,
@@ -18,19 +18,8 @@ export const useCountdown = (targetDate: Date | null): CountdownReturn => {
   });
 
   useEffect(() => {
-    // If no target date, return expired state
-    if (!targetDate) {
-      setTimeRemaining({
-        days: 0,
-        hours: 0,
-        minutes: 0,
-        seconds: 0,
-        isExpired: true,
-      });
-      return;
-    }
-
     const calculateTimeRemaining = () => {
+      // Normalize to UTC to prevent timezone drift
       const now = new Date().getTime();
       const target = new Date(targetDate).getTime();
       const difference = target - now;

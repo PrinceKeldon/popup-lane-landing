@@ -3,25 +3,12 @@ import { ArrowRight } from "lucide-react";
 import { CountdownTimer } from "./CountdownTimer";
 import { useLaneSettings } from "@/hooks/useLaneSettings";
 export const Hero = () => {
-  const { earlyAccessDate, laneCloseDate, laneStatus, isLoading } = useLaneSettings();
+  const {
+    earlyAccessDate,
+    laneStatus
+  } = useLaneSettings();
   const isOpen = laneStatus === "open";
-  
-  // Show loading state while fetching settings
-  if (isLoading || !earlyAccessDate) {
-    return (
-      <section className="relative min-h-[600px] flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-pulse space-y-4">
-            <div className="h-12 bg-muted rounded w-64 mx-auto" />
-            <div className="h-6 bg-muted rounded w-96 mx-auto" />
-          </div>
-        </div>
-      </section>
-    );
-  }
-  
-  const targetDate = isOpen ? laneCloseDate : earlyAccessDate;
-  const nextEventDate = targetDate ? targetDate.toISOString() : null;
+  const nextEventDate = earlyAccessDate.toISOString();
   return <section className={`relative py-8 sm:py-12 md:py-16 px-3 sm:px-4 text-center transition-all duration-[450ms] ease-out will-change-transform rounded-lg ${isOpen ? 'transform -translate-y-2.5 bg-[hsl(var(--open-overlay))]' : ''}`} role="banner" aria-labelledby="page-title">
       {/* ARIA live announcer */}
       <div className="sr-only" aria-live="polite" aria-atomic="true">
@@ -54,7 +41,7 @@ export const Hero = () => {
         </div>
 
         {/* Countdown Timer */}
-        {nextEventDate && <CountdownTimer targetDate={nextEventDate} isOpen={isOpen} />}
+        <CountdownTimer targetDate={nextEventDate} isOpen={isOpen} />
 
         {/* CTAs */}
         <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mt-4.5" role="navigation" aria-label="Primary actions">

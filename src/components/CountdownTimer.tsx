@@ -6,7 +6,7 @@ interface CountdownTimerProps {
 }
 
 export const CountdownTimer = ({ targetDate, isOpen = false }: CountdownTimerProps) => {
-  const target = targetDate ? new Date(targetDate) : null;
+  const target = targetDate ? new Date(targetDate) : new Date();
   const { days, hours, minutes, seconds, isExpired } = useCountdown(target);
 
   if (!targetDate || isExpired) return null;
@@ -24,15 +24,13 @@ export const CountdownTimer = ({ targetDate, isOpen = false }: CountdownTimerPro
     </div>
   );
 
-  const timeLabel = isOpen ? "until lane closes" : "until lane opens";
-  
   return (
     <div 
       className="flex gap-2 sm:gap-3 md:gap-4.5 justify-center items-end my-7 font-mono"
       role="timer"
       aria-live="polite"
       aria-atomic="true"
-      aria-label={`Time ${timeLabel}`}
+      aria-label={isOpen ? "Time until lane closes" : "Time until lane opens"}
     >
       <TimeBlock value={days} label="Days" />
       <TimeBlock value={hours} label="Hrs" />

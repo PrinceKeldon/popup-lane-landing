@@ -10,23 +10,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { SEOHead } from "@/components/SEOHead";
 
 export default function TheLane() {
-  const { earlyAccessDate, laneCloseDate, laneStatus, isLoading } = useLaneSettings();
+  const { earlyAccessDate, laneStatus } = useLaneSettings();
+  const nextEventDate = earlyAccessDate.toISOString();
   const isOpen = laneStatus === "open";
-  
-  // Show loading state
-  if (isLoading || !earlyAccessDate) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-pulse space-y-4">
-          <div className="h-12 bg-muted rounded w-64 mx-auto" />
-          <div className="h-6 bg-muted rounded w-96 mx-auto" />
-        </div>
-      </div>
-    );
-  }
-  
-  const targetDate = isOpen ? laneCloseDate : earlyAccessDate;
-  const nextEventDate = targetDate ? targetDate.toISOString() : null;
   
   const [selectedMerchantId, setSelectedMerchantId] = useState<string | null>(null);
   const [savedMerchantIds, setSavedMerchantIds] = useState<string[]>(() => {
@@ -76,7 +62,7 @@ export default function TheLane() {
     "@type": "Event",
     "name": "PopUp Lane Black Friday '25",
     "description": "Shop curated small brands with exclusive Black Friday offers",
-    "startDate": earlyAccessDate?.toISOString() || new Date().toISOString(),
+    "startDate": earlyAccessDate.toISOString(),
     "eventStatus": "https://schema.org/EventScheduled",
     "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode",
     "location": {
@@ -96,12 +82,10 @@ export default function TheLane() {
       <Navigation />
       
       <main>
-        {nextEventDate && (
-          <LaneHero 
-            isOpen={isOpen} 
-            nextEventDate={nextEventDate}
-          />
-        )}
+        <LaneHero 
+          isOpen={isOpen} 
+          nextEventDate={nextEventDate}
+        />
         
         <LaneFeed
           isOpen={isOpen}
