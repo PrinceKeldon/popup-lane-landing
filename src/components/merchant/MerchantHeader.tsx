@@ -12,7 +12,7 @@ export const MerchantHeader = ({ brandName, email, productCount }: MerchantHeade
   const { earlyAccessDate, laneCloseDate, laneStatus, isLoading } = useLaneSettings();
   const isOpen = laneStatus === "open";
   const targetDate = isOpen ? laneCloseDate : earlyAccessDate;
-  const countdown = useCountdown(targetDate || new Date());
+  const countdown = useCountdown(targetDate);
   const { spotsRemaining } = useMerchantSpots();
 
   // Show placeholder while loading

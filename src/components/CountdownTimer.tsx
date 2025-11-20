@@ -7,9 +7,9 @@ interface CountdownTimerProps {
 
 export const CountdownTimer = ({ targetDate, isOpen = false }: CountdownTimerProps) => {
   const target = targetDate ? new Date(targetDate) : null;
-  const { days, hours, minutes, seconds, isExpired } = useCountdown(target || new Date());
+  const { days, hours, minutes, seconds, isExpired } = useCountdown(target);
 
-  if (!targetDate || !target || isExpired) return null;
+  if (!targetDate || isExpired) return null;
 
   const TimeBlock = ({ value, label }: { value: number; label: string }) => (
     <div className="flex flex-col items-center min-w-[60px] sm:min-w-[72px]">
