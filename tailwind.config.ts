@@ -20,8 +20,14 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         wine: {
-          DEFAULT: "#A23E48",
-          light: "#C05A61",
+          DEFAULT: "hsl(var(--wine))",
+          light: "hsl(var(--wine-light))",
+        },
+        valentine: {
+          blush: "hsl(var(--valentine-blush))",
+          rose: "hsl(var(--valentine-rose))",
+          deep: "hsl(var(--valentine-deep))",
+          cream: "hsl(var(--valentine-cream))",
         },
         primary: {
           DEFAULT: "hsl(var(--primary))",

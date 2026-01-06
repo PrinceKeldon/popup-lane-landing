@@ -7,10 +7,14 @@ import { CURRENT_SEASON } from "@/lib/season-config";
 export const Hero = () => {
   const {
     earlyAccessDate,
+    laneCloseDate,
     laneStatus
   } = useLaneSettings();
   const isOpen = laneStatus === "open";
-  const nextEventDate = earlyAccessDate.toISOString();
+  // Use close date when open, access date when closed
+  const nextEventDate = isOpen 
+    ? laneCloseDate.toISOString() 
+    : earlyAccessDate.toISOString();
   
   return (
     <section 

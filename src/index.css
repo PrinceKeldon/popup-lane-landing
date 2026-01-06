@@ -41,7 +41,7 @@ All colors MUST be HSL.
     /* Minimal Premium Design Tokens */
     --charcoal: 220 15% 8%;
     --glass: 220 15% 8% / 0.06;
-    --open-overlay: 40 100% 92% / 0.18;
+    --open-overlay: 350 80% 95% / 0.3;
     --wine: 352 65% 45%;
     --wine-light: 352 55% 57%;
     --urgent-red: 4 90% 58%;
@@ -51,17 +51,22 @@ All colors MUST be HSL.
     /* Valentine's Season Colors */
     --valentine-blush: 350 80% 88%;
     --valentine-rose: 350 70% 70%;
+    --valentine-deep: 350 75% 35%;
+    --valentine-cream: 350 40% 96%;
     
     /* Gradients */
-    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(35 2% 98%) 100%);
-    --gradient-live: linear-gradient(90deg, hsl(350 80% 88% / 0.25), hsl(350 70% 70% / 0.15));
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(350 40% 98%) 100%);
+    --gradient-live: linear-gradient(90deg, hsl(350 80% 88% / 0.35), hsl(350 70% 70% / 0.2));
+    --gradient-valentine: linear-gradient(135deg, hsl(350 80% 88% / 0.15), hsl(350 70% 70% / 0.08));
+    --gradient-hero: linear-gradient(180deg, hsl(350 80% 95% / 0.25) 0%, transparent 50%);
     
     /* Shadows */
-    --shadow-subtle: 0 6px 20px hsl(220 15% 8% / 0.04);
-    --shadow-card: 0 18px 50px rgba(17, 18, 23, 0.06);
-    --shadow-elegant: 0 10px 30px rgba(17, 18, 23, 0.04);
-    --shadow-hover: 0 25px 60px rgba(17, 18, 23, 0.12);
-    --shadow-button: 0 10px 30px rgba(162, 62, 72, 0.06);
+    --shadow-subtle: 0 6px 20px hsl(350 65% 45% / 0.04);
+    --shadow-card: 0 18px 50px rgba(162, 62, 72, 0.08);
+    --shadow-elegant: 0 10px 30px rgba(162, 62, 72, 0.06);
+    --shadow-hover: 0 25px 60px rgba(162, 62, 72, 0.14);
+    --shadow-button: 0 10px 30px rgba(162, 62, 72, 0.12);
+    --shadow-heart: 0 4px 20px rgba(162, 62, 72, 0.2);
     
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
@@ -140,7 +145,7 @@ All colors MUST be HSL.
 
   .hover-lift:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 30px hsl(220 15% 8% / 0.05);
+    box-shadow: 0 10px 30px hsl(350 65% 45% / 0.08);
   }
 
   @keyframes pageFade {
@@ -170,8 +175,63 @@ All colors MUST be HSL.
     }
   }
 
+  /* Valentine floating heart animations */
+  @keyframes float-slow {
+    0%, 100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-15px) rotate(5deg);
+    }
+  }
+
+  @keyframes float-medium {
+    0%, 100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-10px) rotate(-5deg);
+    }
+  }
+
+  @keyframes float-fast {
+    0%, 100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-8px) rotate(8deg);
+    }
+  }
+
+  @keyframes pulse-heart {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 0.8;
+    }
+    50% {
+      transform: scale(1.1);
+      opacity: 1;
+    }
+  }
+
   .animate-pulse-badge {
     animation: pulse-badge 2s ease-in-out infinite;
+  }
+
+  .animate-float-slow {
+    animation: float-slow 6s ease-in-out infinite;
+  }
+
+  .animate-float-medium {
+    animation: float-medium 4s ease-in-out infinite;
+  }
+
+  .animate-float-fast {
+    animation: float-fast 3s ease-in-out infinite;
+  }
+
+  .animate-pulse-heart {
+    animation: pulse-heart 2s ease-in-out infinite;
   }
 
   .scrollbar-hide::-webkit-scrollbar {
