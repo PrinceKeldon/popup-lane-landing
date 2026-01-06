@@ -234,21 +234,21 @@ export type Database = {
           {
             foreignKeyName: "merchant_backroom_stats_merchant_id_fkey"
             columns: ["merchant_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "merchant_trending_stats"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "merchant_backroom_stats_merchant_id_fkey"
             columns: ["merchant_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "merchants"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "merchant_backroom_stats_merchant_id_fkey"
             columns: ["merchant_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "public_merchants"
             referencedColumns: ["id"]
           },
@@ -571,6 +571,10 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      increment_backroom_stat: {
+        Args: { p_merchant_id: string; p_stat_type: string }
+        Returns: undefined
       }
     }
     Enums: {
