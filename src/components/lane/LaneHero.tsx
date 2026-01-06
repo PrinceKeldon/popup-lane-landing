@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { CountdownTimer } from "@/components/CountdownTimer";
 import { Link } from "react-router-dom";
+import { CURRENT_SEASON } from "@/lib/season-config";
 
 interface LaneHeroProps {
   isOpen: boolean;
@@ -19,7 +20,7 @@ export default function LaneHero({ isOpen, nextEventDate }: LaneHeroProps) {
       <div className="container relative z-10 px-4 text-center space-y-6 animate-fade-in">
         <div className="flex items-center justify-center gap-3 mb-4">
           <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
-            Pop-Up Shop Season
+            {CURRENT_SEASON.laneLabel}
           </span>
           {isOpen && (
             <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-wine/10 border border-wine/20">
@@ -41,8 +42,8 @@ export default function LaneHero({ isOpen, nextEventDate }: LaneHeroProps) {
 
         <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto">
           {isOpen
-            ? "Discover curated small brands. Shop limited-time offers. Support founders."
-            : "The Lane is currently closed. Sign up to be notified when we reopen."}
+            ? CURRENT_SEASON.laneDescription
+            : CURRENT_SEASON.laneClosedDescription}
         </p>
 
         <div className="pt-4">

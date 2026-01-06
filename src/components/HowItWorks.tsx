@@ -3,7 +3,7 @@ export const HowItWorks = () => {
     {
       num: "01",
       title: "We Open the Lane",
-      description: "PopUp Lane appears only during the season — a short, curated showcase of indie drops and limited offers.",
+      description: "PopUp Lane appears during Valentine's season — a short, curated showcase of thoughtful gifts and limited offers.",
     },
     {
       num: "02",

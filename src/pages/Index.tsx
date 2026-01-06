@@ -16,7 +16,7 @@ const Index = () => {
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "PopUp Lane",
-    "description": "A seasonal digital pop-up for curated small-brand Black Friday deals",
+    "description": "A seasonal digital pop-up for thoughtful Valentine's gifts from small brands",
     "url": window.location.origin,
     "logo": `${window.location.origin}/placeholder.svg`,
     "sameAs": []
@@ -25,8 +25,8 @@ const Index = () => {
   return (
     <>
       <SEOHead
-        title="PopUp Lane — Black Friday '25 | Curated Small Brand Deals"
-        description="Discover limited-time Black Friday deals from indie brands. A seasonal digital pop-up featuring curated small businesses with exclusive offers."
+        title="PopUp Lane — Valentine's Lane | Curated Small Brand Gifts"
+        description="Discover thoughtful Valentine's gifts from indie brands. A seasonal digital pop-up featuring curated small businesses with exclusive offers."
         canonical={window.location.origin}
         structuredData={structuredData}
       />

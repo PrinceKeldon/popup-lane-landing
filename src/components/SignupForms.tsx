@@ -178,7 +178,7 @@ export const SignupForms = () => {
           Be First in the Lane — Shoppers Welcome
         </h3>
         <p className="text-muted-foreground text-sm mb-3">
-          Sign up to get notified! Shoppers get first pick of indie drops in the upcoming PopUp Lane.
+          Sign up to get notified! Shoppers get first pick of thoughtful gifts in the upcoming Valentine's Lane.
         </p>
 
         <Form {...shopperForm}>
@@ -233,7 +233,7 @@ export const SignupForms = () => {
           </span>
         </h3>
         <p className="text-background/90 text-sm mb-4">
-          Small brands can apply to feature their products in the upcoming PopUp Lane. Fill in your details and leverage
+          Small brands can apply to feature their products in the Valentine's Lane. Fill in your details and leverage
           AI suggestions for optimal exposure.
         </p>
 
