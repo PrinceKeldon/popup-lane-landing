@@ -1,0 +1,212 @@
+
+# 💝 PopUp Lane — Valentine’s Rebrand Documentation
+
+## Overview
+
+This document outlines the **Valentine’s PopUp Lane rebrand** for the upcoming seasonal launch.
+The goal of this rebrand is to adapt PopUp Lane’s core identity to a Valentine’s theme **without changing the underlying product architecture**, ensuring the platform remains seasonal, scalable, and reusable for future pop-ups.
+
+**Launch Window:** Opens in 2 weeks
+**Season Type:** Valentine’s Lane
+**Status:** Countdown + Pre-launch live
+
+---
+
+## Rebrand Principles
+
+This rebrand follows these non-negotiable rules:
+
+* ❌ No structural redesigns
+* ❌ No feature removal
+* ❌ No logic changes
+* ✅ Copy, tone, color accents, and imagery may change
+* ✅ Countdown-driven urgency
+* ✅ Mobile-first optimization
+* ✅ Seasonal theme must be easily swappable
+
+PopUp Lane remains a **seasonal digital pop-up**, not a one-off Valentine’s site.
+
+---
+
+## Hero Section (Primary Focus)
+
+### Hero Objective
+
+* Communicate **seasonal opening**
+* Create urgency with a **global countdown timer**
+* Balance **long-term vision** with **Valentine’s-specific appeal**
+
+### Hero Copy (Production-Ready)
+
+**Headline**
+
+> The Valentine’s Lane Opens Soon
+
+**Sub-headline**
+
+> A seasonal digital pop-up for thoughtful gifts from small brands — curated, limited, and made to be discovered.
+
+**Supporting Line**
+
+> We open in just two weeks. Early visitors get first access to Valentine’s drops you won’t find buried under ads.
+
+**Countdown Label**
+
+> Opening In:
+
+**Primary CTA**
+
+> Get Early Access
+
+**Secondary CTA**
+
+> Brands: Join the Valentine’s Lane
+
+**Micro-copy**
+
+> Seasonal pop-ups. Limited drops. Real brands.
+
+---
+
+## Countdown Timer Requirements
+
+* Must be **globally synced** across:
+
+  * Landing page
+  * /lane view
+  * Admin-configured launch date
+* Displays:
+
+  * Days
+  * Hours
+  * Minutes
+* State changes:
+
+  * Pre-launch → “Opens Soon”
+  * Live → “We’re Live”
+  * Closed → “The Lane Has Closed”
+
+---
+
+## Visual Direction (Valentine’s)
+
+### Allowed Adjustments
+
+* Accent colors (soft reds, blush, charcoal, off-white)
+* Seasonal imagery (romantic, thoughtful, gift-oriented)
+* Typography emphasis (headlines only)
+
+### Not Allowed
+
+* Removing brand/category/CTA elements
+* Adding gradients over images
+* Cropping product imagery in a way that hides info
+* Changing card logic or interactions
+
+---
+
+## Card Layout Rules (Lane View)
+
+* All cards must show:
+
+  * Brand name
+  * Category
+  * Offer text
+  * Action buttons
+* No gradient overlays on product images
+* Images must not bleed into content areas
+* Card height may increase to preserve readability
+* Design must remain consistent across desktop & mobile
+
+---
+
+## Mobile Optimization (Mandatory)
+
+* Cards must render fully without overlap
+* Countdown must remain readable
+* CTAs must be thumb-friendly
+* No horizontal scrolling
+* Typography must scale without truncation
+
+---
+
+## SEO & Discoverability
+
+Minimum requirements for this rebrand:
+
+* Updated meta title & description (Valentine’s Lane)
+* Semantic HTML structure
+* Accessible labels for countdown & CTAs
+* Open Graph tags for social sharing
+* Page speed prioritized (no heavy media)
+
+---
+
+## Lane Club (Community Continuity)
+
+Valentine’s Lane continues to leverage **The Lane Club** as the community heartbeat.
+
+* Merchants must be subscribed to Lane Club
+* Feedback remains mandatory (positive or constructive)
+* Early feedback used for:
+
+  * Testimonials
+  * Social proof
+  * Social media content
+* Lane Club is not “just a form” — it is:
+
+  * Community
+  * Feedback loop
+  * Backroom access point
+
+---
+
+## Merchant Positioning (Seasonal Offer)
+
+* First 50 brands:
+
+  * Free participation for Valentine’s + Holidays
+  * Full visibility
+  * Backroom access
+* Purpose:
+
+  * Stress test platform
+  * Build with real merchants
+  * Gather actionable feedback
+
+---
+
+## What This Rebrand Is NOT
+
+* Not a full redesign
+* Not Valentine’s-only branding
+* Not a pricing or feature rollout
+* Not a one-time marketing page
+
+This is a **seasonal skin + narrative shift** on a living platform.
+
+---
+
+## Future-Proofing
+
+This rebrand pattern must be reusable for:
+
+* Mother’s Day Lane
+* Summer Lane
+* Holiday Lane
+* Black Friday Lane
+
+Only copy, colors, and dates should change.
+
+---
+
+## Maintainers
+
+* Founder / Product: PopUp Lane
+* Contact: **[founder@popupmail.com](mailto:founder@popupmail.com)**
+
+---
+
+**End of document**
+
+---
