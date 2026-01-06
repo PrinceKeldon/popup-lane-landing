@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Menu, X, ChevronDown, User, LogOut } from "lucide-react";
+import { Menu, X, ChevronDown, User, LogOut, Heart } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -37,11 +37,12 @@ export const Navigation = () => {
   };
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <nav className="sticky top-0 z-50 border-b border-wine/10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
-          {/* Logo */}
-          <Link to="/" className="text-xl font-serif font-bold hover:opacity-80 transition-opacity">
+          {/* Logo with Valentine heart */}
+          <Link to="/" className="flex items-center gap-2 text-xl font-serif font-bold hover:opacity-80 transition-opacity group">
+            <Heart className="w-5 h-5 text-wine group-hover:scale-110 transition-transform" fill="currentColor" />
             PopUp Lane
           </Link>
 
