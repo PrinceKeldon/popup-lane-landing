@@ -15,6 +15,16 @@ interface EmailRequest {
   fromName?: string;
 }
 
+// HTML escape function to prevent XSS
+function escapeHtml(unsafe: string): string {
+  return unsafe
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 const resendApiKey = Deno.env.get("RESEND_API_KEY");
 
 const handler = async (req: Request): Promise<Response> => {
@@ -154,8 +164,8 @@ const handler = async (req: Request): Promise<Response> => {
                 <h1>PopUp Lane</h1>
               </div>
               <div class="content">
-                <p>Hi ${merchant.brand_name},</p>
-                ${message.split('\n').map(line => `<p>${line}</p>`).join('')}
+                <p>Hi ${escapeHtml(merchant.brand_name)},</p>
+                ${message.split('\n').map(line => `<p>${escapeHtml(line)}</p>`).join('')}
               </div>
               <div class="footer">
                 <p>You're receiving this because you're a merchant on PopUp Lane</p>
