@@ -130,6 +130,7 @@ export type Database = {
         Row: {
           early_access_date: string
           id: string
+          lane_close_date: string | null
           lane_status: string
           spots_limit: number
           updated_at: string | null
@@ -138,6 +139,7 @@ export type Database = {
         Insert: {
           early_access_date: string
           id?: string
+          lane_close_date?: string | null
           lane_status?: string
           spots_limit?: number
           updated_at?: string | null
@@ -146,6 +148,7 @@ export type Database = {
         Update: {
           early_access_date?: string
           id?: string
+          lane_close_date?: string | null
           lane_status?: string
           spots_limit?: number
           updated_at?: string | null

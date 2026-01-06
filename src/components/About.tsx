@@ -10,7 +10,7 @@ export const About = () => {
             What is PopUp Lane?
           </h3>
           <p className="text-muted-foreground text-[15px] leading-relaxed mb-2.5">
-            PopUp Lane is a seasonal digital pop-up — a curated directory and timed event that opens during major shopping moments (like Black Friday and the holidays). While the lane is open, shoppers browse our curated directory, filter by categories, and visit each merchant's storefront to purchase directly. The directory remains an archive of past lanes so shoppers can revisit favorites and brands remain discoverable between drops.
+            PopUp Lane is a seasonal digital pop-up — a curated directory and timed event that opens during major shopping moments (like Valentine's Day and special occasions). While the lane is open, shoppers browse our curated directory, filter by categories, and visit each merchant's storefront to purchase directly. The directory remains an archive of past lanes so shoppers can revisit favorites and brands remain discoverable between drops.
           </p>
           <p className="text-muted-foreground text-[15px] leading-relaxed">
             Importantly, merchants <strong className="text-foreground">keep 100% of every sale</strong>. Transactions occur on the merchant's own site or platform (Shopify, Etsy, native checkout, etc.), and PopUp Lane does not take a cut of those sales. Instead, PopUp Lane supports creators through paid placement (featured tiles, hero spots), sponsorships, and optional affiliate tracking when merchants opt in — keeping the marketplace creator-first and fair by design.
